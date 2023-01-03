@@ -1,0 +1,70 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.navbar {
+  position: fixed;
+  display: hidden;
+  height: 1000px;
+  top: 0;
+  left: 0;
+  padding-top: 20px;
+  min-width: 250px;
+  width: 15%;
+  background-color: red;
+  border-right: 2px solid gray;
+  z-index: 1;
+  text-align: left;
+}
+
+.navbarTitle {
+  display: block;
+  color: blue;
+  font-size: 2em;
+  font-weight: bold;
+  width: fit-content;
+  font-size: 2em;
+  margin-left: auto;
+  margin-right: 20px;
+}
+
+.navbarLink {
+  display: block;
+  color: blue;
+  font-size: 2em;
+  font-weight: bold;
+  margin-right: 10%;
+  margin-left: 30px;
+  width: fit-content;
+}
+
+.content {
+  display: block;
+}
+
+.navbarButton {
+  position: fixed;
+  height: 40px;
+  width: 40px;
+  top: 20px;
+  left: 30px;
+  background-image: url("./Assets/hamburger.png");
+  background-size: cover;
+  cursor: pointer;
+  z-index: 10;
+}
