@@ -1,15 +1,10 @@
 from flask import request, Blueprint
-from pymongo import MongoClient
 import bcrypt
 import os
 from dotenv import load_dotenv
 import jwt
 import middleware
-
-load_dotenv()
-client = MongoClient(os.getenv('DATABASE'))
-db = client.flask_db
-users = db.users
+from initialize import users, JWT_SECRET, JWT_ALGORITHM
 
 vendorRoutes = Blueprint('vendor', __name__, template_folder='templates')
 
@@ -17,7 +12,7 @@ vendorRoutes = Blueprint('vendor', __name__, template_folder='templates')
 @middleware.vendor_required
 def get_outlet_list(vendor):
     jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
+    payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
     result = users.find_one({'username': payload["username"]})
 
     if result["accessLevel"] == "vendor" and result["username"] != vendor:

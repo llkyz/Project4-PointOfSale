@@ -1,14 +1,6 @@
-from flask import Flask, request, Blueprint
-from pymongo import MongoClient
-import os
-from dotenv import load_dotenv
+from flask import request, Blueprint
 import middleware
-import datetime
-
-load_dotenv()
-client = MongoClient(os.getenv('DATABASE'))
-db = client.flask_db
-orders = db.orders
+from initialize import orders
 
 orderRoutes = Blueprint('order', __name__, template_folder='templates')
 

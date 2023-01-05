@@ -1,23 +1,17 @@
 from flask import request, Blueprint
-from pymongo import MongoClient
 import bcrypt
-import os
-from dotenv import load_dotenv
-import jwt
 import middleware
-
-load_dotenv()
-client = MongoClient(os.getenv('DATABASE'))
-db = client.flask_db
-users = db.users
+import json
+from initialize import users
 
 adminRoutes = Blueprint('admin', __name__, template_folder='templates')
 
 @adminRoutes.get("/")
 @middleware.admin_required
 def get_admins_vendors():
-    result = list(users.find({'$or': [{'accessLevel': 'admin'}, {'accessLevel': 'vendor'}]},{"_id": 0, "password": 0}))
-    return {"data": result}, 200
+    result = list(users.find({'$or': [{'accessLevel': 'admin'}, {'accessLevel': 'vendor'}]},{"password": 0}))
+    print(result)
+    return {"data": json.dumps(result)}, 200
 
 @adminRoutes.post("/")
 @middleware.admin_required

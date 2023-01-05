@@ -1,12 +1,8 @@
-from flask import Flask, request
+from flask import Flask
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 import datetime
-from pymongo import MongoClient
-from bson.objectid import ObjectId
 import secrets
-import os
-from dotenv import load_dotenv
 from routes.user import userRoutes
 from routes.admin import adminRoutes
 from routes.vendor import vendorRoutes
@@ -14,12 +10,7 @@ from routes.outlet import outletRoutes
 from routes.order import orderRoutes
 from routes.archive import archiveRoutes
 
-load_dotenv()
 x = datetime.datetime.now()
-client = MongoClient(os.getenv('DATABASE'))
-db = client.flask_db
-users = db.users
-todos = db.todos
 app = Flask(__name__)
 socketio = SocketIO(app)
 
@@ -44,10 +35,10 @@ def get_time():
 def connect():
     print("A user has connected")
 
-@socketio.on("clickButton")
-def clickButton(json):
-    print("Button clicked: ", str(json))
-    todos.insert_one({'content': 'ButtonClick', 'degree': "Important"})
+# @socketio.on("clickButton")
+# def clickButton(json):
+#     print("Button clicked: ", str(json))
+#     todos.insert_one({'content': 'ButtonClick', 'degree': "Important"})
 
 @socketio.on("generateRandom")
 def generateRandom():
