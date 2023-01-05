@@ -5,7 +5,7 @@ export default function Register() {
       username: event.target.form[0].value,
       password: event.target.form[1].value,
     };
-    const res = await fetch("/api/user/register", {
+    const res = await fetch("/api/user", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import NavbarMenu from "./NavbarMenu";
 
-export default function Navbar() {
+export default function Navbar({ accessLevel, setAccessLevel }) {
   const [navbarVisibility, setNavbarVisibility] = useState(false);
   const navbarButtonRef = useRef();
 
@@ -24,6 +24,8 @@ export default function Navbar() {
         <NavbarMenu
           setNavbarVisibility={setNavbarVisibility}
           navbarButtonRef={navbarButtonRef}
+          accessLevel={accessLevel}
+          setAccessLevel={setAccessLevel}
         />
       ) : (
         ""

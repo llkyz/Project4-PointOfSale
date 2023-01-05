@@ -106,18 +106,29 @@ function App() {
         <p>{data.programming}</p>
       </header> */}
       <BrowserRouter>
-        <Navbar />
+        <Navbar accessLevel={accessLevel} setAccessLevel={setAccessLevel} />
         <div className="content">
           <Routes>
             <Route path="/" element={<Home accessLevel={accessLevel} />} />
             <Route
               path="login"
-              element={<Login setAccessLevel={setAccessLevel} />}
+              element={
+                <Login
+                  accessLevel={accessLevel}
+                  setAccessLevel={setAccessLevel}
+                />
+              }
             />
             <Route path="register" element={<Register />} />
-            <Route path="admin" element={<Admin />} />
-            <Route path="vendor" element={<Vendor />} />
-            <Route path="outlet" element={<Outlet />} />
+            <Route path="admin" element={<Admin accessLevel={accessLevel} />} />
+            <Route
+              path="vendor"
+              element={<Vendor accessLevel={accessLevel} />}
+            />
+            <Route
+              path="outlet"
+              element={<Outlet accessLevel={accessLevel} />}
+            />
           </Routes>
         </div>
       </BrowserRouter>
