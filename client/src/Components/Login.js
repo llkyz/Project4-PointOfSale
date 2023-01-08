@@ -3,7 +3,8 @@ import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 
 export default function Login({ accessLevel, setAccessLevel }) {
-  const [errorMessage, setErrorMessage] = useState();
+  const [adminErrorMessage, setAdminErrorMessage] = useState();
+  const [outletErrorMessage, setOutletErrorMessage] = useState();
   const [savedAdminLogin, setSavedAdminLogin] = useState();
   const [savedOutletLogin, setSavedOutletLogin] = useState();
   const navigate = useNavigate();
@@ -50,7 +51,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
       }
       navigate("/");
     } else {
-      setErrorMessage(result.data);
+      setAdminErrorMessage(result.data);
     }
   }
 
@@ -84,7 +85,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
       }
       navigate("/");
     } else {
-      setErrorMessage(result.data);
+      setOutletErrorMessage(result.data);
     }
   }
 
@@ -93,7 +94,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
       <h1>Login</h1>
       <div className="loginElement">
         <h2>Admin Login</h2>
-        {errorMessage ? <h2>{errorMessage}</h2> : ""}
+        {adminErrorMessage ? <h2>{adminErrorMessage}</h2> : ""}
         <form>
           <div>
             <label>User ID</label>
@@ -108,8 +109,8 @@ export default function Login({ accessLevel, setAccessLevel }) {
             <input type="password" placeholder="Password" />
           </div>
           <div>
-            <label for="remember">Remember Login</label>
-            <input type="checkbox" id="remember" />
+            <label htmlFor="remember">Remember Login</label>
+            <input type="checkbox" />
           </div>
           <div>
             <input
@@ -122,7 +123,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
       </div>
       <div className="loginElement">
         <h2>Outlet Login</h2>
-        {errorMessage ? <h2>{errorMessage}</h2> : ""}
+        {outletErrorMessage ? <h2>{outletErrorMessage}</h2> : ""}
         <form>
           <div>
             <label>Vendor ID</label>
@@ -145,8 +146,8 @@ export default function Login({ accessLevel, setAccessLevel }) {
             <input type="password" placeholder="Password" />
           </div>
           <div>
-            <label for="remember">Remember Login</label>
-            <input type="checkbox" id="remember" />
+            <label htmlFor="remember">Remember Login</label>
+            <input type="checkbox" />
           </div>
           <div>
             <input

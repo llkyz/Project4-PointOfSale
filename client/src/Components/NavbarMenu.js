@@ -20,14 +20,14 @@ export default function NavbarMenu({
 
   return (
     <div className="navbar" ref={wrapper}>
-      <div className="navbarTitle">
+      <div className="navbarLink">
         <Link
           to="/"
           onClick={() => {
             setNavbarVisibility(false);
           }}
         >
-          Easy POS
+          Home
         </Link>
       </div>
       {accessLevel === "loading" || accessLevel === "notLoggedIn" ? (
@@ -66,29 +66,39 @@ export default function NavbarMenu({
               setNavbarVisibility(false);
             }}
           >
-            Admin
+            Admin User Panel
           </Link>
         </div>
       ) : (
         ""
       )}
-      {accessLevel === "vendor" || accessLevel === "admin" ? (
-        <div className="navbarLink">
-          <Link
-            to="/vendor"
-            onClick={() => {
-              setNavbarVisibility(false);
-            }}
-          >
-            Vendor
-          </Link>
-        </div>
+      {accessLevel === "vendor" ? (
+        <>
+          <div className="navbarLink">
+            <Link
+              to="/outletoverview"
+              onClick={() => {
+                setNavbarVisibility(false);
+              }}
+            >
+              Overview
+            </Link>
+          </div>
+          <div className="navbarLink">
+            <Link
+              to="/menueditor"
+              onClick={() => {
+                setNavbarVisibility(false);
+              }}
+            >
+              Menu Editor
+            </Link>
+          </div>
+        </>
       ) : (
         ""
       )}
-      {accessLevel === "outlet" ||
-      accessLevel === "vendor" ||
-      accessLevel === "admin" ? (
+      {accessLevel === "outlet" ? (
         <div className="navbarLink">
           <Link
             to="/outlet"
@@ -103,9 +113,23 @@ export default function NavbarMenu({
         ""
       )}
       {accessLevel !== "loading" && accessLevel !== "notLoggedIn" ? (
-        <div className="navbarLink">
-          <p onClick={doLogout}>Log Out</p>
-        </div>
+        <>
+          <div className="navbarLink">
+            <Link
+              to="/profile"
+              onClick={() => {
+                setNavbarVisibility(false);
+              }}
+            >
+              Profile
+            </Link>
+          </div>
+          <div className="navbarLink">
+            <p style={{ cursor: "pointer" }} onClick={doLogout}>
+              Log Out
+            </p>
+          </div>
+        </>
       ) : (
         ""
       )}

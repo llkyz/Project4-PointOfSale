@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import NavbarMenu from "./NavbarMenu";
 
 export default function Navbar({ accessLevel, setAccessLevel }) {

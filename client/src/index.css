@@ -20,12 +20,12 @@ a {
 .navbar {
   position: fixed;
   display: hidden;
-  height: 1000px;
+  height: fit-content;
   top: 0;
   left: 0;
-  padding-top: 20px;
-  min-width: 250px;
-  width: 15%;
+  padding-top: 70px;
+  min-width: 300px;
+  width: 18%;
   background-color: red;
   border-right: 2px solid gray;
   z-index: 1;

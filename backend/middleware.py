@@ -2,6 +2,7 @@ from functools import wraps
 from flask import request
 import os
 import jwt
+from bson import ObjectId
 from initialize import users, JWT_ALGORITHM, JWT_SECRET
 
 def admin_required(f):
@@ -10,7 +11,7 @@ def admin_required(f):
         jwt_token = request.cookies.get("token")
         try:
             payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-            result = users.find_one({'username': payload["username"]})
+            result = users.find_one({'_id': ObjectId(payload["_id"])})
             if not result:
                 return {'message': 'Token is invalid'}, 400   
             if result["accessLevel"] != "admin":
@@ -26,7 +27,7 @@ def vendor_required(f):
         jwt_token = request.cookies.get("token")
         try:
             payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
-            result = users.find_one({'username': payload["username"]})
+            result = users.find_one({'_id': ObjectId(payload["_id"])})
             if not result:
                 return {'message': 'Token is invalid'}, 400   
             if result["accessLevel"] != "admin" and result["accessLevel"] != "vendor":
@@ -42,7 +43,7 @@ def outlet_required(f):
         jwt_token = request.cookies.get("token")
         try:
             payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
-            result = users.find_one({'username': payload["username"]})
+            result = users.find_one({'_id': ObjectId(payload["_id"])})
             if not result:
                 return {'message': 'Token is invalid'}, 400
         except (jwt.DecodeError, jwt.ExpiredSignatureError):

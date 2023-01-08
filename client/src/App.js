@@ -9,9 +9,11 @@ import Home from "./Components/Home";
 import Login from "./Components/Login";
 import Navbar from "./Components/Navbar";
 import Register from "./Components/Register";
-import Admin from "./Components/Admin";
-import Vendor from "./Components/Vendor";
+import Admin from "./Components/Admin/Admin";
 import Outlet from "./Components/Outlet";
+import Profile from "./Components/Profile/Profile";
+import OutletOverview from "./Components/Vendor/OutletOverview";
+import MenuEditor from "./Components/Vendor/MenuEditor";
 
 const socket = io();
 
@@ -122,12 +124,25 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="admin" element={<Admin accessLevel={accessLevel} />} />
             <Route
-              path="vendor"
-              element={<Vendor accessLevel={accessLevel} />}
+              path="outletoverview"
+              element={<OutletOverview accessLevel={accessLevel} />}
+            />
+            <Route
+              path="menueditor"
+              element={<MenuEditor accessLevel={accessLevel} />}
             />
             <Route
               path="outlet"
               element={<Outlet accessLevel={accessLevel} />}
+            />
+            <Route
+              path="profile"
+              element={
+                <Profile
+                  accessLevel={accessLevel}
+                  setAccessLevel={setAccessLevel}
+                />
+              }
             />
           </Routes>
         </div>

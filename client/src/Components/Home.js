@@ -1,17 +1,6 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
 export default function Home({ accessLevel }) {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (accessLevel === "outlet") {
-      navigate("/outlet");
-    } else if (accessLevel === "admin") {
-      navigate("/admin");
-    }
-  }, [accessLevel]);
-
   return (
     <>
       <h1>Home Page</h1>
