@@ -53,5 +53,11 @@ def ping():
     print("ping")
     emit("pong")
 
+@socketio.on("sendOrder")
+def receive_order(json):
+    print("Received order from customer")
+    print(json['data'])
+    emit("acknowledgeOrder")
+
 if __name__ == "__main__":
     socketio.run(app)

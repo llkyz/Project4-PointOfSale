@@ -8,11 +8,12 @@ export default function MenuEditor() {
     title: "",
     tax: 0,
     service: 0,
+    logo: "",
     categories: [],
   });
   const [uploadedFile, setUploadedFile] = useState();
   const [updateMenuTrigger, setUpdateMenuTrigger] = useState(false);
-  const [vendorId, setVendorId] = useState()
+  const [vendorId, setVendorId] = useState();
   const ref = useRef();
 
   useEffect(() => {
@@ -125,7 +126,9 @@ export default function MenuEditor() {
   return (
     <>
       <h1>Menu Editor</h1>
-      <Link to={`/client/${vendorId}`}><button>Menu Preview</button></Link>
+      <Link to={`/client/${vendorId}`}>
+        <button>Menu Preview</button>
+      </Link>
       <div>
         <label>Title</label>
         <DebounceInput
@@ -140,13 +143,9 @@ export default function MenuEditor() {
       </div>
       <div>
         <label>Logo</label>
-        {menuData.logo ? (
-          <>
-            <img
-              src={`https://storage.cloud.google.com/pos-system/${menuData.logo}`}
-            />
-            <button onClick={removeLogo}>Remove Logo</button>
-          </>
+        <img src={menuData.logo} />
+        {menuData.logo.includes("placeholder") ? (
+          <button onClick={removeLogo}>Remove Logo</button>
         ) : (
           ""
         )}

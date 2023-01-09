@@ -121,17 +121,11 @@ export default function MenuEntry({ entryData, getMenu }) {
           }}
         />
       </div>
-      {entryData.image ? (
-        <>
-          <img
-            src={`https://storage.cloud.google.com/pos-system/${entryData.image}`}
-          />
-          <button onClick={removeImage}>Remove</button>
-        </>
+      <img src={entryData.image} />
+      {entryData.image.includes("placeholder") ? (
+        <button onClick={removeImage}>Remove</button>
       ) : (
-        <img
-          src={`https://storage.cloud.google.com/pos-system/placeholder.jpg`}
-        />
+        ""
       )}
       <div>
         <input

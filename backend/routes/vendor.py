@@ -3,14 +3,11 @@ import bcrypt
 import jwt
 import middleware
 from bson import ObjectId
-from initialize import users, menus, categories, entries, JWT_SECRET, JWT_ALGORITHM
+from initialize import users, menus, categories, entries, JWT_SECRET, JWT_ALGORITHM, bucket
 import os
-from google.cloud import storage
 import uuid
+import datetime
 
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'ServiceKey_GoogleCloud.json'
-storage_client = storage.Client()
-bucket = storage_client.get_bucket('pos-system')
 vendorRoutes = Blueprint('vendor', __name__, template_folder='templates')
 
 def upload_file(blob_name, file):
@@ -29,6 +26,16 @@ def delete_file(blob_name):
         return True
     except Exception as e:
         print(e)
+        return False
+
+def get_file_url(blob_name):
+    try:
+        blob = bucket.blob(blob_name)
+        serving_url = blob.generate_signed_url(version="v4",
+        expiration=datetime.timedelta(minutes=30),
+        method="GET")
+        return serving_url
+    except Exception as e:
         return False
 
 @vendorRoutes.get("/id")
@@ -121,7 +128,6 @@ def get_menu():
     jwt_token = request.cookies.get("token")
     payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
 
-    # result = menus.find_one({'vendor': ObjectId(payload['_id'])})
     result = menus.aggregate([
         {
             '$match': {'vendor': ObjectId(payload['_id'])}
@@ -149,6 +155,10 @@ def get_menu():
     if result:
         result['_id'] = str(result['_id'])
         result['vendor'] = str(result['vendor'])
+        if result['logo']:
+            result['logo'] = get_file_url(result['logo'])
+        else:
+            result['logo'] = get_file_url('placeholder.jpg')
         for x in result['categories']:
             x['_id'] = str(x['_id'])
             x['vendor'] = str(x['vendor'])
@@ -156,6 +166,10 @@ def get_menu():
                 y['_id'] = str(y['_id'])
                 y['category'] = str(y['category'])
                 y['vendor'] = str(y['vendor'])
+                if y['image']:
+                    y['image'] = get_file_url(y['image'])
+                else:
+                    y['image'] = get_file_url('placeholder.jpg')
         return ({'data': result}), 200
     else:
         return ({'data': 'No menu found'}), 400
