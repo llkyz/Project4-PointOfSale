@@ -1,7 +1,9 @@
 from pymongo import MongoClient
 import os
+import certifi
 
-client = MongoClient(os.getenv('DATABASE'))
+ca = certifi.where()
+client = MongoClient(os.getenv('DATABASE'), tlsCAFile=ca)
 db = client.flask_db
 users = db.users
 archive = db.archives

@@ -12,7 +12,10 @@ export default function Login({ accessLevel, setAccessLevel }) {
   useEffect(() => {
     function getSavedLogin() {
       const adminCookie = Cookies.get("adminLogin");
-      const outletCookie = JSON.parse(Cookies.get("outletLogin"));
+      const outletCookie = ""
+      if (Cookies.get("outletLogin")) {
+        outletCookie = JSON.parse(Cookies.get("outletLogin"));
+      }
       if (adminCookie) {
         setSavedAdminLogin(adminCookie);
       }
