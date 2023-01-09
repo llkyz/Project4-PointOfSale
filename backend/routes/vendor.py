@@ -31,6 +31,16 @@ def delete_file(blob_name):
         print(e)
         return False
 
+@vendorRoutes.get("/id")
+@middleware.vendor_required
+def get_vendor_id():
+    try:
+        jwt_token = request.cookies.get("token")
+        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        return ({'data': payload['_id']}), 200
+    except:
+        return ({'data': 'An error occurred'}), 400
+
 # ==================================
 # Outlet Routes
 # ==================================
@@ -105,21 +115,6 @@ def delete_outlet(userid):
 # ==================================
 # Menu Routes
 # ==================================
-    
-# @vendorRoutes.get('/menu')
-# @middleware.vendor_required
-# def get_menu():
-#     jwt_token = request.cookies.get("token")
-#     payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-
-#     result = menus.find_one({'vendor': ObjectId(payload['_id'])})
-#     if result:
-#         result['_id'] = str(result['_id'])
-#         result['vendor'] = str(result['vendor'])
-#         return ({'data': result}), 200
-#     else:
-#         return ({'data': 'No menu found'}), 400
-
 @vendorRoutes.get('/menu')
 @middleware.vendor_required
 def get_menu():

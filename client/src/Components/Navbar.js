@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import NavbarMenu from "./NavbarMenu";
 
-export default function Navbar({ accessLevel, setAccessLevel }) {
+export default function Navbar({ accessLevel, setAccessLevel, clientOverride }) {
   const [navbarVisibility, setNavbarVisibility] = useState(false);
   const navbarButtonRef = useRef();
 
@@ -11,6 +11,10 @@ export default function Navbar({ accessLevel, setAccessLevel }) {
     } else {
       setNavbarVisibility(true);
     }
+  }
+  
+  if (clientOverride) {
+    return
   }
 
   return (
@@ -26,6 +30,7 @@ export default function Navbar({ accessLevel, setAccessLevel }) {
           navbarButtonRef={navbarButtonRef}
           accessLevel={accessLevel}
           setAccessLevel={setAccessLevel}
+          clientOverride={clientOverride}
         />
       ) : (
         ""

@@ -6,7 +6,6 @@ export default function OutletOverview() {
   const [outletList, setOutletList] = useState([]);
   const [showNewOutletModal, setShowNewOutletModal] = useState(false);
 
-  console.log(outletList);
   useEffect(() => {
     getOutletList();
   }, []);

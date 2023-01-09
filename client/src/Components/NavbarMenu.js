@@ -6,7 +6,7 @@ export default function NavbarMenu({
   setNavbarVisibility,
   navbarButtonRef,
   accessLevel,
-  setAccessLevel,
+  setAccessLevel
 }) {
   const wrapper = useRef();
   const navigate = useNavigate();

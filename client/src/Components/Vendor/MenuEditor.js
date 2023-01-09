@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { DebounceInput } from "react-debounce-input";
+import { Link } from "react-router-dom";
 import MenuCategoryList from "./MenuCategoryList";
 
 export default function MenuEditor() {
@@ -11,10 +12,12 @@ export default function MenuEditor() {
   });
   const [uploadedFile, setUploadedFile] = useState();
   const [updateMenuTrigger, setUpdateMenuTrigger] = useState(false);
+  const [vendorId, setVendorId] = useState()
   const ref = useRef();
 
   useEffect(() => {
     getMenu();
+    getVendorId();
   }, []);
 
   useEffect(() => {
@@ -68,6 +71,19 @@ export default function MenuEditor() {
     }
   }, [menuData]);
 
+  async function getVendorId() {
+    const res = await fetch("/api/vendor/id", {
+      method: "GET",
+      credentials: "include",
+    });
+    let result = await res.json();
+    if (res.ok) {
+      setVendorId(result.data);
+    } else {
+      console.log(result.data);
+    }
+  }
+
   async function removeLogo() {
     let res = await fetch("/api/vendor/menu/logo", {
       method: "DELETE",
@@ -109,6 +125,7 @@ export default function MenuEditor() {
   return (
     <>
       <h1>Menu Editor</h1>
+      <Link to={`/client/${vendorId}`}><button>Menu Preview</button></Link>
       <div>
         <label>Title</label>
         <DebounceInput

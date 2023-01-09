@@ -14,6 +14,7 @@ import Outlet from "./Components/Outlet";
 import Profile from "./Components/Profile/Profile";
 import OutletOverview from "./Components/Vendor/OutletOverview";
 import MenuEditor from "./Components/Vendor/MenuEditor";
+import Client from "./Components/Client/Client";
 
 const socket = io();
 
@@ -27,6 +28,7 @@ function App() {
   });
   const [qrcode, setQrcode] = useState();
   const [accessLevel, setAccessLevel] = useState("loading");
+  const [clientOverride, setClientOverride] = useState(false)
 
   useEffect(() => {
     async function verify() {
@@ -108,7 +110,7 @@ function App() {
         <p>{data.programming}</p>
       </header> */}
       <BrowserRouter>
-        <Navbar accessLevel={accessLevel} setAccessLevel={setAccessLevel} />
+        <Navbar accessLevel={accessLevel} setAccessLevel={setAccessLevel} clientOverride={clientOverride}/>
         <div className="content">
           <Routes>
             <Route path="/" element={<Home accessLevel={accessLevel} />} />
@@ -144,6 +146,7 @@ function App() {
                 />
               }
             />
+            <Route path="client/:vendorid" element={<Client setClientOverride={setClientOverride}/>}/>
           </Routes>
         </div>
       </BrowserRouter>
