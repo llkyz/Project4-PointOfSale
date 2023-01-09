@@ -1,11 +1,10 @@
 import ClientEntry from "./ClientEntry"
 
-export default function ClientContent({menuData, contentIndex}) {
+export default function ClientContent({categoryData, setEntryIndex}) {
     return(
         <>
             <h1>Content goes here</h1>
-            <p>Current Index: {contentIndex}</p>
-            {menuData.categories[contentIndex].entries.map((entryData) => <ClientEntry entryData={entryData}/>)}
+            {categoryData.entries.map((entryData, index) => <ClientEntry key={index} entryData={entryData} index={index} setEntryIndex={setEntryIndex}/>)}
         </>
     )
 }
