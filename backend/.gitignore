@@ -1,4 +1,4 @@
 .env
 ServiceKey_GoogleCloud.json
-backend/__pycache__
-routes/__pycache__
+/__pycache__
+/routes/__pycache__
