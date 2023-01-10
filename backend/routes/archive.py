@@ -1,7 +1,7 @@
 from flask import request, Blueprint
 import middleware
 import datetime
-from initialize import archive
+from initialize import archives
 
 archiveRoutes = Blueprint('archive', __name__, template_folder='templates')
 
@@ -15,19 +15,19 @@ def retrieve_archive():
 @middleware.vendor_required
 def create_archive():
     data = request.get_json()
-    archive.insert_one(data)
+    archives.insert_one(data)
     return ({"data": "Archive Created"}), 200
 
 @archiveRoutes.put("/")
 @middleware.vendor_required
 def edit_archive():
     data = request.get_json()
-    archive.find_one_and_update("something goes here")
+    archives.find_one_and_update("something goes here")
     return ({"data": "Archive Updated"}), 200
 
 @archiveRoutes.put("/")
 @middleware.vendor_required
 def delete_archive():
     data = request.get_json()
-    archive.find_one_and_delete("something goes here")
+    archives.find_one_and_delete("something goes here")
     return ({"data": "Archive Deleted"}), 200

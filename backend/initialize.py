@@ -11,7 +11,7 @@ bucket = storage_client.get_bucket('pos-system')
 client = MongoClient(os.getenv('DATABASE'), tlsCAFile=ca)
 db = client.flask_db
 users = db.users
-archive = db.archives
+archives = db.archives
 orders = db.orders
 menus = db.menus
 categories = db.categories

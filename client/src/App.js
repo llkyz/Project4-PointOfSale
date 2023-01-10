@@ -9,11 +9,12 @@ import Login from "./Components/Login";
 import Navbar from "./Components/Navbar";
 import Register from "./Components/Register";
 import Admin from "./Components/Admin/Admin";
-import Outlet from "./Components/Outlet";
 import Profile from "./Components/Profile/Profile";
 import OutletOverview from "./Components/Vendor/OutletOverview";
 import MenuEditor from "./Components/Vendor/MenuEditor";
 import Client from "./Components/Client/Client";
+import ClientPreview from "./Components/Client/ClientPreview";
+import OutletManager from "./Components/Outlet/OutletManager";
 
 const socket = io();
 
@@ -56,6 +57,10 @@ function App() {
 
     socket.on("randomKey", function (res) {
       console.log(res.data);
+    });
+
+    socket.on('message', function (message) {
+      console.log(message);
     });
 
     return () => {
@@ -138,7 +143,7 @@ function App() {
             />
             <Route
               path="outlet"
-              element={<Outlet accessLevel={accessLevel} />}
+              element={<OutletManager accessLevel={accessLevel} socket={socket}/>}
             />
             <Route
               path="profile"
@@ -150,7 +155,13 @@ function App() {
               }
             />
             <Route
-              path="client/:vendorid"
+              path="client/preview/:vendorid"
+              element={
+                <ClientPreview setClientOverride={setClientOverride} socket={socket} />
+              }
+            />
+            <Route
+              path="client/:roomid"
               element={
                 <Client setClientOverride={setClientOverride} socket={socket} />
               }

@@ -1,5 +1,5 @@
 from flask import Flask
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, send, join_room, leave_room
 from flask_cors import CORS
 import datetime
 import secrets
@@ -57,7 +57,20 @@ def ping():
 def receive_order(json):
     print("Received order from customer")
     print(json['data'])
-    emit("acknowledgeOrder")
+    print(json['roomid'])
+    emit("acknowledgeOrder", to=json['room'])
+
+@socketio.on("outletReconnect")
+def reconnect_rooms(json):
+    for x in json['data']:
+        join_room(x)
+        print(f'Outlet reconnected to {x}')
+        send(f'Outlet connected to room {x}', to=x)
+
+@socketio.on("joinRoom")
+def enter_room(json):
+    join_room(json['data'])
+    send(f'A user joined room ' + json['data'], to=json['data'])
 
 if __name__ == "__main__":
     socketio.run(app)

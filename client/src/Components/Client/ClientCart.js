@@ -6,6 +6,7 @@ export default function ClientCart({
   menuData,
   setShowCart,
   socket,
+  roomid
 }) {
   const [calculations, setCalculations] = useState({
     subtotal: 0,
@@ -49,7 +50,7 @@ export default function ClientCart({
 
   function sendOrder() {
     console.log("Order sent");
-    socket.emit("sendOrder", { data: currentOrder });
+    socket.emit("sendOrder", { data: currentOrder, roomid: roomid });
   }
 
   function removeItem(index) {

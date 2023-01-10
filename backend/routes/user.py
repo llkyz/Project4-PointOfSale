@@ -9,6 +9,17 @@ from initialize import users, JWT_SECRET, JWT_ALGORITHM
 
 userRoutes = Blueprint('user', __name__, template_folder='templates')
 
+@userRoutes.get("/id")
+def get_user_id():
+    try:
+        jwt_token = request.cookies.get("token")
+        if not jwt_token:
+            return ({'data': 'Token not found'}), 400
+        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        return ({'data': payload['_id']}), 200
+    except:
+        return ({'data': 'An error occurred'}), 400
+
 @userRoutes.get("profile")
 def profile():
     jwt_token = request.cookies.get("token")

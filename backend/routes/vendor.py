@@ -38,16 +38,6 @@ def get_file_url(blob_name):
     except Exception as e:
         return False
 
-@vendorRoutes.get("/id")
-@middleware.vendor_required
-def get_vendor_id():
-    try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-        return ({'data': payload['_id']}), 200
-    except:
-        return ({'data': 'An error occurred'}), 400
-
 # ==================================
 # Outlet Routes
 # ==================================

@@ -73,7 +73,7 @@ export default function MenuEditor() {
   }, [menuData]);
 
   async function getVendorId() {
-    const res = await fetch("/api/vendor/id", {
+    const res = await fetch("/api/user/id", {
       method: "GET",
       credentials: "include",
     });
@@ -126,7 +126,7 @@ export default function MenuEditor() {
   return (
     <>
       <h1>Menu Editor</h1>
-      <Link to={`/client/${vendorId}`}>
+      <Link to={`/client/preview/${vendorId}`}>
         <button>Menu Preview</button>
       </Link>
       <div>

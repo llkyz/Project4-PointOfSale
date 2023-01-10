@@ -11,7 +11,7 @@ export default function Client({ setClientOverride, socket }) {
   const [errorMessage, setErrorMessage] = useState();
   const [contentIndex, setContentIndex] = useState(0);
   const [entryIndex, setEntryIndex] = useState();
-  const [currentOrder, setCurrentOrder] = useState({ roomid: "", items: [] });
+  const [currentOrder, setCurrentOrder] = useState({ vendorid: "", items: [] });
   const [totalBill, setTotalBill] = useState();
   const [showCart, setShowCart] = useState(false);
   const [showBill, setShowBill] = useState(false);
@@ -19,7 +19,7 @@ export default function Client({ setClientOverride, socket }) {
 
   useEffect(() => {
     async function getMenu() {
-      let res = await fetch(`/api/customer/menu/${params.roomid}`, {
+      let res = await fetch(`/api/customer/menu/preview/${params.vendorid}`, {
         method: "GET",
       });
       let result = await res.json();
@@ -34,19 +34,18 @@ export default function Client({ setClientOverride, socket }) {
     async function checkLocalStorage() {
       const storageCheck = JSON.parse(localStorage.getItem("currentOrder"));
       if (storageCheck) {
-        if (storageCheck.roomid === params.roomid) {
+        if (storageCheck.vendorid === params.vendorid) {
           setCurrentOrder(storageCheck);
         } else {
-          createNewStorage();
+          createLocalStorage();
         }
       } else {
-        createNewStorage();
+        createLocalStorage();
       }
     }
     getMenu();
     checkLocalStorage();
     setClientOverride(true);
-    socket.emit("joinRoom", {data: params.roomid})
     return () => {
       setClientOverride(false);
     };
@@ -56,11 +55,10 @@ export default function Client({ setClientOverride, socket }) {
     localStorage.setItem("currentOrder", JSON.stringify(currentOrder));
   }, [currentOrder]);
 
-  function createNewStorage() {
-    setCurrentOrder({ roomid: params.roomid, items: [] })
+  function createLocalStorage() {
     localStorage.setItem(
       "currentOrder",
-      JSON.stringify({ roomid: params.roomid, items: [] })
+      JSON.stringify({ vendorid: params.vendorid, items: [] })
     );
   }
 
@@ -96,7 +94,6 @@ export default function Client({ setClientOverride, socket }) {
               menuData={menuData}
               setShowCart={setShowCart}
               socket={socket}
-              roomid={params.roomid}
             />
           ) : showBill ? (
             <ClientBill />
