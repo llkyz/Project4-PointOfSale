@@ -4,24 +4,41 @@ import middleware
 from bson import ObjectId
 import uuid
 from datetime import datetime
-from initialize import users, orders, archives, JWT_SECRET, JWT_ALGORITHM
+from initialize import users, orders, menus, archives, JWT_SECRET, JWT_ALGORITHM
 
 outletRoutes = Blueprint('outlet', __name__, template_folder='templates')
 
 # ==================================
-# Get Outlet ID Route
+# Route for retrieving menu properties
 # ==================================
 
-@outletRoutes.get("/id")
+@outletRoutes.get('/menudata')
 @middleware.outlet_required
-def get_outlet_id():
+def get_menu_data():
     try:
         jwt_token = request.cookies.get("token")
         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-        return ({'data': payload['_id']}), 200
+
+        result = users.aggregate([
+        {
+            '$match': {'_id': ObjectId(payload['_id'])}
+        },
+        {
+            '$lookup': {
+                'from': 'menus',
+                'localField': 'vendor',
+                'foreignField': 'vendor',
+                'as': 'menu'
+            }
+        }
+    ])
+        result = list(result)[0]
+        title = result['menu'][0]['title']
+        tax = result['menu'][0]['tax']
+        service = result['menu'][0]['service']
+        return({'data': {'title': title, 'tax': tax, 'service': service}}), 200
     except:
         return ({'data': 'An error occurred'}), 400
-
 # ==================================
 # Room Routes
 # ==================================
@@ -74,9 +91,21 @@ def create_room():
 def delete_room():
     data = request.get_json()
     getOrder = orders.find_one({'_id': ObjectId(data['orderId'])})
-    if not getOrder:
-        return ({'data': 'Cannot find order'}), 400
-    result = archives.insert_one({'vendor': getOrder['vendor'], 'outlet': getOrder['outlet'], 'table': getOrder['table'], 'orders': getOrder['orders'], 'time': getOrder['time']})
+    getVendorMenu = menus.find_one({'vendor': getOrder['vendor']})
+    taxAmount = getVendorMenu['tax']
+    serviceAmount = getVendorMenu['service']
+
+    subtotal = 0
+    for x in getOrder['orders']:
+        for y in x:
+            subtotal += y['price'] * y['quantity']
+
+    subtotal = round(subtotal, 2)
+    tax = round(subtotal * taxAmount / 100, 2)
+    service = round(subtotal * serviceAmount / 100, 2)
+    total = subtotal + tax + service
+
+    result = archives.insert_one({'vendor': getOrder['vendor'], 'outlet': getOrder['outlet'], 'table': getOrder['table'], 'orders': getOrder['orders'], 'time': getOrder['time'], 'subtotal': subtotal, 'tax': tax, 'service': service, 'total': total})
     if result:
         orders.find_one_and_delete({'_id': ObjectId(data['orderId'])})
         return ({'data': 'Order archived, room closed'}), 200

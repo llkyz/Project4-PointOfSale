@@ -184,7 +184,8 @@ def update_menu():
         jwt_token = request.cookies.get("token")
         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
         data = request.get_json()
-        print(data)
+        data['tax'] = float(data['tax'])
+        data['service'] = float(data['service'])
         result = menus.find_one_and_update({'vendor': ObjectId(payload['_id'])}, {'$set': data})
         if result:
             return ({'data': 'Menu upated successfully'}), 200

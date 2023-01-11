@@ -20,12 +20,28 @@ export default function ClientEntryDetails({
 
   function addtoCart() {
     let updatedItemList = currentOrder.items;
-    updatedItemList.push({
-      id: entryData._id,
-      name: entryData.name,
-      price: entryData.price,
-      quantity: ref.current.value,
-    });
+    let duplicateCheck = updatedItemList
+      .map((e) => e.id)
+      .indexOf(entryData._id);
+    if (duplicateCheck === -1) {
+      updatedItemList.push({
+        id: entryData._id,
+        name: entryData.name,
+        price: parseFloat(entryData.price),
+        quantity: parseInt(ref.current.value),
+        lineTotal: parseFloat(
+          (parseFloat(entryData.price) * parseInt(ref.current.value)).toFixed(2)
+        ),
+      });
+    } else {
+      updatedItemList[duplicateCheck].quantity += parseInt(ref.current.value);
+      updatedItemList[duplicateCheck].lineTotal = parseFloat(
+        (
+          updatedItemList[duplicateCheck].price *
+          updatedItemList[duplicateCheck].quantity
+        ).toFixed(2)
+      );
+    }
     setCurrentOrder({ ...currentOrder, items: updatedItemList });
   }
 

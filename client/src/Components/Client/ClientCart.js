@@ -6,7 +6,7 @@ export default function ClientCart({
   menuData,
   setShowCart,
   socket,
-  roomid
+  roomid,
 }) {
   const [calculations, setCalculations] = useState({
     subtotal: 0,
@@ -19,7 +19,7 @@ export default function ClientCart({
     function doCalculations() {
       let subtotal = 0;
       for (let x of currentOrder.items) {
-        subtotal += parseFloat(x.price) * parseInt(x.quantity);
+        subtotal += x.price * x.quantity;
       }
       subtotal = parseFloat(subtotal.toFixed(2));
       const tax = parseFloat(((subtotal * menuData.tax) / 100).toFixed(2));
@@ -40,7 +40,7 @@ export default function ClientCart({
   useEffect(() => {
     socket.on("acknowledgeOrder", function () {
       console.log("Order has been received");
-      setCurrentOrder({ vendorid: currentOrder.vendorid, items: [] });
+      setCurrentOrder({ ...currentOrder, items: [] });
     });
 
     return () => {
@@ -50,7 +50,7 @@ export default function ClientCart({
 
   function sendOrder() {
     console.log("Order sent");
-    socket.emit("sendOrder", { data: currentOrder, roomid: roomid });
+    socket.emit("sendOrder", { data: currentOrder });
   }
 
   function removeItem(index) {
@@ -74,8 +74,7 @@ export default function ClientCart({
           return (
             <div key={index}>
               <p>
-                {data.name}, ${data.price} x{data.quantity}: $
-                {(parseFloat(data.price) * parseInt(data.quantity)).toFixed(2)}
+                {data.name}, ${data.price} x{data.quantity}: ${data.lineTotal}
               </p>
               <button
                 onClick={() => {

@@ -46,7 +46,7 @@ export default function Client({ setClientOverride, socket }) {
     getMenu();
     checkLocalStorage();
     setClientOverride(true);
-    socket.emit("joinRoom", {data: params.roomid})
+    socket.emit("joinRoom", { data: params.roomid });
     return () => {
       setClientOverride(false);
     };
@@ -57,7 +57,7 @@ export default function Client({ setClientOverride, socket }) {
   }, [currentOrder]);
 
   function createNewStorage() {
-    setCurrentOrder({ roomid: params.roomid, items: [] })
+    setCurrentOrder({ roomid: params.roomid, items: [] });
     localStorage.setItem(
       "currentOrder",
       JSON.stringify({ roomid: params.roomid, items: [] })
@@ -99,7 +99,7 @@ export default function Client({ setClientOverride, socket }) {
               roomid={params.roomid}
             />
           ) : showBill ? (
-            <ClientBill />
+            <ClientBill menuData={menuData} roomid={params.roomid} />
           ) : entryIndex === undefined ? (
             <ClientContent
               categoryData={menuData.categories[contentIndex]}

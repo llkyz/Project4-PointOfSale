@@ -113,3 +113,13 @@ def get_menu(roomid):
             return ({'data': 'No menu found'}), 400
     except:
         return ({'data': 'An error occurred'}), 400
+
+@customerRoutes.get('/bill/<roomid>')
+def get_bill(roomid):
+    try:
+        getOrder = orders.find_one({'room': roomid})
+        if not getOrder:
+            return ({'data': 'Room not found'}), 400
+        return({'data': getOrder['orders']}), 200
+    except:
+        return ({'data': 'An error occurred'}), 400

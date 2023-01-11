@@ -2,7 +2,6 @@ from flask import Flask
 from flask_socketio import SocketIO, emit, send, join_room, leave_room
 from flask_cors import CORS
 import datetime
-import secrets
 from routes.user import userRoutes
 from routes.admin import adminRoutes
 from routes.vendor import vendorRoutes
@@ -10,6 +9,9 @@ from routes.outlet import outletRoutes
 from routes.order import orderRoutes
 from routes.archive import archiveRoutes
 from routes.customer import customerRoutes
+from initialize import orders
+from pymongo import ReturnDocument
+from bson import ObjectId
 
 x = datetime.datetime.now()
 app = Flask(__name__)
@@ -24,41 +26,30 @@ app.register_blueprint(archiveRoutes, url_prefix="/api/archive")
 app.register_blueprint(customerRoutes, url_prefix="/api/customer")
 CORS(app, supports_credentials=True)
 
-@app.route("/data")
-def get_time():
-    return {
-        'Name': "geek",
-        'Age': "22",
-        "Date": x,
-        "Programming": "Python"
-    }
-
 @socketio.on("connect")
 def connect():
     print("A user has connected")
 
-# @socketio.on("clickButton")
-# def clickButton(json):
-#     print("Button clicked: ", str(json))
-#     todos.insert_one({'content': 'ButtonClick', 'degree': "Important"})
-
-@socketio.on("generateRandom")
-def generateRandom():
-    random_key = secrets.token_urlsafe(12)
-    emit("randomKey", {"data": random_key})
-
-
-@socketio.on("ping")
-def ping():
-    print("ping")
-    emit("pong")
-
 @socketio.on("sendOrder")
 def receive_order(json):
     print("Received order from customer")
-    print(json['data'])
-    print(json['roomid'])
-    emit("acknowledgeOrder", to=json['room'])
+    data = json['data']
+
+    for x in data['items']:
+        x['price'] = float(x['price'])
+        x['quantity'] = int(x['quantity'])
+
+    getOrder = orders.find_one({'room': data['roomid']})
+    if not getOrder:
+        print("Order not found")
+        return
+    getOrder['orders'].append(data['items'])
+    result = orders.find_one_and_update({'room': data['roomid']}, {'$set': {'orders': getOrder['orders']}}, return_document=ReturnDocument.AFTER)
+    result['_id'] = str(result['_id'])
+    result['outlet'] = str(result['outlet'])
+    result['vendor'] = str(result['vendor'])
+    del result['time']
+    emit("acknowledgeOrder", {"data": result}, to=data['roomid'])
 
 @socketio.on("outletReconnect")
 def reconnect_rooms(json):
