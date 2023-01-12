@@ -1,7 +1,13 @@
 import { useState } from "react";
 import MenuEntryList from "./MenuEntryList";
 
-export default function MenuCategory({ data, getMenu }) {
+export default function MenuCategory({
+  menuData,
+  categoryIndex,
+  setMenuData,
+  setUpdateMenuTrigger,
+  getMenu,
+}) {
   const [showDetails, setShowDetails] = useState(false);
   const [showEntries, setShowEntries] = useState(false);
 
@@ -21,6 +27,22 @@ export default function MenuCategory({ data, getMenu }) {
     }
   }
 
+  function sortUp() {
+    let updatedCategoryList = menuData.categories.map((e) => e);
+    let spliced = updatedCategoryList.splice(categoryIndex, 1)[0];
+    updatedCategoryList.splice(categoryIndex - 1, 0, spliced);
+    setMenuData({ ...menuData, categories: updatedCategoryList });
+    setUpdateMenuTrigger(true);
+  }
+
+  function sortDown() {
+    let updatedCategoryList = menuData.categories.map((e) => e);
+    let spliced = updatedCategoryList.splice(categoryIndex, 1)[0];
+    updatedCategoryList.splice(categoryIndex + 1, 0, spliced);
+    setMenuData({ ...menuData, categories: updatedCategoryList });
+    setUpdateMenuTrigger(true);
+  }
+
   return (
     <div style={{ border: "2px solid black" }}>
       {showDetails ? (
@@ -32,15 +54,38 @@ export default function MenuCategory({ data, getMenu }) {
         ""
       )}
       <button onClick={toggleShowDetails}>Show Details</button>
-      <p>
-        {data.name}, order: {data.order}
-      </p>
+      <h3>-------------------------------</h3>
+      {categoryIndex === 0 ? (
+        ""
+      ) : (
+        <button
+          onClick={() => {
+            sortUp();
+          }}
+        >
+          Sort Up
+        </button>
+      )}
+      {categoryIndex === menuData.categories.length - 1 ? (
+        ""
+      ) : (
+        <button
+          onClick={() => {
+            sortDown();
+          }}
+        >
+          Sort Down
+        </button>
+      )}
+      <h2>{menuData.categories[categoryIndex].name}</h2>
       <button onClick={toggleShowEntries}>Show Entries</button>
       {showEntries ? (
         <MenuEntryList
-          entryDataList={data.entries}
+          menuData={menuData}
+          categoryIndex={categoryIndex}
+          setMenuData={setMenuData}
+          setUpdateMenuTrigger={setUpdateMenuTrigger}
           getMenu={getMenu}
-          categoryid={data._id}
         />
       ) : (
         ""

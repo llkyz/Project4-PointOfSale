@@ -3,6 +3,7 @@ import QRCode from "react-qr-code";
 
 export default function OutletTable({
   tableNum,
+  tableName,
   tableList,
   menuData,
   createRoom,
@@ -18,14 +19,14 @@ export default function OutletTable({
 
   useEffect(() => {
     if (tableList) {
-      let foundIndex = tableList.map((e) => e.table).indexOf(tableNum);
-      if (foundIndex != -1) {
+      let foundIndex = tableList.map((e) => e.tableNum).indexOf(tableNum);
+      if (foundIndex !== -1) {
         setTableInfo(tableList[foundIndex]);
       } else {
         setTableInfo();
       }
     }
-  }, [tableList]);
+  }, [tableList, tableNum]);
 
   useEffect(() => {
     if (tableInfo) {
@@ -46,11 +47,11 @@ export default function OutletTable({
         total: total,
       });
     }
-  }, [tableInfo]);
+  }, [tableInfo, menuData.tax, menuData.service]);
 
   return (
     <div style={{ border: "1px solid black" }}>
-      <h2>Table {tableNum}</h2>
+      <h2>Table {tableName}</h2>
 
       {tableInfo ? (
         <>
@@ -89,7 +90,7 @@ export default function OutletTable({
       ) : (
         <button
           onClick={() => {
-            createRoom(tableNum);
+            createRoom(tableNum, tableName);
           }}
         >
           Open Table

@@ -2,23 +2,26 @@ import { useState, useRef, useEffect } from "react";
 import { DebounceInput } from "react-debounce-input";
 import DeleteEntryModal from "./DeleteEntryModal";
 
-export default function MenuEntry({ entryData, getMenu }) {
-  const [entryDataState, setEntryDataState] = useState(entryData);
+export default function MenuEntry({
+  entryIndex,
+  categoryIndex,
+  menuData,
+  setMenuData,
+  setUpdateMenuTrigger,
+  getMenu,
+}) {
   const [uploadedFile, setUploadedFile] = useState();
-  const [isMounted, setIsMounted] = useState(false);
   const [showDeleteEntryModal, setShowDeleteEntryModal] = useState(false);
   const ref = useRef();
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     async function uploadImage() {
       const formData = new FormData();
       formData.append("file", uploadedFile);
+      formData.append("categoryIndex", categoryIndex);
+      formData.append("entryIndex", entryIndex);
 
-      let res = await fetch(`/api/vendor/menu/entry/image/${entryData._id}`, {
+      let res = await fetch("/api/vendor/menu/entry/image/", {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -35,64 +38,75 @@ export default function MenuEntry({ entryData, getMenu }) {
     }
   }, [uploadedFile]);
 
-  useEffect(() => {
-    async function editEntry() {
-      if (
-        !entryDataState.name ||
-        !entryDataState.description ||
-        !entryDataState.price
-      ) {
-        console.log("Missing a field");
-        return;
-      }
-
-      let formBody = {
-        name: entryDataState.name,
-        description: entryDataState.description,
-        price: entryDataState.price,
-      };
-      let res = await fetch(`/api/vendor/menu/entry/${entryData._id}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formBody),
-      });
-      let result = await res.json();
-      if (res.ok) {
-        getMenu();
-        ref.current.value = "";
-      }
-      console.log(result.data);
-    }
-    if (isMounted) {
-      editEntry();
-    }
-  }, [entryDataState]);
-
   async function removeImage() {
-    let res = await fetch(`/api/vendor/menu/entry/image/${entryData._id}`, {
+    const res = await fetch("/api/vendor/menu/entry/image", {
       method: "DELETE",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        categoryIndex: categoryIndex,
+        entryIndex: entryIndex,
+      }),
     });
-    let result = await res.json();
     if (res.ok) {
-      getMenu();
+      let updatedCategoryList = menuData.categories.map((e) => e);
+      updatedCategoryList[categoryIndex].entries[entryIndex].image = "";
+      setMenuData({ ...menuData, categories: updatedCategoryList });
+      setUpdateMenuTrigger(true);
     }
-    console.log(result.data);
+  }
+
+  let entryData = menuData.categories[categoryIndex].entries[entryIndex];
+
+  function editEntry(updatedField) {
+    let updatedCategoryList = menuData.categories.map((e) => e);
+    updatedCategoryList[categoryIndex].entries[entryIndex] = {
+      ...updatedCategoryList[categoryIndex].entries[entryIndex],
+      ...updatedField,
+    };
+    setMenuData({ ...menuData, categories: updatedCategoryList });
+    setUpdateMenuTrigger(true);
+  }
+
+  function sortUp() {
+    let updatedCategoryList = menuData.categories.map((e) => e);
+    let entries = updatedCategoryList[categoryIndex].entries;
+    let spliced = entries.splice(entryIndex, 1)[0];
+    entries.splice(entryIndex - 1, 0, spliced);
+    setMenuData({ ...menuData, categories: updatedCategoryList });
+    setUpdateMenuTrigger(true);
+  }
+
+  function sortDown() {
+    let updatedCategoryList = menuData.categories.map((e) => e);
+    let entries = updatedCategoryList[categoryIndex].entries;
+    let spliced = entries.splice(entryIndex, 1)[0];
+    entries.splice(entryIndex + 1, 0, spliced);
+    setMenuData({ ...menuData, categories: updatedCategoryList });
+    setUpdateMenuTrigger(true);
   }
 
   return (
     <div style={{ border: "1px solid black" }}>
       <div>
+        <div>
+          {entryIndex === 0 ? "" : <button onClick={sortUp}>Sort Up</button>}
+          {entryIndex ===
+          menuData.categories[categoryIndex].entries.length - 1 ? (
+            ""
+          ) : (
+            <button onClick={sortDown}>Sort Down</button>
+          )}
+        </div>
         <label>Name</label>
         <DebounceInput
           type="text"
           value={entryData.name}
           debounceTimeout={1000}
           onChange={(event) => {
-            setEntryDataState({ ...entryDataState, name: event.target.value });
+            editEntry({ name: event.target.value });
           }}
         />
       </div>
@@ -103,10 +117,7 @@ export default function MenuEntry({ entryData, getMenu }) {
           value={entryData.description}
           debounceTimeout={1000}
           onChange={(event) => {
-            setEntryDataState({
-              ...entryDataState,
-              description: event.target.value,
-            });
+            editEntry({ description: event.target.value });
           }}
         />
       </div>
@@ -117,11 +128,11 @@ export default function MenuEntry({ entryData, getMenu }) {
           value={entryData.price}
           debounceTimeout={1000}
           onChange={(event) => {
-            setEntryDataState({ ...entryDataState, price: event.target.value });
+            editEntry({ price: event.target.value });
           }}
         />
       </div>
-      <img src={entryData.image} />
+      <img src={entryData.imageUrl} />
       {entryData.image.includes("placeholder") ? (
         <button onClick={removeImage}>Remove</button>
       ) : (
@@ -154,8 +165,11 @@ export default function MenuEntry({ entryData, getMenu }) {
       {showDeleteEntryModal ? (
         <DeleteEntryModal
           setShowDeleteEntryModal={setShowDeleteEntryModal}
-          entryData={entryData}
-          getMenu={getMenu}
+          entryIndex={entryIndex}
+          categoryIndex={categoryIndex}
+          menuData={menuData}
+          setMenuData={setMenuData}
+          setUpdateMenuTrigger={setUpdateMenuTrigger}
         />
       ) : (
         ""

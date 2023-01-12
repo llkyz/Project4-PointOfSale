@@ -7,9 +7,17 @@ export default function OutletManager({ accessLevel, socket }) {
     tax: 0,
     title: "Loading...",
   });
+  const [outletData, setOutletData] = useState({
+    name: "",
+    address1: "",
+    taxNum: "",
+    telephone: "",
+    fax: "",
+    footer: "",
+    tables: [],
+  });
   const [tableList, setTableList] = useState();
   const tableListRef = useRef(tableList);
-  const tableNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
   useEffect(() => {
     async function initializeTables() {
@@ -33,8 +41,22 @@ export default function OutletManager({ accessLevel, socket }) {
       }
     }
 
+    async function getOutletData() {
+      const res = await fetch("/api/outlet/setting", {
+        method: "GET",
+        credentials: "include",
+      });
+      let result = await res.json();
+      if (res.ok) {
+        setOutletData(result.data);
+      } else {
+        console.log(result.data);
+      }
+    }
+
     initializeTables();
     getMenuData();
+    getOutletData();
 
     socket.on("acknowledgeOrder", function (res) {
       let findIndex = tableListRef.current
@@ -69,18 +91,17 @@ export default function OutletManager({ accessLevel, socket }) {
     }
   }
 
-  async function createRoom(tableNum) {
+  async function createRoom(tableNum, tableName) {
     const res = await fetch("/api/outlet/room", {
       method: "POST",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ tableNum: tableNum }),
+      body: JSON.stringify({ tableNum: tableNum, tableName: tableName }),
     });
     let result = await res.json();
     if (res.ok) {
-      console.log(result.data);
       socket.emit("joinRoom", { data: result.data });
       getExistingTables();
     } else {
@@ -110,10 +131,11 @@ export default function OutletManager({ accessLevel, socket }) {
   return (
     <>
       <h1>Outlet Manager</h1>
-      {tableNumbers.map((tableNum, index) => (
+      {outletData.tables.map((tableName, index) => (
         <OutletTable
           key={index}
-          tableNum={tableNum}
+          tableNum={index}
+          tableName={tableName}
           tableList={tableList}
           menuData={menuData}
           createRoom={createRoom}

@@ -26,6 +26,7 @@ def profile():
     payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
     result = users.find_one({'_id': ObjectId(payload["_id"])},{'password': 0})
     result['_id'] = str(result['_id'])
+    result['vendor'] = str(result['vendor'])
     return {'data': result}, 200
 
 @userRoutes.get("/verify")

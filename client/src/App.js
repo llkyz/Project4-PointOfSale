@@ -13,6 +13,7 @@ import MenuEditor from "./Components/Vendor/MenuEditor";
 import Client from "./Components/Client/Client";
 import ClientPreview from "./Components/Client/ClientPreview";
 import OutletManager from "./Components/Outlet/OutletManager";
+import OutletSettings from "./Components/Outlet/OutletSettings";
 
 const socket = io();
 
@@ -86,6 +87,10 @@ function App() {
               element={
                 <OutletManager accessLevel={accessLevel} socket={socket} />
               }
+            />
+            <Route
+              path="outlet/settings"
+              element={<OutletSettings accessLevel={accessLevel} />}
             />
             <Route
               path="profile"

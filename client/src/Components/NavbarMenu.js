@@ -6,7 +6,7 @@ export default function NavbarMenu({
   setNavbarVisibility,
   navbarButtonRef,
   accessLevel,
-  setAccessLevel
+  setAccessLevel,
 }) {
   const wrapper = useRef();
   const navigate = useNavigate();
@@ -99,16 +99,28 @@ export default function NavbarMenu({
         ""
       )}
       {accessLevel === "outlet" ? (
-        <div className="navbarLink">
-          <Link
-            to="/outlet"
-            onClick={() => {
-              setNavbarVisibility(false);
-            }}
-          >
-            Outlet
-          </Link>
-        </div>
+        <>
+          <div className="navbarLink">
+            <Link
+              to="/outlet"
+              onClick={() => {
+                setNavbarVisibility(false);
+              }}
+            >
+              Outlet Manager
+            </Link>
+          </div>
+          <div className="navbarLink">
+            <Link
+              to="/outlet/settings"
+              onClick={() => {
+                setNavbarVisibility(false);
+              }}
+            >
+              Outlet Settings
+            </Link>
+          </div>
+        </>
       ) : (
         ""
       )}

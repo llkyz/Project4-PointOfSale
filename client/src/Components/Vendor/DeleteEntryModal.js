@@ -2,21 +2,33 @@ import { useState } from "react";
 
 export default function DeleteEntryModal({
   setShowDeleteEntryModal,
-  entryData,
-  getMenu,
+  entryIndex,
+  categoryIndex,
+  menuData,
+  setMenuData,
+  setUpdateMenuTrigger,
 }) {
   const [errorMessage, setErrorMessage] = useState();
 
   async function doDeleteEntry() {
-    const res = await fetch(`/api/vendor/menu/entry/${entryData._id}`, {
+    const res = await fetch("/api/vendor/menu/entry/image", {
       method: "DELETE",
       credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        categoryIndex: categoryIndex,
+        entryIndex: entryIndex,
+      }),
     });
     let result = await res.json();
     if (res.ok) {
-      console.log(result.data);
       setShowDeleteEntryModal(false);
-      getMenu();
+      let updatedCategoryList = menuData.categories.map((e) => e);
+      updatedCategoryList[categoryIndex].entries.splice(entryIndex, 1);
+      setMenuData({ ...menuData, categories: updatedCategoryList });
+      setUpdateMenuTrigger(true);
     } else {
       setErrorMessage(result.data);
     }

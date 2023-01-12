@@ -46,10 +46,10 @@ export default function MenuEditor() {
   useEffect(() => {
     async function updateMenu() {
       let formBody = {
-        logo: menuData.logo,
         service: menuData.service,
         tax: menuData.tax,
         title: menuData.title,
+        categories: menuData.categories,
       };
 
       const res = await fetch("/api/vendor/menu", {
@@ -143,7 +143,7 @@ export default function MenuEditor() {
       </div>
       <div>
         <label>Logo</label>
-        <img src={menuData.logo} />
+        <img src={menuData.logoUrl} />
         {menuData.logo.includes("placeholder") ? (
           <button onClick={removeLogo}>Remove Logo</button>
         ) : (
@@ -190,7 +190,12 @@ export default function MenuEditor() {
           }}
         />
       </div>
-      <MenuCategoryList menuData={menuData} getMenu={getMenu} />
+      <MenuCategoryList
+        menuData={menuData}
+        setMenuData={setMenuData}
+        setUpdateMenuTrigger={setUpdateMenuTrigger}
+        getMenu={getMenu}
+      />
       {JSON.stringify(menuData)}
     </>
   );

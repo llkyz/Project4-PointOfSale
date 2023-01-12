@@ -16,6 +16,7 @@ orders = db.orders
 menus = db.menus
 categories = db.categories
 entries = db.entries
+outlets = db.outlets
 
 JWT_ALGORITHM = os.getenv('JWT_ALGORITHM')
 JWT_SECRET = os.getenv('JWT_SECRET')

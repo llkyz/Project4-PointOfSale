@@ -1,35 +1,47 @@
-import { useState } from "react";
 import MenuEntry from "./MenuEntry";
-import NewEntryModal from "./NewEntryModal";
 
-export default function MenuEntryList({ entryDataList, getMenu, categoryid }) {
-  const [showNewEntryModal, setShowNewEntryModal] = useState(false);
+export default function MenuEntryList({
+  menuData,
+  categoryIndex,
+  setMenuData,
+  setUpdateMenuTrigger,
+  getMenu,
+}) {
+  function createNewEntry() {
+    let updatedCategories = menuData.categories.map((e) => e);
+    updatedCategories[categoryIndex].entries.push({
+      name: "New Entry",
+      description: "Description",
+      price: 0,
+      image: "",
+    });
+    setMenuData({ ...menuData, categories: updatedCategories });
+    setUpdateMenuTrigger(true);
+  }
 
   return (
     <>
       <p>Entry List</p>
       <button
         onClick={() => {
-          setShowNewEntryModal(true);
+          createNewEntry();
         }}
       >
         Create New Entry
       </button>
-      {entryDataList.length === 0
+      {menuData.categories[categoryIndex].entries.length === 0
         ? "No entries available"
-        : entryDataList.map((data) => (
-            <MenuEntry key={data._id} entryData={data} getMenu={getMenu} />
+        : menuData.categories[categoryIndex].entries.map((e, index) => (
+            <MenuEntry
+              key={index}
+              entryIndex={index}
+              categoryIndex={categoryIndex}
+              menuData={menuData}
+              setMenuData={setMenuData}
+              setUpdateMenuTrigger={setUpdateMenuTrigger}
+              getMenu={getMenu}
+            />
           ))}
-      {showNewEntryModal ? (
-        <NewEntryModal
-          setShowNewEntryModal={setShowNewEntryModal}
-          getMenu={getMenu}
-          entryDataList={entryDataList}
-          categoryid={categoryid}
-        />
-      ) : (
-        ""
-      )}
     </>
   );
 }

@@ -30,7 +30,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
     if (accessLevel !== "loading" && accessLevel !== "notLoggedIn") {
       navigate("/");
     }
-  }, [accessLevel]);
+  }, [accessLevel, navigate]);
 
   async function doAdminLogin(event) {
     event.preventDefault();
@@ -47,7 +47,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
     });
     let result = await res.json();
     if (res.ok) {
-      Cookies.set("token", result.token);
+      Cookies.set("token", result.token, { expires: 90 });
       setAccessLevel(result.accessLevel);
       if (event.target.form[2].checked) {
         Cookies.set("adminLogin", formBody.username, { expires: 90 });
@@ -74,7 +74,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
     });
     let result = await res.json();
     if (res.ok) {
-      Cookies.set("token", result.token);
+      Cookies.set("token", result.token, { expires: 90 });
       setAccessLevel(result.accessLevel);
       if (event.target.form[3].checked) {
         Cookies.set(

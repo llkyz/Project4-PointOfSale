@@ -6,7 +6,6 @@ export default function ClientCart({
   menuData,
   setShowCart,
   socket,
-  roomid,
 }) {
   const [calculations, setCalculations] = useState({
     subtotal: 0,

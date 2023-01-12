@@ -118,48 +118,22 @@ def get_menu():
     jwt_token = request.cookies.get("token")
     payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
 
-    result = menus.aggregate([
-        {
-            '$match': {'vendor': ObjectId(payload['_id'])}
-        },
-        {
-            '$lookup': {
-                'from': 'categories',
-                'localField': 'vendor',
-                'foreignField': 'vendor',
-                'as': 'categories',
-                'pipeline': [
-                    {
-                        '$lookup': {
-                            'from': 'entries',
-                            'localField': '_id',
-                            'foreignField': 'category',
-                            'as': 'entries'
-                        }
-                    }
-                ]
-            }
-        }
-    ])
-    result = list(result)[0]
+    result = menus.find_one({'vendor': ObjectId(payload['_id'])})
     if result:
         result['_id'] = str(result['_id'])
         result['vendor'] = str(result['vendor'])
         if result['logo']:
-            result['logo'] = get_file_url(result['logo'])
+            result['logoUrl'] = get_file_url(result['logo'])
         else:
-            result['logo'] = get_file_url('placeholder.jpg')
+            result['logoUrl'] = get_file_url('placeholder.jpg')
+
         for x in result['categories']:
-            x['_id'] = str(x['_id'])
-            x['vendor'] = str(x['vendor'])
             for y in x['entries']:
-                y['_id'] = str(y['_id'])
-                y['category'] = str(y['category'])
-                y['vendor'] = str(y['vendor'])
                 if y['image']:
-                    y['image'] = get_file_url(y['image'])
+                    y['imageUrl'] = get_file_url(y['image'])
                 else:
-                    y['image'] = get_file_url('placeholder.jpg')
+                    y['imageUrl'] = get_file_url('placeholder.jpg')
+
         return ({'data': result}), 200
     else:
         return ({'data': 'No menu found'}), 400
@@ -170,7 +144,7 @@ def create_menu():
     try:
         jwt_token = request.cookies.get("token")
         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-        result = menus.insert_one({'title': '', 'logo': '', 'tax': 0, 'service': 0, 'vendor': ObjectId(payload['_id'])})
+        result = menus.insert_one({'title': '', 'logo': '', 'tax': 0, 'service': 0, 'vendor': ObjectId(payload['_id']), 'categories': []})
         result['_id'] = str(result['_id'])
         result['vendor'] = str(result['vendor'])
         return ({'data': result}), 200
@@ -186,6 +160,12 @@ def update_menu():
         data = request.get_json()
         data['tax'] = float(data['tax'])
         data['service'] = float(data['service'])
+
+        for x in data['categories']:
+            for y in x['entries']:
+                if 'imageUrl' in y:
+                    del y['imageUrl']
+
         result = menus.find_one_and_update({'vendor': ObjectId(payload['_id'])}, {'$set': data})
         if result:
             return ({'data': 'Menu upated successfully'}), 200
@@ -258,140 +238,124 @@ def delete_logo():
     except Exception as e:
         return ({'data': e}), 400
 
-# ==================================
-# Menu Category Routes
-# ==================================
+# # ==================================
+# # Menu Category Routes
+# # ==================================
 
-@vendorRoutes.post('/menu/category')
-@middleware.vendor_required
-def create_category():
-    try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-        data = request.get_json()
+# @vendorRoutes.post('/menu/category')
+# @middleware.vendor_required
+# def create_category():
+#     try:
+#         jwt_token = request.cookies.get("token")
+#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+#         data = request.get_json()
 
-        result = categories.insert_one({'name': data['name'], 'order': data['order'], 'vendor': ObjectId(payload['_id'])})
-        if result:
-            return ({'data': 'Category successfully created'}), 200
-        else:
-            return ({'data': 'An error occurred'}), 400
-    except Exception as e:
-        return ({'data': e}), 400
+#         result = categories.insert_one({'name': data['name'], 'order': data['order'], 'vendor': ObjectId(payload['_id'])})
+#         if result:
+#             return ({'data': 'Category successfully created'}), 200
+#         else:
+#             return ({'data': 'An error occurred'}), 400
+#     except Exception as e:
+#         return ({'data': e}), 400
 
-@vendorRoutes.put('/menu/category/<categoryid>')
-@middleware.vendor_required
-def edit_category(categoryid):
-    try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-        data = request.get_json()
+# @vendorRoutes.put('/menu/category/<categoryid>')
+# @middleware.vendor_required
+# def edit_category(categoryid):
+#     try:
+#         jwt_token = request.cookies.get("token")
+#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+#         data = request.get_json()
 
-        result = categories.find_one_and_update({'_id': ObjectId(categoryid), 'vendor': ObjectId(payload['_id'])},{'$set': data})
-        if result:
-            return ({'data': 'Category successfully updated'}), 200
-        else:
-            return ({'data': 'An error occurred'}), 400
-    except Exception as e:
-        return ({'data': e}), 400
+#         result = categories.find_one_and_update({'_id': ObjectId(categoryid), 'vendor': ObjectId(payload['_id'])},{'$set': data})
+#         if result:
+#             return ({'data': 'Category successfully updated'}), 200
+#         else:
+#             return ({'data': 'An error occurred'}), 400
+#     except Exception as e:
+#         return ({'data': e}), 400
 
-@vendorRoutes.delete('/menu/category/<categoryid>')
-@middleware.vendor_required
-def delete_category(categoryid):
-    try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+# @vendorRoutes.delete('/menu/category/<categoryid>')
+# @middleware.vendor_required
+# def delete_category(categoryid):
+#     try:
+#         jwt_token = request.cookies.get("token")
+#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
 
-        result = entries.find_one({'category': ObjectId(categoryid)})
-        if result:
-            return ({'data': 'Delete all entries in this category first'}), 400
-        result = categories.find_one_and_delete({'_id': ObjectId(categoryid), 'vendor': ObjectId(payload['_id'])})
-        if result:
-            return ({'data': 'Category successfully updated'}), 200
-        else:
-            return ({'data': 'An error occurred'}), 400
-    except Exception as e:
-        return ({'data': e}), 400
+#         result = entries.find_one({'category': ObjectId(categoryid)})
+#         if result:
+#             return ({'data': 'Delete all entries in this category first'}), 400
+#         result = categories.find_one_and_delete({'_id': ObjectId(categoryid), 'vendor': ObjectId(payload['_id'])})
+#         if result:
+#             return ({'data': 'Category successfully updated'}), 200
+#         else:
+#             return ({'data': 'An error occurred'}), 400
+#     except Exception as e:
+#         return ({'data': e}), 400
 
-# ==================================
-# Menu Entry Routes
-# ==================================
+# # ==================================
+# # Menu Entry Routes
+# # ==================================
 
-@vendorRoutes.post('/menu/entry')
-@middleware.vendor_required
-def create_entry():
-    try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-        data = request.get_json()
+# @vendorRoutes.post('/menu/entry')
+# @middleware.vendor_required
+# def create_entry():
+#     try:
+#         jwt_token = request.cookies.get("token")
+#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+#         data = request.get_json()
 
-        result = entries.insert_one({'name': data['name'], 'price': data['price'], 'description': data['description'], 'order': data['order'], 'image': "", 'category': ObjectId(data['category']), 'vendor': ObjectId(payload['_id'])})
-        if result:
-            return ({'data': 'Entry successfully created'}), 200
-        else:
-            return ({'data': 'An error occurred'}), 400
-    except Exception as e:
-        return ({'data': e}), 400
+#         result = entries.insert_one({'name': data['name'], 'price': data['price'], 'description': data['description'], 'order': data['order'], 'image': "", 'category': ObjectId(data['category']), 'vendor': ObjectId(payload['_id'])})
+#         if result:
+#             return ({'data': 'Entry successfully created'}), 200
+#         else:
+#             return ({'data': 'An error occurred'}), 400
+#     except Exception as e:
+#         return ({'data': e}), 400
 
-@vendorRoutes.put('/menu/entry/<entryid>')
-@middleware.vendor_required
-def edit_entry(entryid):
-    try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-        data = request.get_json()
+# @vendorRoutes.put('/menu/entry/<entryid>')
+# @middleware.vendor_required
+# def edit_entry(entryid):
+#     try:
+#         jwt_token = request.cookies.get("token")
+#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+#         data = request.get_json()
 
-        result = entries.find_one_and_update({'_id': ObjectId(entryid), 'vendor': ObjectId(payload['_id'])},{'$set': data})
-        if result:
-            return ({'data': 'Entry successfully updated'}), 200
-        else:
-            return ({'data': 'An error occurred'}), 400
-    except Exception as e:
-        return ({'data': e}), 400
-
-@vendorRoutes.delete('/menu/entry/<entryid>')
-@middleware.vendor_required
-def delete_entry(entryid):
-    try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-
-        result = entries.find_one({'_id': ObjectId(entryid), 'vendor': ObjectId(payload['_id'])})
-        if result['image']:
-            delete_file(result['image'])
-
-        result = entries.find_one_and_delete({'_id': ObjectId(entryid), 'vendor': ObjectId(payload['_id'])})
-        if result:
-            return ({'data': 'Category successfully updated'}), 200
-        else:
-            return ({'data': 'An error occurred'}), 400
-    except Exception as e:
-        return ({'data': e}), 400
+#         result = entries.find_one_and_update({'_id': ObjectId(entryid), 'vendor': ObjectId(payload['_id'])},{'$set': data})
+#         if result:
+#             return ({'data': 'Entry successfully updated'}), 200
+#         else:
+#             return ({'data': 'An error occurred'}), 400
+#     except Exception as e:
+#         return ({'data': e}), 400
 
 # ==================================
 # Menu Entry Image Routes
 # ==================================
 
-@vendorRoutes.post('/menu/entry/image/<entryid>')
+@vendorRoutes.post('/menu/entry/image/')
 @middleware.vendor_required
-def upload_entry_image(entryid):
-    print("attempting to upload image")
+def upload_entry_image():
     try:
         jwt_token = request.cookies.get("token")
         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
 
-        result = entries.find_one({'_id': ObjectId(entryid), 'vendor': ObjectId(payload['_id'])})
-        if not result:
+        categoryIndex = int(request.form['categoryIndex'])
+        entryIndex = int(request.form['entryIndex'])
+
+        getMenu = menus.find_one({'vendor': ObjectId(payload['_id'])})
+        if not getMenu:
             return ({'data': 'An error occurred'}), 400
-        if result['image']:
-            delete_file(result['image'])
+        if getMenu['categories'][categoryIndex]['entries'][entryIndex]['image']:
+            delete_file(getMenu['categories'][categoryIndex]['entries'][entryIndex]['image'])
 
         if 'file' in request.files:
             split = os.path.splitext(request.files['file'].filename)
             fileId = f'{uuid.uuid4().hex}{split[1]}'
             if not upload_file(fileId, request.files['file']):
                 return ({'data': 'Unable to upload file'}), 400
+            getMenu['categories'][categoryIndex]['entries'][entryIndex]['image'] = fileId
 
-            result = entries.find_one_and_update({'_id': ObjectId(entryid), 'vendor': ObjectId(payload['_id'])}, {'$set': {'image': fileId}})
+            result = menus.find_one_and_update({'vendor': ObjectId(payload['_id'])}, {'$set': getMenu})
             if result:
                 return ({'data': 'Image successfully updated'}), 200
             else:
@@ -401,22 +365,23 @@ def upload_entry_image(entryid):
     except Exception as e:
         return ({'data': e}), 400
 
-@vendorRoutes.delete('/menu/entry/image/<entryid>')
+@vendorRoutes.delete('/menu/entry/image')
 @middleware.vendor_required
-def delete_entry_image(entryid):
+def delete_image():
     try:
         jwt_token = request.cookies.get("token")
         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
 
-        result = entries.find_one({'_id': ObjectId(entryid), 'vendor': ObjectId(payload['_id'])})
-        if not result:
-            return ({'data': 'An error occurred'}), 400
-        if result['image']:
-            delete_file(result['image'])
+        data = request.get_json()
+        categoryIndex = data['categoryIndex']
+        entryIndex = data['entryIndex']
+        result = menus.find_one({'vendor': ObjectId(payload['_id'])})
+        categories = result['categories']
+        if categories[categoryIndex]['entries'][entryIndex]['image']:
+            delete_file(categories[categoryIndex]['entries'][entryIndex]['image'])
 
-        result = entries.find_one_and_update({'vendor': ObjectId(payload['_id'])}, {'$set': {'image': ""}})
         if result:
-            return ({'data': 'Image successfully deleted'}), 200
+            return ({'data': 'Category successfully updated'}), 200
         else:
             return ({'data': 'An error occurred'}), 400
     except Exception as e:

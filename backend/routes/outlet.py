@@ -4,12 +4,12 @@ import middleware
 from bson import ObjectId
 import uuid
 from datetime import datetime
-from initialize import users, orders, menus, archives, JWT_SECRET, JWT_ALGORITHM
+from initialize import users, orders, menus, outlets, archives, JWT_SECRET, JWT_ALGORITHM
 
 outletRoutes = Blueprint('outlet', __name__, template_folder='templates')
 
 # ==================================
-# Route for retrieving menu properties
+# Route to fetch menu properties
 # ==================================
 
 @outletRoutes.get('/menudata')
@@ -39,6 +39,41 @@ def get_menu_data():
         return({'data': {'title': title, 'tax': tax, 'service': service}}), 200
     except:
         return ({'data': 'An error occurred'}), 400
+
+# ==================================
+# Routes for outlet settings
+# ==================================
+
+@outletRoutes.get('/setting')
+@middleware.outlet_required
+def get_setting_data():
+    try:
+        jwt_token = request.cookies.get("token")
+        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+
+        result = outlets.find_one({'outlet': ObjectId(payload['_id'])},{'vendor': 0, 'outlet' : 0})
+        if not result:
+            getUser = users.find_one({'_id': ObjectId(payload['_id'])})
+            result = outlets.insert_one({'vendor': getUser['vendor'], 'outlet': ObjectId(payload['_id']), 'name': '', 'address1': '', 'address2': '', 'taxNum': '', 'telephone': '', 'fax': '', 'footer': '', 'tables': []})
+        result['_id'] = str(result['_id'])
+        return ({'data': result}), 200
+    except:
+        return ({'data': 'An error occurred'}), 400
+
+@outletRoutes.put('/setting/')
+@middleware.outlet_required
+def update_setting_data():
+    try:
+        data = request.get_json()
+        settingId = data['_id']
+        del data['_id']
+        result = outlets.find_one_and_update({'_id': ObjectId(settingId)}, {'$set': data})
+        if not result:
+            return ({'data': 'Unable to update'}), 400
+        return ({'data': 'Settings updated'}), 200
+    except:
+        return ({'data': 'An error occurred'}), 400
+
 # ==================================
 # Room Routes
 # ==================================
@@ -71,7 +106,8 @@ def create_room():
 
         data = request.get_json()
         tableNum = data['tableNum']
-        result = orders.find_one({'outlet': ObjectId(payload['_id']), 'table': tableNum})
+        tableName = data['tableName']
+        result = orders.find_one({'outlet': ObjectId(payload['_id']), 'tableNum': tableNum})
         if result:
             return ({'data': 'An order for this table already exists'}), 400
         
@@ -81,7 +117,7 @@ def create_room():
             if not result:
                 break
         
-        result = orders.insert_one({'outlet': ObjectId(payload['_id']), 'vendor': vendorId, 'table': tableNum, 'room': roomId, 'orders': [], 'time': datetime.utcnow()})
+        result = orders.insert_one({'outlet': ObjectId(payload['_id']), 'vendor': vendorId, 'tableNum': tableNum, 'tableName': tableName, 'room': roomId, 'orders': [], 'time': datetime.utcnow()})
         return ({'data': roomId}), 200
     except:
         return ({'data': 'An error occurred'}), 400
@@ -105,7 +141,7 @@ def delete_room():
     service = round(subtotal * serviceAmount / 100, 2)
     total = subtotal + tax + service
 
-    result = archives.insert_one({'vendor': getOrder['vendor'], 'outlet': getOrder['outlet'], 'table': getOrder['table'], 'orders': getOrder['orders'], 'time': getOrder['time'], 'subtotal': subtotal, 'tax': tax, 'service': service, 'total': total})
+    result = archives.insert_one({'vendor': getOrder['vendor'], 'outlet': getOrder['outlet'], 'tableName': getOrder['tableName'], 'orders': getOrder['orders'], 'time': getOrder['time'], 'subtotal': subtotal, 'tax': tax, 'service': service, 'total': total})
     if result:
         orders.find_one_and_delete({'_id': ObjectId(data['orderId'])})
         return ({'data': 'Order archived, room closed'}), 200

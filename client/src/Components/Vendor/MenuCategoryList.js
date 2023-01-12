@@ -1,9 +1,18 @@
-import { useState } from "react";
 import MenuCategory from "./MenuCategory";
-import NewCategoryModal from "./NewCategoryModal";
 
-export default function MenuCategoryList({ menuData, getMenu }) {
-  const [showNewCateogryModal, setShowNewCategoryModal] = useState(false);
+export default function MenuCategoryList({
+  menuData,
+  setMenuData,
+  setUpdateMenuTrigger,
+  getMenu,
+}) {
+  function createNewCategory() {
+    let updatedCategoryList = menuData.categories.map((e) => e);
+    updatedCategoryList.push({ name: "New Category", entries: [] });
+    setMenuData({ ...menuData, categories: updatedCategoryList });
+    setUpdateMenuTrigger({ setUpdateMenuTrigger });
+    console.log(updatedCategoryList);
+  }
 
   return (
     <>
@@ -11,26 +20,24 @@ export default function MenuCategoryList({ menuData, getMenu }) {
         <h3>Categories</h3>
         <button
           onClick={() => {
-            setShowNewCategoryModal(true);
+            createNewCategory(true);
           }}
         >
           New Category
         </button>
         {menuData.categories.length === 0
           ? "No categories available"
-          : menuData.categories.map((data) => (
-              <MenuCategory key={data._id} data={data} getMenu={getMenu} />
+          : menuData.categories.map((e, index) => (
+              <MenuCategory
+                key={index}
+                menuData={menuData}
+                categoryIndex={index}
+                setMenuData={setMenuData}
+                setUpdateMenuTrigger={setUpdateMenuTrigger}
+                getMenu={getMenu}
+              />
             ))}
       </div>
-      {showNewCateogryModal ? (
-        <NewCategoryModal
-          setShowNewCategoryModal={setShowNewCategoryModal}
-          getMenu={getMenu}
-          menuData={menuData}
-        />
-      ) : (
-        ""
-      )}
     </>
   );
 }

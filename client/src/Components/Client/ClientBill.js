@@ -8,6 +8,7 @@ export default function ClientBill({ menuData, roomid }) {
     service: 0,
     total: 0,
   });
+  const [consolidatedBill, setConsolidatedBill] = useState();
 
   useEffect(() => {
     async function getBillData() {
@@ -43,6 +44,20 @@ export default function ClientBill({ menuData, roomid }) {
         total: total,
       });
     }
+  }, [billData]);
+
+  useEffect(() => {
+    function conslidateOrders() {
+      let newList = [];
+      console.log(billData);
+      billData.forEach((order) => {
+        order.forEach((item) => {
+          newList.push(item);
+        });
+      });
+      console.log(newList);
+    }
+    conslidateOrders();
   }, [billData]);
 
   return (
