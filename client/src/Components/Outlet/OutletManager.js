@@ -21,10 +21,20 @@ export default function OutletManager({ accessLevel, socket }) {
 
   useEffect(() => {
     async function initializeTables() {
-      const joinData = await getExistingTables();
-      for (const x of joinData) {
-        console.log("joining", x.room);
-        socket.emit("joinRoom", { data: x.room });
+      const res = await fetch("/api/outlet/room", {
+        method: "GET",
+        credentials: "include",
+      });
+      let result = await res.json();
+      if (res.ok) {
+        setTableList(result.data);
+        tableListRef.current = result.data;
+        for (const x of result.data) {
+          console.log("Joining room", x.room);
+          socket.emit("joinRoom", { data: x.room });
+        }
+      } else {
+        console.log(result.data);
       }
     }
 
@@ -74,22 +84,7 @@ export default function OutletManager({ accessLevel, socket }) {
     return () => {
       socket.off("acknowledgeOrder");
     };
-  }, []);
-
-  async function getExistingTables() {
-    const res = await fetch("/api/outlet/room", {
-      method: "GET",
-      credentials: "include",
-    });
-    let result = await res.json();
-    if (res.ok) {
-      setTableList(result.data);
-      tableListRef.current = result.data;
-      return result.data;
-    } else {
-      console.log(result.data);
-    }
-  }
+  }, [socket]);
 
   async function createRoom(tableNum, tableName) {
     const res = await fetch("/api/outlet/room", {
@@ -102,8 +97,8 @@ export default function OutletManager({ accessLevel, socket }) {
     });
     let result = await res.json();
     if (res.ok) {
-      socket.emit("joinRoom", { data: result.data });
-      getExistingTables();
+      socket.emit("joinRoom", { data: result.data.room });
+      setTableList([...tableList, result.data]);
     } else {
       console.log(result.data);
     }

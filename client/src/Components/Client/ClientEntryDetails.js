@@ -13,7 +13,7 @@ export default function ClientEntryDetails({
   }
 
   function decreaseQuantity() {
-    if (ref.current.value !== "0") {
+    if (ref.current.value !== "1") {
       ref.current.value = parseInt(ref.current.value) - 1;
     }
   }
@@ -21,11 +21,10 @@ export default function ClientEntryDetails({
   function addtoCart() {
     let updatedItemList = currentOrder.items;
     let duplicateCheck = updatedItemList
-      .map((e) => e.id)
-      .indexOf(entryData._id);
+      .map((e) => e.name)
+      .indexOf(entryData.name);
     if (duplicateCheck === -1) {
       updatedItemList.push({
-        id: entryData._id,
         name: entryData.name,
         price: parseFloat(entryData.price),
         quantity: parseInt(ref.current.value),
@@ -55,9 +54,9 @@ export default function ClientEntryDetails({
         Back
       </button>
       <h1>Details</h1>
-      <img src={entryData.image} />
+      <img src={entryData.imageUrl} alt={"food_image"} />
       <p>{entryData.name}</p>
-      <p>${entryData.price}</p>
+      <p>${(entryData.price / 100).toFixed(2)}</p>
       <p>{entryData.description}</p>
 
       <button onClick={increaseQuantity}>Up</button>

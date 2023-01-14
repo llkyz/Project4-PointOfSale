@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
+import { DebounceInput } from "react-debounce-input";
 
 export default function OutletTable({
   tableNum,
@@ -10,12 +11,14 @@ export default function OutletTable({
   closeRoom,
 }) {
   const [tableInfo, setTableInfo] = useState();
+  const [showConsolidatedModal, setShowConsolidatedModal] = useState(false);
   const [calculations, setCalculations] = useState({
     subtotal: 0,
     tax: 0,
     service: 0,
     total: 0,
   });
+  const [consolidatedBill, setConsolidatedBill] = useState();
 
   useEffect(() => {
     if (tableList) {
@@ -30,10 +33,27 @@ export default function OutletTable({
 
   useEffect(() => {
     if (tableInfo) {
+      let consolidatedList = [];
+      let newList = JSON.parse(JSON.stringify(tableInfo.orders));
+      newList.forEach((order) => {
+        order.forEach((entry) => {
+          let foundIndex = consolidatedList
+            .map((e) => e.name)
+            .indexOf(entry.name);
+          if (foundIndex !== -1) {
+            consolidatedList[foundIndex].lineTotal += entry.lineTotal;
+            consolidatedList[foundIndex].quantity += entry.quantity;
+          } else {
+            consolidatedList.push(entry);
+          }
+        });
+      });
+
+      setConsolidatedBill(consolidatedList);
+
       let subtotal = 0;
       tableInfo.orders.forEach((entry) => {
         entry.forEach((item) => {
-          item.lineTotal = item.price * item.quantity;
           subtotal += item.lineTotal;
         });
       });
@@ -49,53 +69,105 @@ export default function OutletTable({
     }
   }, [tableInfo, menuData.tax, menuData.service]);
 
-  return (
-    <div style={{ border: "1px solid black" }}>
-      <h2>Table {tableName}</h2>
-
-      {tableInfo ? (
-        <>
-          <h4>Time: {new Date(tableInfo.time).toLocaleTimeString()}</h4>
-          <QRCode
-            value={`localhost:3000/client/${tableInfo.room}`}
-            size={200}
-          />
-          <button
-            onClick={() => {
-              closeRoom(tableInfo._id);
-            }}
-          >
-            Close Table
-          </button>
-          <h4>Order List</h4>
-          {tableInfo.orders.map((entry, index) => {
-            return (
-              <div style={{ border: "1px solid black" }} key={index}>
-                {entry.map((item, index) => {
-                  return (
-                    <p key={index}>
-                      {item.name} | {item.price} | {item.quantity} |{" "}
-                      {item.lineTotal.toFixed(2)}
-                    </p>
-                  );
-                })}
-              </div>
-            );
-          })}
-          <p>Subtotal: ${calculations.subtotal.toFixed(2)}</p>
-          <p>Tax: ${calculations.tax.toFixed(2)}</p>
-          <p>Service Charge: ${calculations.service.toFixed(2)}</p>
-          <p>Total: ${calculations.total.toFixed(2)}</p>
-        </>
-      ) : (
+  function ConslidatedBill() {
+    return (
+      <>
         <button
           onClick={() => {
-            createRoom(tableNum, tableName);
+            setShowConsolidatedModal(false);
           }}
         >
-          Open Table
+          Swap to Regular
         </button>
-      )}
-    </div>
+        <div style={{ border: "1px solid black" }}>
+          {consolidatedBill.map((data, index) => {
+            return (
+              <p key={index}>
+                {data.name} | {(data.price / 100).toFixed(2)} | {data.quantity}{" "}
+                | {(data.lineTotal / 100).toFixed(2)}
+              </p>
+            );
+          })}
+        </div>
+      </>
+    );
+  }
+
+  function RegularBill() {
+    return (
+      <>
+        <button
+          onClick={() => {
+            setShowConsolidatedModal(true);
+          }}
+        >
+          Swap to Consolidated
+        </button>
+        {tableInfo.orders.map((entry, index) => {
+          return (
+            <div style={{ border: "1px solid black" }} key={index}>
+              {entry.map((item, index) => {
+                return (
+                  <p key={index}>
+                    {item.name} | {(item.price / 100).toFixed(2)} |{" "}
+                    <input
+                      type="number"
+                      defaultValue={item.quantity}
+                      onChange={(event) => {
+                        if (
+                          parseInt(event.target.value) < 1 ||
+                          isNaN(parseInt(event.target.value))
+                        ) {
+                          event.target.value = "1";
+                        }
+                      }}
+                    />{" "}
+                    | {(item.lineTotal / 100).toFixed(2)}
+                  </p>
+                );
+              })}
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div style={{ border: "1px solid black" }}>
+        <h2>Table {tableName}</h2>
+        {tableInfo ? (
+          <>
+            <h4>Time: {new Date(tableInfo.time).toLocaleTimeString()}</h4>
+            <QRCode
+              value={`localhost:3000/client/${tableInfo.room}`}
+              size={200}
+            />
+            <button
+              onClick={() => {
+                closeRoom(tableInfo._id);
+              }}
+            >
+              Close Table
+            </button>
+            <h4>Order List</h4>
+            {showConsolidatedModal ? <ConslidatedBill /> : <RegularBill />}
+            <p>Subtotal: ${(calculations.subtotal / 100).toFixed(2)}</p>
+            <p>Tax: ${(calculations.tax / 100).toFixed(2)}</p>
+            <p>Service Charge: ${(calculations.service / 100).toFixed(2)}</p>
+            <p>Total: ${(calculations.total / 100).toFixed(2)}</p>
+          </>
+        ) : (
+          <button
+            onClick={() => {
+              createRoom(tableNum, tableName);
+            }}
+          >
+            Open Table
+          </button>
+        )}
+      </div>
+    </>
   );
 }

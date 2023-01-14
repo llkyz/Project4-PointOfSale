@@ -17,46 +17,22 @@ def get_file_url(blob_name):
 
 @customerRoutes.get('/menu/preview/<vendorid>')
 def get_menu_preview(vendorid):
-    result = menus.aggregate([
-        {
-            '$match': {'vendor': ObjectId(vendorid)}
-        },
-        {
-            '$lookup': {
-                'from': 'categories',
-                'localField': 'vendor',
-                'foreignField': 'vendor',
-                'as': 'categories',
-                'pipeline': [
-                    {
-                        '$lookup': {
-                            'from': 'entries',
-                            'localField': '_id',
-                            'foreignField': 'category',
-                            'as': 'entries'
-                        }
-                    }
-                ]
-            }
-        }
-    ])
-    result = list(result)[0]
+    result = menus.find_one({'vendor': ObjectId(vendorid)})
     if result:
         result['_id'] = str(result['_id'])
         result['vendor'] = str(result['vendor'])
         if result['logo']:
-            result['logo'] = get_file_url(result['logo'])
+            result['logoUrl'] = get_file_url(result['logo'])
+        else:
+            result['logoUrl'] = get_file_url('placeholder.jpg')
+
         for x in result['categories']:
-            x['_id'] = str(x['_id'])
-            x['vendor'] = str(x['vendor'])
             for y in x['entries']:
-                y['_id'] = str(y['_id'])
-                y['category'] = str(y['category'])
-                y['vendor'] = str(y['vendor'])
                 if y['image']:
-                    y['image'] = get_file_url(y['image'])
+                    y['imageUrl'] = get_file_url(y['image'])
                 else:
-                    y['image'] = get_file_url('placeholder.jpg')
+                    y['imageUrl'] = get_file_url('placeholder.jpg')
+
         return ({'data': result}), 200
     else:
         return ({'data': 'No menu found'}), 400
@@ -67,47 +43,23 @@ def get_menu(roomid):
         getOrder = orders.find_one({'room': roomid})
         if not getOrder:
             return ({'data': 'Room not found'}), 400
-        
-        result = menus.aggregate([
-        {
-            '$match': {'vendor': getOrder['vendor']}
-        },
-        {
-            '$lookup': {
-                'from': 'categories',
-                'localField': 'vendor',
-                'foreignField': 'vendor',
-                'as': 'categories',
-                'pipeline': [
-                    {
-                        '$lookup': {
-                            'from': 'entries',
-                            'localField': '_id',
-                            'foreignField': 'category',
-                            'as': 'entries'
-                            }
-                        }
-                    ]
-                }
-            }
-        ])
-        result = list(result)[0]
+
+        result = menus.find_one({'vendor': getOrder['vendor']})
         if result:
             result['_id'] = str(result['_id'])
             result['vendor'] = str(result['vendor'])
             if result['logo']:
-                result['logo'] = get_file_url(result['logo'])
+                result['logoUrl'] = get_file_url(result['logo'])
+            else:
+                result['logoUrl'] = get_file_url('placeholder.jpg')
+
             for x in result['categories']:
-                x['_id'] = str(x['_id'])
-                x['vendor'] = str(x['vendor'])
                 for y in x['entries']:
-                    y['_id'] = str(y['_id'])
-                    y['category'] = str(y['category'])
-                    y['vendor'] = str(y['vendor'])
                     if y['image']:
-                        y['image'] = get_file_url(y['image'])
+                        y['imageUrl'] = get_file_url(y['image'])
                     else:
-                        y['image'] = get_file_url('placeholder.jpg')
+                        y['imageUrl'] = get_file_url('placeholder.jpg')
+
             return ({'data': result}), 200
         else:
             return ({'data': 'No menu found'}), 400

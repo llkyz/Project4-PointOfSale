@@ -36,7 +36,7 @@ export default function MenuEntry({
     if (uploadedFile) {
       uploadImage();
     }
-  }, [uploadedFile]);
+  }, [uploadedFile, categoryIndex, entryIndex, getMenu]);
 
   async function removeImage() {
     const res = await fetch("/api/vendor/menu/entry/image", {
@@ -51,7 +51,7 @@ export default function MenuEntry({
       }),
     });
     if (res.ok) {
-      let updatedCategoryList = menuData.categories.map((e) => e);
+      let updatedCategoryList = menuData.categories;
       updatedCategoryList[categoryIndex].entries[entryIndex].image = "";
       setMenuData({ ...menuData, categories: updatedCategoryList });
       setUpdateMenuTrigger(true);
@@ -61,7 +61,7 @@ export default function MenuEntry({
   let entryData = menuData.categories[categoryIndex].entries[entryIndex];
 
   function editEntry(updatedField) {
-    let updatedCategoryList = menuData.categories.map((e) => e);
+    let updatedCategoryList = menuData.categories;
     updatedCategoryList[categoryIndex].entries[entryIndex] = {
       ...updatedCategoryList[categoryIndex].entries[entryIndex],
       ...updatedField,
@@ -71,7 +71,7 @@ export default function MenuEntry({
   }
 
   function sortUp() {
-    let updatedCategoryList = menuData.categories.map((e) => e);
+    let updatedCategoryList = menuData.categories;
     let entries = updatedCategoryList[categoryIndex].entries;
     let spliced = entries.splice(entryIndex, 1)[0];
     entries.splice(entryIndex - 1, 0, spliced);
@@ -80,7 +80,7 @@ export default function MenuEntry({
   }
 
   function sortDown() {
-    let updatedCategoryList = menuData.categories.map((e) => e);
+    let updatedCategoryList = menuData.categories;
     let entries = updatedCategoryList[categoryIndex].entries;
     let spliced = entries.splice(entryIndex, 1)[0];
     entries.splice(entryIndex + 1, 0, spliced);
@@ -125,14 +125,14 @@ export default function MenuEntry({
         <label>Price</label>
         <DebounceInput
           type="number"
-          value={entryData.price}
+          value={(entryData.price / 100).toFixed(2)}
           debounceTimeout={1000}
           onChange={(event) => {
-            editEntry({ price: event.target.value });
+            editEntry({ price: parseInt(event.target.value * 100) });
           }}
         />
       </div>
-      <img src={entryData.imageUrl} />
+      <img src={entryData.imageUrl} alt="food_image" />
       {entryData.image.includes("placeholder") ? (
         <button onClick={removeImage}>Remove</button>
       ) : (

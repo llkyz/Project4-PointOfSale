@@ -12,7 +12,6 @@ export default function Client({ setClientOverride, socket }) {
   const [contentIndex, setContentIndex] = useState(0);
   const [entryIndex, setEntryIndex] = useState();
   const [currentOrder, setCurrentOrder] = useState({ roomid: "", items: [] });
-  const [totalBill, setTotalBill] = useState();
   const [showCart, setShowCart] = useState(false);
   const [showBill, setShowBill] = useState(false);
   const params = useParams();
@@ -43,6 +42,14 @@ export default function Client({ setClientOverride, socket }) {
         createNewStorage();
       }
     }
+
+    function createNewStorage() {
+      setCurrentOrder({ roomid: params.roomid, items: [] });
+      localStorage.setItem(
+        "currentOrder",
+        JSON.stringify({ roomid: params.roomid, items: [] })
+      );
+    }
     getMenu();
     checkLocalStorage();
     setClientOverride(true);
@@ -50,19 +57,11 @@ export default function Client({ setClientOverride, socket }) {
     return () => {
       setClientOverride(false);
     };
-  }, []);
+  }, [params.roomid, setClientOverride, socket]);
 
   useEffect(() => {
     localStorage.setItem("currentOrder", JSON.stringify(currentOrder));
   }, [currentOrder]);
-
-  function createNewStorage() {
-    setCurrentOrder({ roomid: params.roomid, items: [] });
-    localStorage.setItem(
-      "currentOrder",
-      JSON.stringify({ roomid: params.roomid, items: [] })
-    );
-  }
 
   return (
     <>
@@ -95,11 +94,17 @@ export default function Client({ setClientOverride, socket }) {
               setCurrentOrder={setCurrentOrder}
               menuData={menuData}
               setShowCart={setShowCart}
+              setEntryIndex={setEntryIndex}
               socket={socket}
               roomid={params.roomid}
             />
           ) : showBill ? (
-            <ClientBill menuData={menuData} roomid={params.roomid} />
+            <ClientBill
+              menuData={menuData}
+              roomid={params.roomid}
+              setShowBill={setShowBill}
+              setEntryIndex={setEntryIndex}
+            />
           ) : entryIndex === undefined ? (
             <ClientContent
               categoryData={menuData.categories[contentIndex]}

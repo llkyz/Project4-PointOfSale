@@ -5,6 +5,7 @@ export default function ClientCart({
   setCurrentOrder,
   menuData,
   setShowCart,
+  setEntryIndex,
   socket,
 }) {
   const [calculations, setCalculations] = useState({
@@ -34,7 +35,7 @@ export default function ClientCart({
       });
     }
     doCalculations();
-  }, [currentOrder]);
+  }, [currentOrder, menuData.service, menuData.tax]);
 
   useEffect(() => {
     socket.on("acknowledgeOrder", function () {
@@ -45,11 +46,17 @@ export default function ClientCart({
     return () => {
       socket.off("acknowledgeOrder");
     };
-  }, []);
+  }, [socket, currentOrder, setCurrentOrder]);
 
   function sendOrder() {
     console.log("Order sent");
     socket.emit("sendOrder", { data: currentOrder });
+  }
+
+  function updateQuantity(value, index) {
+    let updatedItemList = currentOrder.items;
+    updatedItemList[index].quantity = parseInt(value);
+    setCurrentOrder({ ...currentOrder, items: updatedItemList });
   }
 
   function removeItem(index) {
@@ -64,6 +71,7 @@ export default function ClientCart({
       <button
         onClick={() => {
           setShowCart(false);
+          setEntryIndex();
         }}
       >
         Back
@@ -73,7 +81,22 @@ export default function ClientCart({
           return (
             <div key={index}>
               <p>
-                {data.name}, ${data.price} x{data.quantity}: ${data.lineTotal}
+                {data.name}, ${(data.price / 100).toFixed(2)} Qty:
+                <input
+                  type="number"
+                  defaultValue={data.quantity}
+                  onChange={(event) => {
+                    if (
+                      parseInt(event.target.value) < 1 ||
+                      isNaN(parseInt(event.target.value))
+                    ) {
+                      event.target.value = "1";
+                    } else {
+                      updateQuantity(event.target.value, index);
+                    }
+                  }}
+                />
+                : ${(data.lineTotal / 100).toFixed(2)}
               </p>
               <button
                 onClick={() => {
@@ -86,14 +109,15 @@ export default function ClientCart({
           );
         })}
       </div>
-      <p>Subtotal: {calculations.subtotal}</p>
+      <p>Subtotal: {(calculations.subtotal / 100).toFixed(2)}</p>
       <p>
-        Tax ({menuData.tax}%): {calculations.tax}
+        Tax ({menuData.tax}%): {(calculations.tax / 100).toFixed(2)}
       </p>
       <p>
-        Service Charge ({menuData.service}%): {calculations.service}
+        Service Charge ({menuData.service}%):{" "}
+        {(calculations.service / 100).toFixed(2)}
       </p>
-      <p>Total: {calculations.total}</p>
+      <p>Total: {(calculations.total / 100).toFixed(2)}</p>
       <div>
         <button onClick={sendOrder}>Send Order</button>
       </div>

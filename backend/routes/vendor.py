@@ -3,7 +3,7 @@ import bcrypt
 import jwt
 import middleware
 from bson import ObjectId
-from initialize import users, menus, categories, entries, JWT_SECRET, JWT_ALGORITHM, bucket
+from initialize import users, menus, JWT_SECRET, JWT_ALGORITHM, bucket
 import os
 import uuid
 import datetime
@@ -237,96 +237,6 @@ def delete_logo():
             return ({'data': 'An error occurred'}), 400
     except Exception as e:
         return ({'data': e}), 400
-
-# # ==================================
-# # Menu Category Routes
-# # ==================================
-
-# @vendorRoutes.post('/menu/category')
-# @middleware.vendor_required
-# def create_category():
-#     try:
-#         jwt_token = request.cookies.get("token")
-#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-#         data = request.get_json()
-
-#         result = categories.insert_one({'name': data['name'], 'order': data['order'], 'vendor': ObjectId(payload['_id'])})
-#         if result:
-#             return ({'data': 'Category successfully created'}), 200
-#         else:
-#             return ({'data': 'An error occurred'}), 400
-#     except Exception as e:
-#         return ({'data': e}), 400
-
-# @vendorRoutes.put('/menu/category/<categoryid>')
-# @middleware.vendor_required
-# def edit_category(categoryid):
-#     try:
-#         jwt_token = request.cookies.get("token")
-#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-#         data = request.get_json()
-
-#         result = categories.find_one_and_update({'_id': ObjectId(categoryid), 'vendor': ObjectId(payload['_id'])},{'$set': data})
-#         if result:
-#             return ({'data': 'Category successfully updated'}), 200
-#         else:
-#             return ({'data': 'An error occurred'}), 400
-#     except Exception as e:
-#         return ({'data': e}), 400
-
-# @vendorRoutes.delete('/menu/category/<categoryid>')
-# @middleware.vendor_required
-# def delete_category(categoryid):
-#     try:
-#         jwt_token = request.cookies.get("token")
-#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-
-#         result = entries.find_one({'category': ObjectId(categoryid)})
-#         if result:
-#             return ({'data': 'Delete all entries in this category first'}), 400
-#         result = categories.find_one_and_delete({'_id': ObjectId(categoryid), 'vendor': ObjectId(payload['_id'])})
-#         if result:
-#             return ({'data': 'Category successfully updated'}), 200
-#         else:
-#             return ({'data': 'An error occurred'}), 400
-#     except Exception as e:
-#         return ({'data': e}), 400
-
-# # ==================================
-# # Menu Entry Routes
-# # ==================================
-
-# @vendorRoutes.post('/menu/entry')
-# @middleware.vendor_required
-# def create_entry():
-#     try:
-#         jwt_token = request.cookies.get("token")
-#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-#         data = request.get_json()
-
-#         result = entries.insert_one({'name': data['name'], 'price': data['price'], 'description': data['description'], 'order': data['order'], 'image': "", 'category': ObjectId(data['category']), 'vendor': ObjectId(payload['_id'])})
-#         if result:
-#             return ({'data': 'Entry successfully created'}), 200
-#         else:
-#             return ({'data': 'An error occurred'}), 400
-#     except Exception as e:
-#         return ({'data': e}), 400
-
-# @vendorRoutes.put('/menu/entry/<entryid>')
-# @middleware.vendor_required
-# def edit_entry(entryid):
-#     try:
-#         jwt_token = request.cookies.get("token")
-#         payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-#         data = request.get_json()
-
-#         result = entries.find_one_and_update({'_id': ObjectId(entryid), 'vendor': ObjectId(payload['_id'])},{'$set': data})
-#         if result:
-#             return ({'data': 'Entry successfully updated'}), 200
-#         else:
-#             return ({'data': 'An error occurred'}), 400
-#     except Exception as e:
-#         return ({'data': e}), 400
 
 # ==================================
 # Menu Entry Image Routes

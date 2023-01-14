@@ -1,6 +1,11 @@
 import { useState, useEffect } from "react";
 
-export default function ClientBill({ menuData, roomid }) {
+export default function ClientBill({
+  menuData,
+  roomid,
+  setShowBill,
+  setEntryIndex,
+}) {
   const [billData, setBillData] = useState();
   const [calculations, setCalculations] = useState({
     subtotal: 0,
@@ -24,15 +29,29 @@ export default function ClientBill({ menuData, roomid }) {
       }
     }
     getBillData();
-  }, []);
+  }, [roomid]);
 
   useEffect(() => {
-    if (billData) {
-      let subtotal = 0;
-      billData.forEach((entry) => {
-        entry.forEach((item) => {
-          subtotal += item.lineTotal;
+    function conslidateOrdersAndCalculate() {
+      let consolidatedList = [];
+      billData.forEach((order) => {
+        order.forEach((item) => {
+          let findIndex = consolidatedList
+            .map((e) => e.name)
+            .indexOf(item.name);
+          if (findIndex !== -1) {
+            consolidatedList[findIndex].lineTotal += item.lineTotal;
+            consolidatedList[findIndex].quantity += item.quantity;
+          } else {
+            consolidatedList.push(item);
+          }
         });
+      });
+      setConsolidatedBill(consolidatedList);
+
+      let subtotal = 0;
+      consolidatedList.forEach((item) => {
+        subtotal += item.lineTotal;
       });
       const tax = (subtotal * menuData.tax) / 100;
       const service = (subtotal * menuData.service) / 100;
@@ -44,55 +63,46 @@ export default function ClientBill({ menuData, roomid }) {
         total: total,
       });
     }
-  }, [billData]);
-
-  useEffect(() => {
-    function conslidateOrders() {
-      let newList = [];
-      console.log(billData);
-      billData.forEach((order) => {
-        order.forEach((item) => {
-          newList.push(item);
-        });
-      });
-      console.log(newList);
+    if (billData) {
+      conslidateOrdersAndCalculate();
     }
-    conslidateOrders();
-  }, [billData]);
+  }, [billData, menuData.service, menuData.tax]);
 
   return (
     <>
       <h1>Total Bill</h1>
-      {!billData ? (
+      <button
+        onClick={() => {
+          setShowBill(false);
+          setEntryIndex();
+        }}
+      >
+        Back
+      </button>
+      {!consolidatedBill ? (
         "Loading..."
       ) : (
-        <div>
-          {billData.map((entry) => {
+        <div style={{ border: "1px solid black" }}>
+          {consolidatedBill.map((item, index) => {
             return (
-              <div style={{ border: "1px solid black" }}>
-                {entry.map((item) => {
-                  return (
-                    <p>
-                      {item.name} | ${item.price.toFixed(2)} | {item.quantity} |
-                      ${item.lineTotal.toFixed(2)}
-                    </p>
-                  );
-                })}
-              </div>
+              <p key={index}>
+                {item.name} | ${(item.price / 100).toFixed(2)} | {item.quantity}{" "}
+                | ${(item.lineTotal / 100).toFixed(2)}
+              </p>
             );
           })}
         </div>
       )}
       <div>
-        <p>Subtotal: ${calculations.subtotal.toFixed(2)}</p>
+        <p>Subtotal: ${(calculations.subtotal / 100).toFixed(2)}</p>
         <p>
-          Tax ({menuData.tax}%): ${calculations.tax.toFixed(2)}
+          Tax ({menuData.tax}%): ${(calculations.tax / 100).toFixed(2)}
         </p>
         <p>
           Service Charge ({menuData.service}%): $
-          {calculations.service.toFixed(2)}
+          {(calculations.service / 100).toFixed(2)}
         </p>
-        <p>Total: ${calculations.total.toFixed(2)}</p>
+        <p>Total: ${(calculations.total / 100).toFixed(2)}</p>
       </div>
     </>
   );

@@ -89,8 +89,8 @@ def get_rooms():
             x['_id'] = str(x['_id'])
             x['outlet'] = str(x['outlet'])
             x['vendor'] = str(x['vendor'])
+        print(result)
         return ({'data': result}), 200
-
     except:
         return ({'data': 'An error occurred'}), 400
 
@@ -118,7 +118,10 @@ def create_room():
                 break
         
         result = orders.insert_one({'outlet': ObjectId(payload['_id']), 'vendor': vendorId, 'tableNum': tableNum, 'tableName': tableName, 'room': roomId, 'orders': [], 'time': datetime.utcnow()})
-        return ({'data': roomId}), 200
+        result['_id'] = str(result['_id'])
+        result['outlet'] = str(result['outlet'])
+        result['vendor'] = str(result['vendor'])
+        return ({'data': result}), 200
     except:
         return ({'data': 'An error occurred'}), 400
 

@@ -6,9 +6,9 @@ export default function ClientEntry({ entryData, index, setEntryIndex }) {
         setEntryIndex(index);
       }}
     >
-      <img src={entryData.image} />
+      <img src={entryData.imageUrl} alt={"food_image"} />
       <p>{entryData.name}</p>
-      <p>${entryData.price}</p>
+      <p>${(entryData.price / 100).toFixed(2)}</p>
     </div>
   );
 }
