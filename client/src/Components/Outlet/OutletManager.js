@@ -18,23 +18,17 @@ export default function OutletManager({ accessLevel, socket }) {
   });
   const [tableList, setTableList] = useState();
   const tableListRef = useRef(tableList);
+  const [printCode, setPrintCode] = useState();
+  const [printBill, setPrintBill] = useState();
 
   useEffect(() => {
     async function initializeTables() {
-      const res = await fetch("/api/outlet/room", {
-        method: "GET",
-        credentials: "include",
-      });
-      let result = await res.json();
-      if (res.ok) {
-        setTableList(result.data);
-        tableListRef.current = result.data;
-        for (const x of result.data) {
+      let data = await refreshTables();
+      if (data) {
+        for (const x of data) {
           console.log("Joining room", x.room);
           socket.emit("joinRoom", { data: x.room });
         }
-      } else {
-        console.log(result.data);
       }
     }
 
@@ -86,6 +80,22 @@ export default function OutletManager({ accessLevel, socket }) {
     };
   }, [socket]);
 
+  async function refreshTables() {
+    const res = await fetch("/api/outlet/room", {
+      method: "GET",
+      credentials: "include",
+    });
+    let result = await res.json();
+    if (res.ok) {
+      setTableList(result.data);
+      tableListRef.current = result.data;
+      return result.data;
+    } else {
+      console.log(result.data);
+      return false;
+    }
+  }
+
   async function createRoom(tableNum, tableName) {
     const res = await fetch("/api/outlet/room", {
       method: "POST",
@@ -135,6 +145,9 @@ export default function OutletManager({ accessLevel, socket }) {
           menuData={menuData}
           createRoom={createRoom}
           closeRoom={closeRoom}
+          refreshTables={refreshTables}
+          setPrintBill={setPrintBill}
+          setPrintCode={setPrintCode}
         />
       ))}
     </>

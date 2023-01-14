@@ -36,7 +36,7 @@ def receive_order(json):
     data = json['data']
 
     for x in data['items']:
-        x['price'] = float(x['price'])
+        x['price'] = int(x['price'])
         x['quantity'] = int(x['quantity'])
 
     getOrder = orders.find_one({'room': data['roomid']})

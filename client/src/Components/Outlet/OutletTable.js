@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { DebounceInput } from "react-debounce-input";
+import OutletRegularBill from "./OutletRegularBill";
+import OutletConsolidatedBill from "./OutletConsolidatedBill";
 
 export default function OutletTable({
   tableNum,
@@ -9,9 +10,12 @@ export default function OutletTable({
   menuData,
   createRoom,
   closeRoom,
+  refreshTables,
+  setPrintBill,
+  setPrintCode,
 }) {
   const [tableInfo, setTableInfo] = useState();
-  const [showConsolidatedModal, setShowConsolidatedModal] = useState(false);
+  const [showConsolidatedBill, setShowConsolidatedBill] = useState(false);
   const [calculations, setCalculations] = useState({
     subtotal: 0,
     tax: 0,
@@ -69,73 +73,23 @@ export default function OutletTable({
     }
   }, [tableInfo, menuData.tax, menuData.service]);
 
-  function ConslidatedBill() {
-    return (
-      <>
-        <button
-          onClick={() => {
-            setShowConsolidatedModal(false);
-          }}
-        >
-          Swap to Regular
-        </button>
-        <div style={{ border: "1px solid black" }}>
-          {consolidatedBill.map((data, index) => {
-            return (
-              <p key={index}>
-                {data.name} | {(data.price / 100).toFixed(2)} | {data.quantity}{" "}
-                | {(data.lineTotal / 100).toFixed(2)}
-              </p>
-            );
-          })}
-        </div>
-      </>
-    );
-  }
-
-  function RegularBill() {
-    return (
-      <>
-        <button
-          onClick={() => {
-            setShowConsolidatedModal(true);
-          }}
-        >
-          Swap to Consolidated
-        </button>
-        {tableInfo.orders.map((entry, index) => {
-          return (
-            <div style={{ border: "1px solid black" }} key={index}>
-              {entry.map((item, index) => {
-                return (
-                  <p key={index}>
-                    {item.name} | {(item.price / 100).toFixed(2)} |{" "}
-                    <input
-                      type="number"
-                      defaultValue={item.quantity}
-                      onChange={(event) => {
-                        if (
-                          parseInt(event.target.value) < 1 ||
-                          isNaN(parseInt(event.target.value))
-                        ) {
-                          event.target.value = "1";
-                        }
-                      }}
-                    />{" "}
-                    | {(item.lineTotal / 100).toFixed(2)}
-                  </p>
-                );
-              })}
-            </div>
-          );
-        })}
-      </>
-    );
-  }
-
   return (
     <>
       <div style={{ border: "1px solid black" }}>
+        <button
+          onClick={() => {
+            setPrintCode(tableNum);
+          }}
+        >
+          Print QR Code
+        </button>
+        <button
+          onClick={() => {
+            setPrintBill(tableNum);
+          }}
+        >
+          Print Bill
+        </button>
         <h2>Table {tableName}</h2>
         {tableInfo ? (
           <>
@@ -152,7 +106,18 @@ export default function OutletTable({
               Close Table
             </button>
             <h4>Order List</h4>
-            {showConsolidatedModal ? <ConslidatedBill /> : <RegularBill />}
+            {showConsolidatedBill ? (
+              <OutletConsolidatedBill
+                consolidatedBill={consolidatedBill}
+                setShowConsolidatedBill={setShowConsolidatedBill}
+              />
+            ) : (
+              <OutletRegularBill
+                tableInfo={tableInfo}
+                refreshTables={refreshTables}
+                setShowConsolidatedBill={setShowConsolidatedBill}
+              />
+            )}
             <p>Subtotal: ${(calculations.subtotal / 100).toFixed(2)}</p>
             <p>Tax: ${(calculations.tax / 100).toFixed(2)}</p>
             <p>Service Charge: ${(calculations.service / 100).toFixed(2)}</p>

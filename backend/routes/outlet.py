@@ -4,6 +4,7 @@ import middleware
 from bson import ObjectId
 import uuid
 from datetime import datetime
+from pymongo import ReturnDocument
 from initialize import users, orders, menus, outlets, archives, JWT_SECRET, JWT_ALGORITHM
 
 outletRoutes = Blueprint('outlet', __name__, template_folder='templates')
@@ -89,7 +90,6 @@ def get_rooms():
             x['_id'] = str(x['_id'])
             x['outlet'] = str(x['outlet'])
             x['vendor'] = str(x['vendor'])
-        print(result)
         return ({'data': result}), 200
     except:
         return ({'data': 'An error occurred'}), 400
@@ -150,3 +150,19 @@ def delete_room():
         return ({'data': 'Order archived, room closed'}), 200
     else:
         return ({'data': 'Something went wrong. Could not create archive'}), 400
+
+# ==================================
+# Order Update Routes
+# ==================================
+
+@outletRoutes.put('/order')
+@middleware.outlet_required
+def update_order():
+    data = request.get_json()
+
+    result = orders.find_one_and_update({'_id': ObjectId(data['_id'])}, {'$set': {'orders': data['orders']}}, return_document=ReturnDocument.AFTER)
+
+    if result:
+        return ({'data': 'Updated order'}), 200
+    else:
+        return ({'data': 'Unable to update order'}), 400
