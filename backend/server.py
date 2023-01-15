@@ -34,7 +34,7 @@ def connect():
 def receive_order(json):
     print("Received order from customer")
     data = json['data']
-
+    
     for x in data['items']:
         x['price'] = int(x['price'])
         x['quantity'] = int(x['quantity'])
@@ -49,7 +49,7 @@ def receive_order(json):
     result['outlet'] = str(result['outlet'])
     result['vendor'] = str(result['vendor'])
     del result['time']
-    emit("acknowledgeOrder", {"data": result}, to=data['roomid'])
+    emit("acknowledgeOrder", {"data": result, "items": data['items']}, to=data['roomid'])
 
 @socketio.on("outletReconnect")
 def reconnect_rooms(json):

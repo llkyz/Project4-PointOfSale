@@ -104,3 +104,18 @@ a {
   width: 70%;
   margin: 20px auto;
 }
+
+.print {
+  border: 1px solid black;
+  background-color: white;
+  width: fit-content;
+  padding: 30px;
+  margin: 0 auto;
+  z-index: 9999;
+}
+
+@media print {
+  .hidePrint {
+    display: none;
+  }
+}

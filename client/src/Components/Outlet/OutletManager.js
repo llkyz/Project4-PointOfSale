@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import OutletTable from "./OutletTable";
+import NewOrders from "./NewOrders";
+import PrintItem from "./PrintItem";
 
 export default function OutletManager({ accessLevel, socket }) {
   const [menuData, setMenuData] = useState({
@@ -18,8 +20,9 @@ export default function OutletManager({ accessLevel, socket }) {
   });
   const [tableList, setTableList] = useState();
   const tableListRef = useRef(tableList);
-  const [printCode, setPrintCode] = useState();
-  const [printBill, setPrintBill] = useState();
+  const [newOrderList, setNewOrderList] = useState([]);
+  const newOrderListRef = useRef(newOrderList);
+  const [printStatus, setPrintStatus] = useState();
 
   useEffect(() => {
     async function initializeTables() {
@@ -72,6 +75,14 @@ export default function OutletManager({ accessLevel, socket }) {
       updatedList.splice(findIndex, 1, res.data);
       setTableList(updatedList);
       tableListRef.current = updatedList;
+      setNewOrderList([
+        ...newOrderListRef.current,
+        { tableName: res.data.tableName, items: res.items, time: new Date() },
+      ]);
+      newOrderListRef.current = [
+        ...newOrderListRef.current,
+        { tableName: res.data.tableName, items: res.items, time: new Date() },
+      ];
       console.log("Order has been received");
     });
 
@@ -135,21 +146,39 @@ export default function OutletManager({ accessLevel, socket }) {
 
   return (
     <>
-      <h1>Outlet Manager</h1>
-      {outletData.tables.map((tableName, index) => (
-        <OutletTable
-          key={index}
-          tableNum={index}
-          tableName={tableName}
+      {printStatus ? (
+        <PrintItem
           tableList={tableList}
+          newOrderList={newOrderList}
+          printStatus={printStatus}
           menuData={menuData}
-          createRoom={createRoom}
-          closeRoom={closeRoom}
-          refreshTables={refreshTables}
-          setPrintBill={setPrintBill}
-          setPrintCode={setPrintCode}
+          outletData={outletData}
+          setPrintStatus={setPrintStatus}
         />
-      ))}
+      ) : (
+        <>
+          <h1>Outlet Manager</h1>
+          <NewOrders
+            newOrderList={newOrderList}
+            setNewOrderList={setNewOrderList}
+            newOrderListRef={newOrderListRef}
+            setPrintStatus={setPrintStatus}
+          />
+          {outletData.tables.map((tableName, index) => (
+            <OutletTable
+              key={index}
+              tableNum={index}
+              tableName={tableName}
+              tableList={tableList}
+              menuData={menuData}
+              createRoom={createRoom}
+              closeRoom={closeRoom}
+              refreshTables={refreshTables}
+              setPrintStatus={setPrintStatus}
+            />
+          ))}
+        </>
+      )}
     </>
   );
 }

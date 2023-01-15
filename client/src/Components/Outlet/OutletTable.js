@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import QRCode from "react-qr-code";
 import OutletRegularBill from "./OutletRegularBill";
 import OutletConsolidatedBill from "./OutletConsolidatedBill";
 
@@ -11,8 +10,7 @@ export default function OutletTable({
   createRoom,
   closeRoom,
   refreshTables,
-  setPrintBill,
-  setPrintCode,
+  setPrintStatus,
 }) {
   const [tableInfo, setTableInfo] = useState();
   const [showConsolidatedBill, setShowConsolidatedBill] = useState(false);
@@ -78,14 +76,14 @@ export default function OutletTable({
       <div style={{ border: "1px solid black" }}>
         <button
           onClick={() => {
-            setPrintCode(tableNum);
+            setPrintStatus({ type: "qr", index: tableNum });
           }}
         >
           Print QR Code
         </button>
         <button
           onClick={() => {
-            setPrintBill(tableNum);
+            setPrintStatus({ type: "bill", index: tableNum });
           }}
         >
           Print Bill
@@ -94,10 +92,6 @@ export default function OutletTable({
         {tableInfo ? (
           <>
             <h4>Time: {new Date(tableInfo.time).toLocaleTimeString()}</h4>
-            <QRCode
-              value={`localhost:3000/client/${tableInfo.room}`}
-              size={200}
-            />
             <button
               onClick={() => {
                 closeRoom(tableInfo._id);
