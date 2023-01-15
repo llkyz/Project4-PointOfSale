@@ -112,6 +112,16 @@ export default function NavbarMenu({
           </div>
           <div className="navbarLink">
             <Link
+              to="/outlet/finance"
+              onClick={() => {
+                setNavbarVisibility(false);
+              }}
+            >
+              Finances
+            </Link>
+          </div>
+          <div className="navbarLink">
+            <Link
               to="/outlet/settings"
               onClick={() => {
                 setNavbarVisibility(false);

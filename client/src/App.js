@@ -14,6 +14,7 @@ import Client from "./Components/Client/Client";
 import ClientPreview from "./Components/Client/ClientPreview";
 import OutletManager from "./Components/Outlet/OutletManager";
 import OutletSettings from "./Components/Outlet/OutletSettings";
+import FinanceManager from "./Components/Outlet/FinanceManager";
 
 const socket = io();
 
@@ -87,6 +88,10 @@ function App() {
               element={
                 <OutletManager accessLevel={accessLevel} socket={socket} />
               }
+            />
+            <Route
+              path="outlet/finance"
+              element={<FinanceManager accessLevel={accessLevel} />}
             />
             <Route
               path="outlet/settings"

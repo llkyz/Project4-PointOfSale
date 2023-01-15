@@ -54,7 +54,13 @@ export default function PrintItem({
       });
       setConsolidatedBill(consolidatedList);
     }
-  }, []);
+  }, [
+    menuData.service,
+    menuData.tax,
+    printStatus.index,
+    printStatus.type,
+    tableList,
+  ]);
 
   function PrintQR() {
     return (
@@ -113,8 +119,8 @@ export default function PrintItem({
         <h4>
           {new Date(newOrderList[printStatus.index].time).toLocaleString()}
         </h4>
-        {newOrderList[printStatus.index].items.map((entry) => (
-          <p>
+        {newOrderList[printStatus.index].items.map((entry, index) => (
+          <p key={index}>
             {entry.quantity}x {entry.name}
           </p>
         ))}
