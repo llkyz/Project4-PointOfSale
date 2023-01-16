@@ -94,7 +94,7 @@ export default function OutletTable({
             <h4>Time: {new Date(tableInfo.time).toLocaleTimeString()}</h4>
             <button
               onClick={() => {
-                closeRoom(tableInfo._id);
+                closeRoom(tableInfo._id, consolidatedBill);
               }}
             >
               Close Table

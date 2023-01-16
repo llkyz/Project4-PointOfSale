@@ -36,10 +36,10 @@ def verify():
         payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
         result = users.find_one({'_id': ObjectId(payload["_id"])})
         if not result:
-            return {'message': 'Token is invalid'}, 400    
+            return {'accessLevel': 'notLoggedIn'}, 200    
         return {'accessLevel': result["accessLevel"]}, 200
     except (jwt.DecodeError, jwt.ExpiredSignatureError):
-        return {'message': 'Token is invalid'}, 400
+        return {'accessLevel': 'notLoggedIn'}, 200
 
 @userRoutes.post("/adminlogin")
 def admin_vendor_login():

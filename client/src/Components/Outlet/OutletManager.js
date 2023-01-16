@@ -125,14 +125,14 @@ export default function OutletManager({ accessLevel, socket }) {
     }
   }
 
-  async function closeRoom(orderId) {
+  async function closeRoom(orderId, consolidatedBill) {
     const res = await fetch("/api/outlet/room", {
       method: "DELETE",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ orderId: orderId }),
+      body: JSON.stringify({ orderId: orderId, orders: consolidatedBill }),
     });
     let result = await res.json();
     if (res.ok) {

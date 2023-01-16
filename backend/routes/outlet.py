@@ -107,21 +107,25 @@ def create_room():
         data = request.get_json()
         tableNum = data['tableNum']
         tableName = data['tableName']
-        result = orders.find_one({'outlet': ObjectId(payload['_id']), 'tableNum': tableNum})
-        if result:
+        findTable = orders.find_one({'outlet': ObjectId(payload['_id']), 'tableNum': tableNum})
+        if findTable:
             return ({'data': 'An order for this table already exists'}), 400
         
         while True:
             roomId = uuid.uuid4().hex
-            result = orders.find_one({'room': roomId})
-            if not result:
+            findRoom = orders.find_one({'room': roomId})
+            if not findRoom:
                 break
-        
-        result = orders.insert_one({'outlet': ObjectId(payload['_id']), 'vendor': vendorId, 'tableNum': tableNum, 'tableName': tableName, 'room': roomId, 'orders': [], 'time': datetime.utcnow()})
-        result['_id'] = str(result['_id'])
-        result['outlet'] = str(result['outlet'])
-        result['vendor'] = str(result['vendor'])
-        return ({'data': result}), 200
+
+        newOrder = {'outlet': ObjectId(payload['_id']), 'vendor': vendorId, 'tableNum': tableNum, 'tableName': tableName, 'room': roomId, 'orders': [], 'time': datetime.utcnow()}
+        result = orders.insert_one(newOrder)
+        if result:
+            newOrder['_id'] = str(newOrder['_id'])
+            newOrder['outlet'] = str(newOrder['outlet'])
+            newOrder['vendor'] = str(newOrder['vendor'])
+            return ({'data': newOrder}), 200
+        else:
+            return ({'data': "Unable to create room"}), 400
     except:
         return ({'data': 'An error occurred'}), 400
 
@@ -144,7 +148,7 @@ def delete_room():
     service = round(subtotal * serviceAmount / 100, 2)
     total = subtotal + tax + service
 
-    result = archives.insert_one({'vendor': getOrder['vendor'], 'outlet': getOrder['outlet'], 'tableName': getOrder['tableName'], 'orders': getOrder['orders'], 'time': getOrder['time'], 'subtotal': subtotal, 'tax': tax, 'service': service, 'total': total})
+    result = archives.insert_one({'vendor': getOrder['vendor'], 'outlet': getOrder['outlet'], 'tableName': getOrder['tableName'], 'orders': data['orders'], 'time': getOrder['time'], 'subtotal': subtotal, 'tax': tax, 'service': service, 'total': total})
     if result:
         orders.find_one_and_delete({'_id': ObjectId(data['orderId'])})
         return ({'data': 'Order archived, room closed'}), 200

@@ -1,6 +1,6 @@
 export default function OutletConsolidatedBill(
-  setShowConsolidatedBill,
-  consolidatedBill
+  {consolidatedBill,
+  setShowConsolidatedBill}
 ) {
   return (
     <>
