@@ -94,9 +94,9 @@ export default function PrintItem({
         </p>
         <p>============================================================</p>
         <p>Qty Item Total</p>
-        {consolidatedBill.map((entry) => {
+        {consolidatedBill.map((entry, index) => {
           return (
-            <p>
+            <p key={index}>
               {entry.quantity} {entry.name} {(entry.lineTotal / 100).toFixed(2)}
             </p>
           );

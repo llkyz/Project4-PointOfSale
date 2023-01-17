@@ -120,6 +120,7 @@ export default function OutletManager({ accessLevel, socket }) {
     if (res.ok) {
       socket.emit("joinRoom", { data: result.data.room });
       setTableList([...tableList, result.data]);
+      tableListRef.current = [...tableList, result.data];
     } else {
       console.log(result.data);
     }
