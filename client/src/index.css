@@ -1,8 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Kalam:wght@700&family=Quicksand:wght@400;600;700&display=swap");
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Quicksand", "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(255, 245, 233);
@@ -18,6 +20,10 @@ a {
   text-decoration: none;
 }
 
+/* ================================
+Navbar
+=================================== */
+
 .navbar {
   position: fixed;
   display: hidden;
@@ -25,32 +31,28 @@ a {
   top: 0;
   left: 0;
   padding-top: 70px;
+  padding-bottom: 20px;
   min-width: 300px;
   width: 18%;
-  background-color: red;
-  border-right: 2px solid gray;
+  background-color: rgb(250, 246, 241);
+  box-shadow: 0 0 20px 1px gray;
   z-index: 1;
   text-align: left;
 }
 
-.navbarTitle {
-  display: block;
-  color: blue;
-  font-size: 2em;
-  font-weight: bold;
-  width: fit-content;
-  font-size: 2em;
-  margin-left: auto;
-  margin-right: 20px;
+.navbar img {
+  position: fixed;
+  width: 35px;
+  top: 25px;
+  left: 90px;
 }
 
 .navbarLink {
   display: block;
-  color: blue;
   font-size: 2em;
   font-weight: bold;
   margin-right: 10%;
-  margin-left: 30px;
+  margin-left: 35px;
   width: fit-content;
 }
 
@@ -95,9 +97,263 @@ a {
   z-index: 11;
 }
 
-.loginElement {
+/* ================================
+Home
+=================================== */
+
+.homeLink {
+  display: inline-block;
+  border: 5px solid rgb(128, 89, 79);
+  width: 300px;
+  height: 250px;
+  margin: 20px;
+  vertical-align: top;
+}
+
+.homeLink .container {
+  width: 80%;
+  margin: 20px auto;
+}
+
+.homeLink img {
+  width: 50px;
+  vertical-align: middle;
+}
+
+.homeLink h1 {
+  font-size: 25px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.homeLink .description {
+  position: relative;
+  width: 80%;
+  height: 100px;
+  margin: auto;
+  font-weight: 600;
+}
+
+.homeLink p {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.logoutLink {
+  background-color: rgb(128, 89, 79);
+  color: white;
+  font-size: 20px;
+  font-weight: 900;
+  padding: 15px 0;
+  width: 200px;
+  margin: 30px auto;
+  cursor: pointer;
+}
+
+/* ================================
+Login
+=================================== */
+
+.loginModal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 800px;
+  height: 700px;
+  margin: auto;
+  text-align: left;
+  background-color: white;
+  border: 5px solid rgb(128, 89, 79);
+}
+
+.loginSide {
+  display: inline-block;
+  width: 50%;
+  height: 100%;
+  background-color: rgb(128, 89, 79);
+  color: white;
+}
+
+.loginSide2 {
+  display: inline-block;
+  width: 50%;
+  height: 100%;
+  vertical-align: top;
+}
+
+.loginSide2 h1 {
+  margin-top: 100px;
+  font-weight: 700;
+}
+
+.loginTitle {
+  width: 80%;
+  padding-top: 40%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.loginTitle h1 {
+  font-family: "Kalam", cursive;
+  margin: 0;
+}
+
+.loginTitle h4 {
+  text-align: left;
+  margin: 0;
+  font-size: 2em;
+  margin-left: 7%;
+  font-weight: bolder;
+}
+
+.loginTitle p {
+  text-align: left;
+  margin-top: 100px;
+  margin-left: 7%;
+  font-weight: bold;
+}
+
+.closeLogin {
+  position: absolute;
+  font-weight: bold;
+  font-size: 2em;
+  right: 20px;
+}
+
+.loginOptionContainer {
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+.loginOption {
   display: inline-block;
   border: 2px solid black;
+  font-size: 1.5em;
+  width: fit-content;
+  padding: 5px 10px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.loginOptionSelected {
+  display: inline-block;
+  border: 2px solid black;
+  background-color: black;
+  font-size: 1.5em;
+  width: fit-content;
+  color: white;
+  padding: 5px 10px;
+  margin: 10px;
+}
+
+.loginElement {
+  margin-top: 25px;
+}
+
+.loginInput {
+  width: 100%;
+  font-size: 1.2em;
+  margin-top: 3px;
+}
+
+.loginCheckbox {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  line-height: 25px;
+  font-size: 15px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.loginCheckbox label {
+  font-size: medium;
+}
+
+.loginCheckbox input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 18px;
+  width: 18px;
+  background-color: white;
+  border: 2px solid black;
+}
+
+.loginCheckbox:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+.loginCheckbox input:checked ~ .checkmark {
+  background-color: black;
+}
+
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.loginCheckbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+.loginCheckbox .checkmark:after {
+  left: 5px;
+  top: 1px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.loginButton {
+  margin-top: 15px;
+  width: 100%;
+  height: 35px;
+  border: none;
+  background-color: burlywood;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.loginButton:hover {
+  background-color: rgb(192, 151, 98);
+}
+
+.loginButton:active {
+  padding-top: 3px;
+  font-size: 1em;
+  background-color: rgb(161, 124, 75);
+}
+
+.error {
+  text-align: center;
+  margin-bottom: 20px;
+  color: red;
+  font-weight: bold;
+  font-size: 1.2em;
 }
 
 .userElement {

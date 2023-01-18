@@ -5,9 +5,8 @@ import io from "socket.io-client";
 import Home from "./Components/Home";
 import Login from "./Components/Login";
 import Navbar from "./Components/Navbar";
-import Register from "./Components/Register";
 import Admin from "./Components/Admin/Admin";
-import Profile from "./Components/Profile/Profile";
+import Profile from "./Components/Profile";
 import OutletOverview from "./Components/Vendor/OutletOverview";
 import MenuEditor from "./Components/Vendor/MenuEditor";
 import Client from "./Components/Client/Client";
@@ -63,7 +62,15 @@ function App() {
         />
         <div className="content">
           <Routes>
-            <Route path="/" element={<Home accessLevel={accessLevel} />} />
+            <Route
+              path="/"
+              element={
+                <Home
+                  accessLevel={accessLevel}
+                  setAccessLevel={setAccessLevel}
+                />
+              }
+            />
             <Route
               path="login"
               element={
@@ -73,7 +80,6 @@ function App() {
                 />
               }
             />
-            <Route path="register" element={<Register />} />
             <Route path="admin" element={<Admin accessLevel={accessLevel} />} />
             <Route
               path="outletoverview"

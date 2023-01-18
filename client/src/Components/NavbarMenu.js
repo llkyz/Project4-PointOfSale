@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Cookies from "js-cookie";
+import { doLogout } from "./functions";
+import home from "../Assets/home.png";
 
 export default function NavbarMenu({
   setNavbarVisibility,
@@ -12,24 +13,17 @@ export default function NavbarMenu({
   const navigate = useNavigate();
   useOutsideClick(wrapper, setNavbarVisibility, navbarButtonRef);
 
-  function doLogout() {
-    Cookies.remove("token");
-    setAccessLevel("notLoggedIn");
-    navigate("/");
-  }
-
   return (
     <div className="navbar" ref={wrapper}>
-      <div className="navbarLink">
-        <Link
-          to="/"
-          onClick={() => {
-            setNavbarVisibility(false);
-          }}
-        >
-          Home
-        </Link>
-      </div>
+      <Link
+        to="/"
+        onClick={() => {
+          setNavbarVisibility(false);
+        }}
+      >
+        <img src={home} />
+      </Link>
+
       {accessLevel === "loading" || accessLevel === "notLoggedIn" ? (
         <div className="navbarLink">
           <Link
@@ -39,20 +33,6 @@ export default function NavbarMenu({
             }}
           >
             Login
-          </Link>
-        </div>
-      ) : (
-        ""
-      )}
-      {accessLevel === "loading" || accessLevel === "notLoggedIn" ? (
-        <div className="navbarLink">
-          <Link
-            to="/register"
-            onClick={() => {
-              setNavbarVisibility(false);
-            }}
-          >
-            Register
           </Link>
         </div>
       ) : (
@@ -147,7 +127,13 @@ export default function NavbarMenu({
             </Link>
           </div>
           <div className="navbarLink">
-            <p style={{ cursor: "pointer" }} onClick={doLogout}>
+            <p
+              style={{ cursor: "pointer" }}
+              onClick={() => {
+                doLogout(setAccessLevel, navigate);
+                setNavbarVisibility(false);
+              }}
+            >
               Log Out
             </p>
           </div>
