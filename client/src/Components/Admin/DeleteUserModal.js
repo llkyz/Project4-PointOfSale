@@ -34,16 +34,31 @@ export default function DeleteUserModal({
         }}
       />
       <div className="modal">
-        <h1>Delete this user?</h1>
-        {errorMessage ? <h2>{errorMessage}</h2> : ""}
-        <button onClick={doDeleteUser}>Confirm</button>
-        <button
-          onClick={() => {
-            setShowDeleteUserModal(false);
-          }}
-        >
-          Cancel
-        </button>
+        <div className="container">
+          <div
+            className="modalClose"
+            onClick={() => {
+              setShowDeleteUserModal(false);
+            }}
+          >
+            x
+          </div>
+          <h1 style={{ textAlign: "center" }}>Delete this user?</h1>
+          {errorMessage ? <h2>{errorMessage}</h2> : ""}
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <div className="functionSmall" onClick={doDeleteUser}>
+              Confirm
+            </div>
+            <div
+              className="functionSmall"
+              onClick={() => {
+                setShowDeleteUserModal(false);
+              }}
+            >
+              Cancel
+            </div>
+          </div>
+        </div>
       </div>
     </>
   );

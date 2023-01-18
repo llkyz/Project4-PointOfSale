@@ -19,7 +19,7 @@ def get_admins_vendors():
 def get_outlet_list(vendor):
     result = list(users.find({'vendor': ObjectId(vendor)}, {'password': 0, 'accessLevel': 0, 'vendor': 0}))
     if not result: 
-        return ({"data": "Vendor not found"}), 400
+        return ({"data": "No outlets found"}), 400
     for x in result:
         x['_id'] = str(x['_id'])
     return {"data": result}, 200

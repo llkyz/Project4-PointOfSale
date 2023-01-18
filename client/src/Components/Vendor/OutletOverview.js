@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import overview from "../../Assets/overview.png";
 
 export default function OutletOverview() {
   const [outletList, setOutletList] = useState([]);
@@ -68,11 +69,13 @@ export default function OutletOverview() {
       return (
         <div className="custom-tooltip" style={{ padding: "0px 20px" }}>
           <h4>{label}</h4>
-          {payload.map((outlet, index) => (
-            <p key={index} className="label">{`${outlet.name} : $${(
-              outlet.value / 100
-            ).toFixed(2)}`}</p>
-          ))}
+          {payload
+            ? payload.map((outlet, index) => (
+                <p key={index} className="label">{`${outlet.name} : $${(
+                  outlet.value / 100
+                ).toFixed(2)}`}</p>
+              ))
+            : ""}
         </div>
       );
     }
@@ -97,40 +100,69 @@ export default function OutletOverview() {
   }
 
   return (
-    <>
-      <h1>Overview</h1>
+    <div style={{ width: "70%", margin: "0 auto" }}>
+      <div className="pageHeader">
+        <img src={overview} className="pageImage" />
+        <div className="pageTitle">Outlet Overview</div>
+      </div>
 
-      <h2>{showChart === "orders" ? "Orders" : "Revenue"}</h2>
-      <button onClick={toggleChart}>
+      <div className="header">
+        {showChart === "orders" ? "O R D E R S" : "R E V E N U E"}
+      </div>
+      <div className="separator" />
+      <div
+        className="function"
+        style={{ margin: "20px 0" }}
+        onClick={toggleChart}
+      >
         Swap to {showChart === "orders" ? "Revenue" : "Orders"}
-      </button>
+      </div>
       {vendorRevenue && vendorOrder ? (
-        <div style={{ width: "70%", margin: "0 auto" }}>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart
-              data={showChart === "orders" ? vendorOrder : vendorRevenue}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis
-                tickFormatter={
-                  showChart === "revenue" ? (value) => value / 100 : ""
-                }
-              />
-              <Tooltip
-                content={
-                  showChart === "orders" ? <OrderTooltip /> : <RevenueTooltip />
-                }
-              />
-              {outletList.map((outlet) => (
-                <Bar
-                  key={outlet.username}
-                  dataKey={outlet.username}
-                  fill="#8884d8"
+        <div>
+          <div className="chartArrowContainer">
+            <div className="chartArrowLeft" />
+          </div>
+          <div
+            style={{
+              display: "inline-block",
+              width: "80%",
+              margin: "0 auto",
+              marginRight: "40px",
+            }}
+          >
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart
+                data={showChart === "orders" ? vendorOrder : vendorRevenue}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis
+                  tickFormatter={
+                    showChart === "revenue" ? (value) => value / 100 : ""
+                  }
                 />
-              ))}
-            </BarChart>
-          </ResponsiveContainer>
+                <Tooltip
+                  content={
+                    showChart === "orders" ? (
+                      <OrderTooltip />
+                    ) : (
+                      <RevenueTooltip />
+                    )
+                  }
+                />
+                {outletList.map((outlet) => (
+                  <Bar
+                    key={outlet.username}
+                    dataKey={outlet.username}
+                    fill="#8884d8"
+                  />
+                ))}
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="chartArrowContainer">
+            <div className="chartArrowRight" />
+          </div>
         </div>
       ) : (
         ""
@@ -155,6 +187,6 @@ export default function OutletOverview() {
       ) : (
         ""
       )}
-    </>
+    </div>
   );
 }

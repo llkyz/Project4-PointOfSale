@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { doLogout } from "./functions";
-import home from "../Assets/home.png";
 
 export default function NavbarMenu({
   setNavbarVisibility,
@@ -15,15 +14,6 @@ export default function NavbarMenu({
 
   return (
     <div className="navbar" ref={wrapper}>
-      <Link
-        to="/"
-        onClick={() => {
-          setNavbarVisibility(false);
-        }}
-      >
-        <img src={home} />
-      </Link>
-
       {accessLevel === "loading" || accessLevel === "notLoggedIn" ? (
         <div className="navbarLink">
           <Link
@@ -46,7 +36,7 @@ export default function NavbarMenu({
               setNavbarVisibility(false);
             }}
           >
-            Admin User Panel
+            User Panel
           </Link>
         </div>
       ) : (

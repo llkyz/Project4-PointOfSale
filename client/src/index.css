@@ -21,6 +21,74 @@ a {
 }
 
 /* ================================
+Site Styles
+=================================== */
+
+.header {
+  text-align: left;
+  margin-bottom: 5px;
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.separator {
+  height: 3px;
+  background-color: grey;
+}
+
+.pageHeader {
+  margin-bottom: 20px;
+}
+
+.pageImage {
+  display: inline-block;
+  height: 30px;
+}
+
+.pageTitle {
+  display: inline-block;
+  font-size: 2em;
+  font-weight: bold;
+  margin: 20px;
+}
+
+.function {
+  border: 3px solid rgb(128, 89, 79);
+  display: inline-block;
+  width: fit-content;
+  padding: 5px 10px;
+  font-weight: bold;
+  font-size: 1.4em;
+  cursor: pointer;
+}
+
+.function:hover {
+  background-color: rgb(250, 223, 187);
+}
+
+.function:active {
+  background-color: rgb(245, 199, 138);
+}
+
+.functionSmall {
+  border: 3px solid rgb(128, 89, 79);
+  display: inline-block;
+  width: fit-content;
+  padding: 3px 7px;
+  font-weight: bold;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.functionSmall:hover {
+  background-color: rgb(250, 223, 187);
+}
+
+.functionSmall:active {
+  background-color: rgb(245, 199, 138);
+}
+
+/* ================================
 Navbar
 =================================== */
 
@@ -30,7 +98,7 @@ Navbar
   height: fit-content;
   top: 0;
   left: 0;
-  padding-top: 70px;
+  padding-top: 80px;
   padding-bottom: 20px;
   min-width: 300px;
   width: 18%;
@@ -38,13 +106,6 @@ Navbar
   box-shadow: 0 0 20px 1px gray;
   z-index: 1;
   text-align: left;
-}
-
-.navbar img {
-  position: fixed;
-  width: 35px;
-  top: 25px;
-  left: 90px;
 }
 
 .navbarLink {
@@ -56,8 +117,8 @@ Navbar
   width: fit-content;
 }
 
-.content {
-  display: block;
+.navbarLink:hover {
+  text-decoration: underline;
 }
 
 .navbarButton {
@@ -72,29 +133,12 @@ Navbar
   z-index: 10;
 }
 
-.modalBackground {
-  background-color: grey;
+.home img {
   position: fixed;
-  height: 100%;
-  width: 100%;
-  top: 0;
-  left: 0;
-  opacity: 0.5;
+  width: 35px;
+  top: 25px;
+  left: 90px;
   z-index: 10;
-}
-
-.modal {
-  background-color: white;
-  position: fixed;
-  width: 40%;
-  height: fit-content;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  padding: 30px;
-  z-index: 11;
 }
 
 /* ================================
@@ -118,6 +162,10 @@ Home
 .homeLink img {
   width: 50px;
   vertical-align: middle;
+}
+
+.homeLink:hover > .container {
+  text-decoration: underline;
 }
 
 .homeLink h1 {
@@ -151,6 +199,54 @@ Home
   width: 200px;
   margin: 30px auto;
   cursor: pointer;
+}
+
+.error {
+  text-align: center;
+  margin-bottom: 20px;
+  color: red;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.chartArrowContainer {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+}
+
+.chartArrowLeft {
+  margin: 0 auto;
+  width: 0px;
+  height: 0px;
+  border-bottom: 20px solid grey;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  transform: rotate(270deg);
+  cursor: pointer;
+}
+
+.chartArrowLeft:active {
+  border-bottom: 15px solid grey;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}
+
+.chartArrowRight {
+  margin: 0 auto;
+  width: 0px;
+  height: 0px;
+  border-bottom: 20px solid grey;
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  transform: rotate(90deg);
+  cursor: pointer;
+}
+
+.chartArrowRight:active {
+  border-bottom: 15px solid grey;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
 }
 
 /* ================================
@@ -218,7 +314,7 @@ Login
   font-weight: bold;
 }
 
-.closeLogin {
+.loginClose {
   position: absolute;
   font-weight: bold;
   font-size: 2em;
@@ -348,18 +444,69 @@ Login
   background-color: rgb(161, 124, 75);
 }
 
-.error {
-  text-align: center;
-  margin-bottom: 20px;
-  color: red;
-  font-weight: bold;
-  font-size: 1.2em;
+/* ================================
+Admin
+=================================== */
+
+.adminListArrowContainer {
+  position: relative;
+  display: inline-block;
+  width: 50px;
 }
 
-.userElement {
+.adminListArrowOpen {
+  position: absolute;
+  top: -23px;
+  left: 15px;
+  width: 10px;
+  height: 10px;
+  border-left: 5px solid black;
+  border-bottom: 5px solid black;
+  border-top: 5px solid transparent;
+  border-right: 5px solid transparent;
+  transform: rotate(315deg);
+}
+
+.adminListArrowClosed {
+  position: absolute;
+  top: -17px;
+  left: 7px;
+  width: 10px;
+  height: 10px;
+  border-left: 5px solid black;
+  border-bottom: 5px solid black;
+  border-top: 5px solid transparent;
+  border-right: 5px solid transparent;
+  transform: rotate(225deg);
+}
+
+.adminListUser {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+  width: 20%;
+}
+
+.adminListAccess {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.adminListGroup {
   border: 2px solid black;
-  width: 70%;
-  margin: 20px auto;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin: 10px auto;
+}
+
+.adminListElement {
+  cursor: pointer;
+}
+
+.adminListDetails {
+  margin-top: 20px;
+  padding-left: 50px;
 }
 
 .print {
@@ -375,4 +522,75 @@ Login
   .hidePrint {
     display: none;
   }
+}
+
+/* ================================
+Modals
+=================================== */
+
+.modalBackground {
+  background-color: grey;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0.5;
+  z-index: 10;
+}
+
+.modal {
+  background-color: rgb(250, 246, 241);
+  border: 5px solid rgb(128, 89, 79);
+  position: fixed;
+  width: 35%;
+  min-width: 500px;
+  height: fit-content;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  padding: 30px;
+  z-index: 11;
+}
+
+.modal .container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.modalClose {
+  position: absolute;
+  font-weight: bold;
+  font-size: 2em;
+  right: 30px;
+  top: 10px;
+  cursor: pointer;
+}
+
+.modalInput {
+  width: 100%;
+  font-size: 1.2em;
+  margin-top: 3px;
+}
+
+.modalSubmit {
+  margin-top: 15px;
+  width: 100%;
+  height: 35px;
+  border: none;
+  background-color: burlywood;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modalSubmit:hover {
+  background-color: rgb(192, 151, 98);
+}
+
+.modalSubmit:active {
+  padding-top: 3px;
+  font-size: 1em;
+  background-color: rgb(161, 124, 75);
 }

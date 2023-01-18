@@ -45,38 +45,56 @@ export default function EditUserModal({
         }}
       />
       <div className="modal">
-        <button
-          onClick={() => {
-            setShowEditUserModal(false);
-          }}
-        >
-          Close
-        </button>
-        <h1>Edit User: {userData.username}</h1>
-        {errorMessage ? <p>{errorMessage}</p> : ""}
-        <form>
-          <div>
-            <label>User ID</label>
-            <input type="text" defaultValue={userData.username} />
+        <div className="container">
+          <div
+            className="modalClose"
+            onClick={() => {
+              setShowEditUserModal(false);
+            }}
+          >
+            x
           </div>
-          <div>
-            <label>Change password</label>
-            <input type="password" />
-          </div>
-          <div>
-            <label>Re-enter Password</label>
-            <input type="password" />
-          </div>
-          <div>
-            <input
-              type="submit"
-              value="Submit"
-              onClick={(event) => {
-                doEditUser(event);
-              }}
-            />
-          </div>
-        </form>
+          <h1 style={{ textAlign: "center" }}>
+            Editing User: {userData.username}
+          </h1>
+          <div className="separator" />
+          {errorMessage ? (
+            <div className="error" style={{ marginTop: "20px" }}>
+              {errorMessage}
+            </div>
+          ) : (
+            ""
+          )}
+          <form style={{ width: "70%", margin: "0 auto", textAlign: "left" }}>
+            <div style={{ marginTop: "20px" }}>
+              <div>User ID</div>
+              <input
+                className="modalInput"
+                type="text"
+                defaultValue={userData.username}
+              />
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <div>Change password</div>
+              <input className="modalInput" type="password" />
+            </div>
+            <div>
+              <div>Re-enter Password</div>
+              <input className="modalInput" type="password" />
+            </div>
+            <div>
+              <input
+                className="modalSubmit"
+                style={{ marginTop: "50px" }}
+                type="submit"
+                value="Submit"
+                onClick={(event) => {
+                  doEditUser(event);
+                }}
+              />
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );

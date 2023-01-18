@@ -121,7 +121,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
           </div>
         </div>
         <div className="loginSide2">
-          <Link to="/" className="closeLogin">
+          <Link to="/" className="loginClose">
             x
           </Link>
           <div style={{ width: "70%", margin: "0 auto" }}>

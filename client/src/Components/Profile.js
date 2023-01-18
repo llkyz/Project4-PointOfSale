@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
+import profile from "../Assets/profile.png";
 
 export default function Profile({ accessLevel, setAccessLevel }) {
   const [profileData, setProfileData] = useState();
@@ -63,29 +64,63 @@ export default function Profile({ accessLevel, setAccessLevel }) {
 
   return (
     <>
-      <h1>Profile Page</h1>
+      <div className="pageHeader">
+        <img src={profile} className="pageImage" />
+        <div className="pageTitle">Profile</div>
+      </div>
       {profileData ? (
-        <>
-          <h2>User ID: {profileData.username}</h2>
-          <h2>User Type: {profileData.accessLevel}</h2>
+        <div style={{ width: "50%", margin: "0 auto" }}>
+          <div className="header">I N F O R M A T I O N</div>
+          <div className="separator" />
+          <div style={{ display: "flex", justifyContent: "space-around" }}>
+            <div style={{ textAlign: "left", display: "inline-block" }}>
+              <h1>User ID</h1>
+              <h2>{profileData.username}</h2>
+            </div>
+            <div style={{ textAlign: "left", display: "inline-block" }}>
+              <h1>Access Type</h1>
+              <h2>{profileData.accessLevel}</h2>
+            </div>
+          </div>
           <div>
-            <h2>Edit Profile</h2>
-            {errorMessage ? <h3>{errorMessage}</h3> : ""}
-            <form>
+            <div className="header" style={{ marginTop: "30px" }}>
+              E D I T
+            </div>
+            <div className="separator" />
+            {errorMessage ? (
+              <div className="error" style={{ marginTop: "20px" }}>
+                {errorMessage}
+              </div>
+            ) : (
+              ""
+            )}
+            <form
+              style={{
+                width: "300px",
+                margin: "0 auto",
+                marginTop: "30px",
+                textAlign: "left",
+              }}
+            >
               <div>
-                <label>User ID</label>
-                <input type="text" defaultValue={profileData.username} />
+                <div>User ID</div>
+                <input
+                  className="loginInput"
+                  type="text"
+                  defaultValue={profileData.username}
+                />
               </div>
               <div>
-                <label>New Password</label>
-                <input type="password" />
+                <div>New Password</div>
+                <input className="loginInput" type="password" />
               </div>
               <div>
-                <label>Re-enter Password</label>
-                <input type="password" />
+                <div>Re-enter Password</div>
+                <input className="loginInput" type="password" />
               </div>
               <div>
                 <input
+                  className="loginButton"
                   type="submit"
                   value="Submit"
                   onClick={(event) => {
@@ -95,8 +130,14 @@ export default function Profile({ accessLevel, setAccessLevel }) {
               </div>
             </form>
           </div>
-          <button onClick={doLogout}>Log Out</button>
-        </>
+          <div
+            className="logoutLink"
+            style={{ marginTop: "50px" }}
+            onClick={doLogout}
+          >
+            Log Out
+          </div>
+        </div>
       ) : (
         "Loading..."
       )}

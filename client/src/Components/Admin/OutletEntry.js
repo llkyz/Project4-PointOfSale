@@ -9,8 +9,21 @@ export default function OutletEntry({ data, getOutletList }) {
   return (
     <>
       <div>
+        <div
+          style={{
+            display: "inline-block",
+            fontSize: "20px",
+            fontWeight: "bold",
+            marginTop: "10px",
+            marginBottom: "10px",
+            marginRight: "20px",
+          }}
+        >
+          {data.username}
+        </div>
         <button
-          style={{ display: "inline-block" }}
+          className="functionSmall"
+          style={{ fontSize: "16px", marginRight: "10px" }}
           onClick={() => {
             setShowEditUserModal(true);
           }}
@@ -18,14 +31,14 @@ export default function OutletEntry({ data, getOutletList }) {
           Edit
         </button>
         <button
-          style={{ display: "inline-block" }}
+          className="functionSmall"
+          style={{ fontSize: "16px" }}
           onClick={() => {
             setShowDeleteUserModal(true);
           }}
         >
           Delete
         </button>
-        <h4 style={{ display: "inline-block" }}>{data.username}</h4>
       </div>
       {showEditUserModal ? (
         <EditUserModal

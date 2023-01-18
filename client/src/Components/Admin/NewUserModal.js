@@ -35,11 +35,11 @@ export default function NewUserModal({ setNewUserModal, getUsers }) {
     let formBody = {
       username: event.target.form[0].value,
       password: event.target.form[1].value,
-      accessLevel: event.target.form[2].value,
+      accessLevel: event.target.form[3].value,
     };
 
     if (formBody.accessLevel === "outlet") {
-      formBody.vendor = event.target.form[3].value;
+      formBody.vendor = event.target.form[4].value;
     }
     const res = await fetch("/api/admin/", {
       method: "POST",
@@ -68,68 +68,87 @@ export default function NewUserModal({ setNewUserModal, getUsers }) {
         }}
       />
       <div className="modal">
-        <button
-          onClick={() => {
-            setNewUserModal(false);
-          }}
-        >
-          Close
-        </button>
-        <h1>Create New User</h1>
-        {errorMessage ? <h2>{errorMessage}</h2> : ""}
-        <form>
-          <div>
-            <label>Username</label>
-            <input type="text" />
+        <div className="container">
+          <div
+            className="modalClose"
+            onClick={() => {
+              setNewUserModal(false);
+            }}
+          >
+            x
           </div>
-          <div>
-            <label>Password</label>
-            <input type="password" />
-          </div>
-          <div>
-            <label>Re-enter Password</label>
-            <input type="password" />
-          </div>
-          <div>
-            <label>Access Level</label>
-            <select
-              id="accessLevel"
-              name="accessLevel"
-              onChange={(event) => {
-                setFormAccessLevel(event.target.value);
-              }}
-            >
-              <option value="admin">Admin</option>
-              <option value="vendor">Vendor</option>
-              <option value="outlet">Outlet</option>
-            </select>
-          </div>
-          {formAccessLevel === "outlet" ? (
-            <div>
-              <label>Vendor ID</label>
-              <select id="vendor" name="vendor">
-                {vendorList.map((data) => {
-                  return (
-                    <option key={data.username} value={data._id}>
-                      {data.username}
-                    </option>
-                  );
-                })}
-              </select>
+          <h1>Create New User</h1>
+          <div className="separator" />
+          {errorMessage ? (
+            <div className="error" style={{ marginTop: "20px" }}>
+              {errorMessage}
             </div>
           ) : (
             ""
           )}
-          <div>
-            <input
-              type="submit"
-              value="Create"
-              onClick={(event) => {
-                createNewUser(event);
-              }}
-            />
-          </div>
-        </form>
+          <form style={{ width: "70%", margin: "0 auto", textAlign: "left" }}>
+            <div style={{ marginTop: "20px" }}>
+              <div>Username</div>
+              <input className="modalInput" type="text" />
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <div>Password</div>
+              <input className="modalInput" type="password" />
+            </div>
+            <div>
+              <div>Re-enter Password</div>
+              <input className="modalInput" type="password" />
+            </div>
+            <div style={{ marginTop: "20px" }}>
+              <div>Access Level</div>
+              <select
+                className="modalInput"
+                style={{ width: "30%" }}
+                id="accessLevel"
+                name="accessLevel"
+                onChange={(event) => {
+                  setFormAccessLevel(event.target.value);
+                }}
+              >
+                <option value="admin">Admin</option>
+                <option value="vendor">Vendor</option>
+                <option value="outlet">Outlet</option>
+              </select>
+            </div>
+            {formAccessLevel === "outlet" ? (
+              <div style={{ marginTop: "20px" }}>
+                <div>Vendor ID</div>
+                <select
+                  className="modalInput"
+                  style={{ width: "40%" }}
+                  id="vendor"
+                  name="vendor"
+                >
+                  {vendorList.map((data) => {
+                    return (
+                      <option key={data.username} value={data._id}>
+                        {data.username}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+            ) : (
+              ""
+            )}
+            <div>
+              <input
+                className="modalSubmit"
+                style={{ marginTop: "50px" }}
+                type="submit"
+                value="Create"
+                onClick={(event) => {
+                  createNewUser(event);
+                }}
+              />
+            </div>
+          </form>
+        </div>
       </div>
     </>
   );
