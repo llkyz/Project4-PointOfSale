@@ -161,7 +161,6 @@ export default function MenuEntry({
       >
         Delete Entry
       </button>
-      <p>{JSON.stringify(entryData)}</p>
       {showDeleteEntryModal ? (
         <DeleteEntryModal
           setShowDeleteEntryModal={setShowDeleteEntryModal}

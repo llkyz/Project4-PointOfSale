@@ -31,16 +31,39 @@ export default function DeleteOutletModal({
         }}
       />
       <div className="modal">
-        <h1>Delete this outlet?</h1>
-        {errorMessage ? <h2>{errorMessage}</h2> : ""}
-        <button onClick={doDeleteOutlet}>Confirm</button>
-        <button
-          onClick={() => {
-            setShowDeleteOutletModal(false);
-          }}
-        >
-          Cancel
-        </button>
+        <div className="container">
+          <div
+            className="modalClose"
+            onClick={() => {
+              setShowDeleteOutletModal(false);
+            }}
+          >
+            x
+          </div>
+          <h1>Delete this outlet?</h1>
+          {errorMessage ? (
+            <div className="error" style={{ marginTop: "20px" }}>
+              {errorMessage}
+            </div>
+          ) : (
+            ""
+          )}
+          <div
+            className="function"
+            style={{ marginRight: "20px" }}
+            onClick={doDeleteOutlet}
+          >
+            Confirm
+          </div>
+          <div
+            className="function"
+            onClick={() => {
+              setShowDeleteOutletModal(false);
+            }}
+          >
+            Cancel
+          </div>
+        </div>
       </div>
     </>
   );

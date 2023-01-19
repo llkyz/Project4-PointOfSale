@@ -85,7 +85,7 @@ export default function EditUserModal({
             <div>
               <input
                 className="modalSubmit"
-                style={{ marginTop: "50px" }}
+                style={{ marginTop: "50px", marginBottom: "20px" }}
                 type="submit"
                 value="Submit"
                 onClick={(event) => {

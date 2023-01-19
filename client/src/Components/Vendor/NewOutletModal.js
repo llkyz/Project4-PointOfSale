@@ -48,30 +48,39 @@ export default function NewOutletModal({
         }}
       />
       <div className="modal">
-        <button
+        <div
+          className="modalClose"
           onClick={() => {
             setShowNewOutletModal(false);
           }}
         >
-          Close
-        </button>
+          x
+        </div>
         <h1>Create New Outlet</h1>
-        {errorMessage ? <h2>{errorMessage}</h2> : ""}
-        <form>
-          <div>
-            <label>Username</label>
-            <input type="text" />
+        {errorMessage ? (
+          <div className="error" style={{ marginTop: "20px" }}>
+            {errorMessage}
+          </div>
+        ) : (
+          ""
+        )}
+        <form style={{ width: "70%", margin: "0 auto", textAlign: "left" }}>
+          <div style={{ marginTop: "20px" }}>
+            <div>Username</div>
+            <input className="modalInput" type="text" />
+          </div>
+          <div style={{ marginTop: "20px" }}>
+            <div>Password</div>
+            <input className="modalInput" type="password" />
           </div>
           <div>
-            <label>Password</label>
-            <input type="password" />
-          </div>
-          <div>
-            <label>Re-enter Password</label>
-            <input type="password" />
+            <div>Re-enter Password</div>
+            <input className="modalInput" type="password" />
           </div>
           <div>
             <input
+              className="modalSubmit"
+              style={{ marginTop: "50px", marginBottom: "20px" }}
               type="submit"
               value="Create"
               onClick={(event) => {

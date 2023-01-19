@@ -111,32 +111,42 @@ export default function MenuCategory({
 
   return (
     <>
-      <div style={{ border: "2px solid black" }}>
-        <button onClick={checkDeleteCategory}>Delete Category</button>
-        <h3>-------------------------------</h3>
-        {categoryIndex === 0 ? (
-          ""
-        ) : (
-          <button
-            onClick={() => {
-              sortUp();
-            }}
-          >
-            Sort Up
-          </button>
-        )}
-        {categoryIndex === menuData.categories.length - 1 ? (
-          ""
-        ) : (
-          <button
-            onClick={() => {
-              sortDown();
-            }}
-          >
-            Sort Down
-          </button>
-        )}
+      <div
+        style={{
+          border: "2px solid black",
+          textAlign: "left",
+          paddingTop: "5px",
+          paddingBottom: "5px",
+          position: "relative",
+        }}
+        onClick={() => {
+          console.log("hello");
+        }}
+      >
+        <div className="sortContainer">
+          {categoryIndex === 0 ? (
+            ""
+          ) : (
+            <div
+              className="sortUp"
+              onClick={() => {
+                sortUp();
+              }}
+            />
+          )}
+          {categoryIndex === menuData.categories.length - 1 ? (
+            ""
+          ) : (
+            <div
+              className="sortDown"
+              onClick={() => {
+                sortDown();
+              }}
+            />
+          )}
+        </div>
         <DebounceInput
+          className="categoryInput"
           type="text"
           value={menuData.categories[categoryIndex].name}
           debounceTimeout={1000}
@@ -144,15 +154,20 @@ export default function MenuCategory({
             updateCategoryName(event.target.value);
           }}
         />
-        <button onClick={toggleShowEntries}>Show Entries</button>
+        <div className="categoryDetailsContainer" onClick={toggleShowEntries}>
+          <div className="categoryDetails">{showEntries ? "-" : "+"}</div>
+        </div>
         {showEntries ? (
-          <MenuEntryList
-            menuData={menuData}
-            categoryIndex={categoryIndex}
-            setMenuData={setMenuData}
-            setUpdateMenuTrigger={setUpdateMenuTrigger}
-            getMenu={getMenu}
-          />
+          <>
+            <button onClick={checkDeleteCategory}>Delete Category</button>
+            <MenuEntryList
+              menuData={menuData}
+              categoryIndex={categoryIndex}
+              setMenuData={setMenuData}
+              setUpdateMenuTrigger={setUpdateMenuTrigger}
+              getMenu={getMenu}
+            />
+          </>
         ) : (
           ""
         )}

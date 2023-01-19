@@ -136,10 +136,9 @@ export default function NewUserModal({ setNewUserModal, getUsers }) {
             ) : (
               ""
             )}
-            <div>
+            <div style={{ marginTop: "50px" }}>
               <input
                 className="modalSubmit"
-                style={{ marginTop: "50px" }}
                 type="submit"
                 value="Create"
                 onClick={(event) => {

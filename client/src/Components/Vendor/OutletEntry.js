@@ -51,7 +51,7 @@ export default function OutletEntry({ data, getOutletList }) {
     if (showDetails) {
       getOutletStats();
     }
-  }, [showDetails]);
+  }, [showDetails, data._id]);
 
   function toggleShowDetails() {
     if (showDetails) {
@@ -113,56 +113,124 @@ export default function OutletEntry({ data, getOutletList }) {
 
   return (
     <>
-      <h2>Outlet</h2>
-      <p>{data.username}</p>
-      <button onClick={toggleShowDetails}>Show Details</button>
-      {showDetails ? (
-        <>
-          <button
-            onClick={() => {
-              setShowEditOutletModal(true);
-            }}
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => {
-              setShowDeleteOutletModal(true);
-            }}
-          >
-            Delete
-          </button>
-          <button onClick={toggleChart}>
-            Swap to {showChart === "orders" ? "Revenue" : "Orders"}
-          </button>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart width={500} height={300} data={archiveStats}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip
-                content={
-                  showChart === "orders" ? <OrderTooltip /> : <RevenueTooltip />
-                }
-              />
-              <Bar dataKey={showChart} fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-          <h1>Orders</h1>
-          {!archiveList || archiveList.length === 0
-            ? "No archived orders"
-            : archiveList.map((entry, index) => (
-                <ArchiveEntry
-                  key={index}
-                  entry={entry}
-                  archiveIndex={index}
-                  deleteArchive={deleteArchive}
-                />
-              ))}
-        </>
-      ) : (
-        ""
-      )}
+      <div
+        className="adminListGroup"
+        style={{
+          marginLeft: 0,
+          minWidth: "20%",
+          width: showDetails ? "100%" : "20%",
+        }}
+      >
+        <div
+          className="adminListElement"
+          style={{ textAlign: "left" }}
+          onClick={toggleShowDetails}
+        >
+          <div className="adminListArrowContainer">
+            <div
+              className={
+                showDetails ? "adminListArrowOpen" : "adminListArrowClosed"
+              }
+            />
+          </div>
+          <div className="adminListUser">{data.username}</div>
+        </div>
+        {showDetails ? (
+          <>
+            <div
+              style={{
+                textAlign: "left",
+                marginLeft: "50px",
+                marginTop: "20px",
+                marginBottom: "20px",
+              }}
+            >
+              <div
+                className="functionSmall"
+                style={{ marginRight: "20px" }}
+                onClick={toggleChart}
+              >
+                View {showChart === "orders" ? "Revenue" : "Orders"}
+              </div>
+              <div
+                className="functionSmall"
+                style={{ marginRight: "20px" }}
+                onClick={() => {
+                  setShowEditOutletModal(true);
+                }}
+              >
+                Edit Outlet
+              </div>
+              <div
+                className="functionSmall"
+                onClick={() => {
+                  setShowDeleteOutletModal(true);
+                }}
+              >
+                Delete Outlet
+              </div>
+            </div>
+            <div style={{ width: "70%", margin: "0 auto" }}>
+              <div className="header">
+                {showChart === "orders" ? "O R D E R S" : "R E V E N U E"}
+              </div>
+              <div className="separator" />
+              <div className="chartArrowContainer">
+                <div className="chartArrowLeft" />
+              </div>
+              <div className="chartContainer">
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart width={500} height={300} data={archiveStats}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="date" />
+                    <YAxis
+                      tickFormatter={
+                        showChart === "revenue" ? (value) => value / 100 : ""
+                      }
+                    />
+                    <Tooltip
+                      content={
+                        showChart === "orders" ? (
+                          <OrderTooltip />
+                        ) : (
+                          <RevenueTooltip />
+                        )
+                      }
+                    />
+                    <Bar dataKey={showChart} fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="chartArrowContainer">
+                <div className="chartArrowRight" />
+              </div>
+              <div className="header">A R C H I V E</div>
+              <div className="separator" />
+              {!archiveList || archiveList.length === 0 ? (
+                "No archived orders"
+              ) : (
+                <>
+                  <div className="archiveGrid">
+                    <div className="archiveGridHeader">Date</div>
+                    <div className="archiveGridHeader">Table</div>
+                    <div className="archiveGridHeader">Total</div>
+                  </div>
+                  {archiveList.map((entry, index) => (
+                    <ArchiveEntry
+                      key={index}
+                      entry={entry}
+                      archiveIndex={index}
+                      deleteArchive={deleteArchive}
+                    />
+                  ))}
+                </>
+              )}
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+      </div>
       {showEditOutletModal ? (
         <EditOutletModal
           userData={data}

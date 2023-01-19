@@ -102,7 +102,7 @@ export default function OutletOverview() {
   return (
     <div style={{ width: "70%", margin: "0 auto" }}>
       <div className="pageHeader">
-        <img src={overview} className="pageImage" />
+        <img src={overview} className="pageImage" alt="overview" />
         <div className="pageTitle">Outlet Overview</div>
       </div>
 
@@ -112,24 +112,17 @@ export default function OutletOverview() {
       <div className="separator" />
       <div
         className="function"
-        style={{ margin: "20px 0" }}
+        style={{ margin: "20px 0", display: "block" }}
         onClick={toggleChart}
       >
-        Swap to {showChart === "orders" ? "Revenue" : "Orders"}
+        View {showChart === "orders" ? "Revenue" : "Orders"}
       </div>
       {vendorRevenue && vendorOrder ? (
         <div>
           <div className="chartArrowContainer">
             <div className="chartArrowLeft" />
           </div>
-          <div
-            style={{
-              display: "inline-block",
-              width: "80%",
-              margin: "0 auto",
-              marginRight: "40px",
-            }}
-          >
+          <div className="chartContainer">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart
                 data={showChart === "orders" ? vendorOrder : vendorRevenue}
@@ -168,17 +161,21 @@ export default function OutletOverview() {
         ""
       )}
 
-      <h2>Outlets</h2>
-      <button
+      <div className="header">O U T L E T S</div>
+      <div className="separator" />
+      <div
+        className="function"
+        style={{ marginTop: "20px", display: "block" }}
         onClick={() => {
           setShowNewOutletModal(true);
         }}
       >
         New Outlet
-      </button>
+      </div>
       {outletList.map((data) => (
         <OutletEntry key={data._id} data={data} getOutletList={getOutletList} />
       ))}
+      <div style={{ marginBottom: "100px" }} />
       {showNewOutletModal ? (
         <NewOutletModal
           setShowNewOutletModal={setShowNewOutletModal}

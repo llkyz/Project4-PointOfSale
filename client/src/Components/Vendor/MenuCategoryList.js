@@ -5,6 +5,7 @@ export default function MenuCategoryList({
   setMenuData,
   setUpdateMenuTrigger,
   getMenu,
+  setShowSection,
 }) {
   function createNewCategory() {
     let updatedCategoryList = menuData.categories.map((e) => e);
@@ -15,16 +16,30 @@ export default function MenuCategoryList({
   }
 
   return (
-    <>
+    <div style={{ width: "70%", margin: "0 auto" }}>
+      <div
+        className="function"
+        style={{ display: "block" }}
+        onClick={() => {
+          setShowSection();
+        }}
+      >
+        ← Back
+      </div>
       <div>
-        <h3>Categories</h3>
-        <button
+        <div className="header" style={{ marginTop: "20px" }}>
+          C A T E G O R I E S
+        </div>
+        <div className="separator" />
+        <div
+          className="function"
+          style={{ marginTop: "20px", marginBottom: "20px", display: "block" }}
           onClick={() => {
             createNewCategory(true);
           }}
         >
           New Category
-        </button>
+        </div>
         {menuData.categories.length === 0
           ? "No categories available"
           : menuData.categories.map((e, index) => (
@@ -38,6 +53,6 @@ export default function MenuCategoryList({
               />
             ))}
       </div>
-    </>
+    </div>
   );
 }

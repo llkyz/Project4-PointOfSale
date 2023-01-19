@@ -2,6 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { DebounceInput } from "react-debounce-input";
 import { Link } from "react-router-dom";
 import MenuCategoryList from "./MenuCategoryList";
+import menu from "../../Assets/menu.png";
+import settings from "../../Assets/settings.png";
+import admin from "../../Assets/admin.png";
+import refresh from "../../Assets/refresh.png";
 
 export default function MenuEditor() {
   const [menuData, setMenuData] = useState({
@@ -14,6 +18,9 @@ export default function MenuEditor() {
   const [uploadedFile, setUploadedFile] = useState();
   const [updateMenuTrigger, setUpdateMenuTrigger] = useState(false);
   const [vendorId, setVendorId] = useState();
+  const [showSection, setShowSection] = useState();
+  const [processUploadLogo, setProcessUploadLogo] = useState();
+  const [processRemoveLogo, setProcessRemoveLogo] = useState();
   const ref = useRef();
 
   useEffect(() => {
@@ -34,6 +41,7 @@ export default function MenuEditor() {
       let result = await res.json();
       if (res.ok) {
         getMenu();
+        setProcessUploadLogo();
         ref.current.value = "";
       }
       console.log(result.data);
@@ -93,6 +101,7 @@ export default function MenuEditor() {
     let result = await res.json();
     if (res.ok) {
       getMenu();
+      setProcessRemoveLogo();
     }
     console.log(result.data);
   }
@@ -123,80 +132,216 @@ export default function MenuEditor() {
     }
   }
 
-  return (
-    <>
-      <h1>Menu Editor</h1>
-      <Link to={`/client/preview/${vendorId}`}>
-        <button>Menu Preview</button>
-      </Link>
-      <div>
-        <label>Title</label>
-        <DebounceInput
-          type="text"
-          value={menuData.title}
-          debounceTimeout={1000}
-          onChange={(event) => {
-            setMenuData({ ...menuData, title: event.target.value });
-            setUpdateMenuTrigger(true);
-          }}
-        />
-      </div>
-      <div>
-        <label>Logo</label>
-        <img src={menuData.logoUrl} />
-        {menuData.logo.includes("placeholder") ? (
-          <button onClick={removeLogo}>Remove Logo</button>
-        ) : (
-          ""
-        )}
-      </div>
-      <div>
-        <input
-          type="file"
-          id="selectedFile"
-          ref={ref}
-          style={{ display: "none" }}
-          onChange={(event) => setUploadedFile(event.target.files[0])}
-        />
-        <input
-          type="button"
-          value="Browse..."
+  function MenuSettings() {
+    return (
+      <div style={{ width: "70%", margin: "0 auto" }}>
+        <div
+          className="function"
+          style={{ display: "block" }}
           onClick={() => {
-            ref.current.click();
+            setShowSection();
           }}
-        />
+        >
+          ← Back
+        </div>
+        <div className="header" style={{ marginTop: "20px" }}>
+          S E T T I N G S
+        </div>
+        <div className="separator" />
+        <div>
+          <div style={{ width: "60%", minWidth: "300px", margin: "0 auto" }}>
+            <div>
+              <h1 style={{ marginBottom: "10px" }}>Logo</h1>
+              <img
+                src={menuData.logoUrl}
+                style={{
+                  width: "200px",
+                  padding: "20px",
+                  border: "5px solid rgb(128, 89, 79)",
+                }}
+              />
+            </div>
+            <div style={{ marginTop: "10px" }}>
+              <input
+                type="file"
+                id="selectedFile"
+                ref={ref}
+                style={{ display: "none" }}
+                onChange={(event) => {
+                  console.log(processUploadLogo);
+                  if (!processUploadLogo) {
+                    setProcessUploadLogo(true);
+                    setUploadedFile(event.target.files[0]);
+                  }
+                }}
+              />
+              <div
+                className="functionSmall"
+                style={{
+                  marginRight: "20px",
+                  color: processUploadLogo ? "transparent" : "",
+                  backgroundColor: processUploadLogo ? "lightgray" : "",
+                  cursor: processUploadLogo ? "default" : "",
+                }}
+                onClick={() => {
+                  ref.current.click();
+                }}
+              >
+                {processUploadLogo ? (
+                  <img src={refresh} alt="loading" className="refresh" />
+                ) : (
+                  ""
+                )}
+                Upload Image
+              </div>
+              <div
+                className="functionSmall"
+                onClick={() => {
+                  if (menuData.logo) {
+                    setProcessRemoveLogo(true);
+                    removeLogo();
+                  }
+                }}
+                style={{
+                  height: processRemoveLogo ? "30px" : "",
+                  color: menuData.logo
+                    ? processRemoveLogo
+                      ? "transparent"
+                      : ""
+                    : "gray",
+                  backgroundColor: menuData.logo
+                    ? processRemoveLogo
+                      ? "lightgray"
+                      : ""
+                    : "lightgray",
+                  cursor: menuData.logo
+                    ? processRemoveLogo
+                      ? "default"
+                      : ""
+                    : "default",
+                  padding: processRemoveLogo ? "0 10px" : "",
+                }}
+              >
+                {processRemoveLogo ? (
+                  <img src={refresh} alt="loading" className="refresh" />
+                ) : (
+                  ""
+                )}
+                Remove Logo
+              </div>
+            </div>
+            <h1 style={{ marginBottom: 0, textAlign: "left" }}>Title</h1>
+            <DebounceInput
+              type="text"
+              className="loginInput"
+              value={menuData.title}
+              debounceTimeout={1000}
+              onChange={(event) => {
+                setMenuData({ ...menuData, title: event.target.value });
+                setUpdateMenuTrigger(true);
+              }}
+            />
+            <div>
+              <h1 style={{ marginBottom: 0, textAlign: "left" }}>Tax (%)</h1>
+              <DebounceInput
+                type="text"
+                className="loginInput"
+                value={menuData.tax}
+                debounceTimeout={1000}
+                onChange={(event) => {
+                  setMenuData({ ...menuData, tax: event.target.value });
+                  setUpdateMenuTrigger(true);
+                }}
+              />
+            </div>
+            <div>
+              <h1 style={{ marginBottom: 0, textAlign: "left" }}>
+                Service Charge (%)
+              </h1>
+              <DebounceInput
+                type="text"
+                className="loginInput"
+                value={menuData.service}
+                debounceTimeout={1000}
+                onChange={(event) => {
+                  setMenuData({ ...menuData, service: event.target.value });
+                  setUpdateMenuTrigger(true);
+                }}
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <label>Tax</label>
-        <DebounceInput
-          type="text"
-          value={menuData.tax}
-          debounceTimeout={1000}
-          onChange={(event) => {
-            setMenuData({ ...menuData, tax: event.target.value });
-            setUpdateMenuTrigger(true);
-          }}
-        />
+    );
+  }
+
+  return (
+    <div style={{ width: "70%", margin: "0 auto" }}>
+      <div className="pageHeader">
+        <img src={menu} className="pageImage" alt="menu" />{" "}
+        <div className="pageTitle">Menu Editor</div>
       </div>
-      <div>
-        <label>Service Charge</label>
-        <DebounceInput
-          type="text"
-          value={menuData.service}
-          debounceTimeout={1000}
-          onChange={(event) => {
-            setMenuData({ ...menuData, service: event.target.value });
-            setUpdateMenuTrigger(true);
-          }}
+      {showSection === "setting" ? <MenuSettings /> : ""}
+      {showSection === "category" ? (
+        <MenuCategoryList
+          menuData={menuData}
+          setMenuData={setMenuData}
+          setUpdateMenuTrigger={setUpdateMenuTrigger}
+          getMenu={getMenu}
+          setShowSection={setShowSection}
         />
-      </div>
-      <MenuCategoryList
-        menuData={menuData}
-        setMenuData={setMenuData}
-        setUpdateMenuTrigger={setUpdateMenuTrigger}
-        getMenu={getMenu}
-      />
-      {JSON.stringify(menuData)}
-    </>
+      ) : (
+        ""
+      )}
+      {!showSection ? (
+        <>
+          <div style={{ marginTop: "100px" }}>
+            <div
+              className="homeLink"
+              onClick={() => {
+                setShowSection("setting");
+              }}
+            >
+              <div className="container">
+                <img src={settings} />
+                <h1>Settings</h1>
+              </div>
+              <div className="description">
+                <p>Edit menu title, logo, taxes, and service charges.</p>
+              </div>
+            </div>
+            <div
+              className="homeLink"
+              onClick={() => {
+                setShowSection("category");
+              }}
+            >
+              <div className="container">
+                <img src={admin} />
+                <h1>Categories</h1>
+              </div>
+              <div className="description">
+                <p>
+                  Edit menu categories, add and remove entries from categories.
+                </p>
+              </div>
+            </div>
+          </div>
+          <Link to={`/client/preview/${vendorId}`}>
+            <div className="homeLink">
+              <div className="container">
+                <img src={menu} />
+                <h1>Menu Preview</h1>
+              </div>
+              <div className="description">
+                <p>See how your menu will look to your customers.</p>
+              </div>
+            </div>
+          </Link>
+        </>
+      ) : (
+        ""
+      )}
+    </div>
   );
 }

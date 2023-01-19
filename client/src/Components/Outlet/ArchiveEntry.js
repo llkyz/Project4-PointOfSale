@@ -22,22 +22,35 @@ export default function ArchiveEntry({ entry, archiveIndex, deleteArchive }) {
           }}
         />
         <div className="modal">
-          <h1>Delete this archive entry?</h1>
-          <button
-            onClick={() => {
-              deleteArchive(entry._id, archiveIndex);
-              setShowDeleteModal(false);
-            }}
-          >
-            Confirm
-          </button>
-          <button
-            onClick={() => {
-              setShowDeleteModal(false);
-            }}
-          >
-            Cancel
-          </button>
+          <div className="container">
+            <div
+              className="modalClose"
+              onClick={() => {
+                setShowDeleteModal(false);
+              }}
+            >
+              x
+            </div>
+            <h1>Delete this archive entry?</h1>
+            <div
+              className="function"
+              style={{ marginRight: "20px" }}
+              onClick={() => {
+                deleteArchive(entry._id, archiveIndex);
+                setShowDeleteModal(false);
+              }}
+            >
+              Confirm
+            </div>
+            <div
+              className="function"
+              onClick={() => {
+                setShowDeleteModal(false);
+              }}
+            >
+              Cancel
+            </div>
+          </div>
         </div>
       </>
     );
@@ -45,35 +58,76 @@ export default function ArchiveEntry({ entry, archiveIndex, deleteArchive }) {
 
   return (
     <>
-      <div style={{ border: "1px solid black" }} onClick={toggleDetails}>
-        {showDetails ? (
-          <>
-            <p>Qty | Item | Total</p>
-            {entry.orders.map((item) => (
-              <p key={item.name}>
-                {item.quantity} {item.name} {(item.lineTotal / 100).toFixed(2)}
-              </p>
-            ))}
-            <p>Subtotal: {(entry.subtotal / 100).toFixed(2)}</p>
-            <p>Tax: {(entry.tax / 100).toFixed(2)}</p>
-            <p>Service Charge: {(entry.service / 100).toFixed(2)}</p>
-            <p>Total: {(entry.total / 100).toFixed(2)}</p>
-            <button
-              onClick={() => {
-                setShowDeleteModal(true);
-              }}
-            >
-              Delete Archive
-            </button>
-          </>
-        ) : (
-          <p>
-            Date: {new Date(entry.time).toLocaleString("en-SG")} | Table:{" "}
-            {entry.tableName} | Total: {(entry.total / 100).toFixed(2)}{" "}
-          </p>
-        )}
-        {showDeleteModal ? <DeleteModal /> : ""}
+      <div
+        className="archiveGrid"
+        style={{ cursor: "pointer" }}
+        onClick={toggleDetails}
+      >
+        <div className="archiveGridEntry">
+          {new Date(entry.time).toLocaleString("en-SG")}
+        </div>
+
+        <div className="archiveGridEntry">{entry.tableName}</div>
+        <div className="archiveGridEntry">{(entry.total / 100).toFixed(2)}</div>
       </div>
+      {showDetails ? (
+        <>
+          <div className="receiptGrid">
+            <div className="receiptGridHeader">QTY</div>
+            <div className="receiptGridHeader">ITEM</div>
+            <div className="receiptGridHeader" style={{ textAlign: "right" }}>
+              TOTAL
+            </div>
+            {entry.orders.map((item) => (
+              <>
+                <div className="receiptGridEntry">{item.quantity}</div>
+                <div className="receiptGridEntry">{item.name}</div>
+                <div
+                  className="receiptGridEntry"
+                  style={{ textAlign: "right" }}
+                >
+                  {(item.lineTotal / 100).toFixed(2)}
+                </div>
+              </>
+            ))}
+            <div className="receiptGridTotal" style={{ marginTop: "20px" }}>
+              Subtotal:
+            </div>
+            <div
+              className="receiptGridEntry"
+              style={{ textAlign: "right", marginTop: "20px" }}
+            >
+              {(entry.subtotal / 100).toFixed(2)}
+            </div>
+            <div className="receiptGridTotal">Tax:</div>
+            <div className="receiptGridEntry" style={{ textAlign: "right" }}>
+              {(entry.tax / 100).toFixed(2)}
+            </div>
+            <div className="receiptGridTotal">Service Charge:</div>
+            <div className="receiptGridEntry" style={{ textAlign: "right" }}>
+              {(entry.service / 100).toFixed(2)}
+            </div>
+            <div className="receiptGridTotal" style={{ marginBottom: "20px" }}>
+              Total:
+            </div>
+            <div className="receiptGridEntry" style={{ textAlign: "right" }}>
+              {(entry.total / 100).toFixed(2)}
+            </div>
+          </div>
+          <div
+            className="functionSmall"
+            style={{ marginTop: "10px", marginBottom: "10px" }}
+            onClick={() => {
+              setShowDeleteModal(true);
+            }}
+          >
+            Delete Archive
+          </div>
+        </>
+      ) : (
+        ""
+      )}
+      {showDeleteModal ? <DeleteModal /> : ""}
     </>
   );
 }
