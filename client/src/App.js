@@ -14,6 +14,7 @@ import ClientPreview from "./Components/Client/ClientPreview";
 import OutletManager from "./Components/Outlet/OutletManager";
 import OutletSettings from "./Components/Outlet/OutletSettings";
 import FinanceManager from "./Components/Outlet/FinanceManager";
+import config from "../config";
 
 const socket = io();
 
@@ -23,7 +24,7 @@ function App() {
 
   useEffect(() => {
     async function verify() {
-      const res = await fetch("/api/user/verify", {
+      const res = await fetch(config.SERVER + "/api/user/verify", {
         method: "GET",
         credentials: "include",
       });

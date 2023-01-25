@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import OutletEntry from "./OutletEntry";
 import refresh from "../../Assets/refresh.png";
+import config from "../../../config";
 
 export default function OutletList({ vendorId }) {
   const [outletList, setOutletList] = useState([]);
@@ -11,10 +12,13 @@ export default function OutletList({ vendorId }) {
   }, []);
 
   async function getOutletList() {
-    const res = await fetch(`/api/admin/outletlist/${vendorId}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const res = await fetch(
+      config.SERVER + `/api/admin/outletlist/${vendorId}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
     let result = await res.json();
     if (res.ok) {
       setOutletList(result.data);

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import logo from "../Assets/logo-white.png";
+import config from "../../config";
 
 export default function Login({ accessLevel, setAccessLevel }) {
   const [adminErrorMessage, setAdminErrorMessage] = useState();
@@ -40,7 +41,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
       username: event.target.form[0].value,
       password: event.target.form[1].value,
     };
-    const res = await fetch("/api/user/adminlogin", {
+    const res = await fetch(config.SERVER + "/api/user/adminlogin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,7 +68,7 @@ export default function Login({ accessLevel, setAccessLevel }) {
       username: event.target.form[1].value,
       password: event.target.form[2].value,
     };
-    const res = await fetch("/api/user/outletlogin", {
+    const res = await fetch(config.SERVER + "/api/user/outletlogin", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

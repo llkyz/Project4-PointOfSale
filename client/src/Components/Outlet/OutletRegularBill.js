@@ -1,4 +1,5 @@
 import BillEntry from "./BillEntry";
+import config from "../../../config";
 
 export default function OutletRegularBill({ tableInfo, refreshTables }) {
   function doDeleteOrder(orderIndex) {
@@ -8,7 +9,7 @@ export default function OutletRegularBill({ tableInfo, refreshTables }) {
   }
 
   async function sendUpdate(updatedList) {
-    const res = await fetch("/api/outlet/order", {
+    const res = await fetch(config.SERVER + "/api/outlet/order", {
       method: "PUT",
       credentials: "include",
       headers: {

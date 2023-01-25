@@ -3,6 +3,7 @@ import OutletTable from "./OutletTable";
 import NewOrders from "./NewOrders";
 import PrintItem from "./PrintItem";
 import overview from "../../Assets/overview.png";
+import config from "../../../config";
 
 export default function OutletManager({ accessLevel, socket }) {
   const [menuData, setMenuData] = useState({
@@ -38,7 +39,7 @@ export default function OutletManager({ accessLevel, socket }) {
     }
 
     async function getMenuData() {
-      const res = await fetch("/api/outlet/menudata", {
+      const res = await fetch(config.SERVER + "/api/outlet/menudata", {
         method: "GET",
         credentials: "include",
       });
@@ -51,7 +52,7 @@ export default function OutletManager({ accessLevel, socket }) {
     }
 
     async function getOutletData() {
-      const res = await fetch("/api/outlet/setting", {
+      const res = await fetch(config.SERVER + "/api/outlet/setting", {
         method: "GET",
         credentials: "include",
       });
@@ -94,7 +95,7 @@ export default function OutletManager({ accessLevel, socket }) {
   }, [socket]);
 
   async function refreshTables() {
-    const res = await fetch("/api/outlet/room", {
+    const res = await fetch(config.SERVER + "/api/outlet/room", {
       method: "GET",
       credentials: "include",
     });
@@ -110,7 +111,7 @@ export default function OutletManager({ accessLevel, socket }) {
   }
 
   async function createRoom(tableNum, tableName) {
-    const res = await fetch("/api/outlet/room", {
+    const res = await fetch(config.SERVER + "/api/outlet/room", {
       method: "POST",
       credentials: "include",
       headers: {
@@ -129,7 +130,7 @@ export default function OutletManager({ accessLevel, socket }) {
   }
 
   async function closeRoom(orderId, consolidatedBill) {
-    const res = await fetch("/api/outlet/room", {
+    const res = await fetch(config.SERVER + "/api/outlet/room", {
       method: "DELETE",
       credentials: "include",
       headers: {

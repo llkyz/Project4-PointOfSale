@@ -1,4 +1,5 @@
 import { useState } from "react";
+import config from "../../../config";
 
 export default function EditOutletModal({
   setShowEditOutletModal,
@@ -18,7 +19,7 @@ export default function EditOutletModal({
       username: event.target.form[0].value,
       password: event.target.form[1].value,
     };
-    const res = await fetch(`/api/user/${userData._id}`, {
+    const res = await fetch(config.SERVER + `/api/user/${userData._id}`, {
       method: "PUT",
       credentials: "include",
       headers: {

@@ -11,6 +11,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import overview from "../../Assets/overview.png";
+import config from "../../../config";
 
 export default function OutletOverview() {
   const [outletList, setOutletList] = useState([]);
@@ -29,7 +30,7 @@ export default function OutletOverview() {
   }, [fetchDate]);
 
   async function getOutletList() {
-    const res = await fetch("/api/vendor/outlet", {
+    const res = await fetch(config.SERVER + "/api/vendor/outlet", {
       method: "GET",
       credentials: "include",
     });
@@ -47,10 +48,13 @@ export default function OutletOverview() {
       endDate.getMonth() + 1
     }-${endDate.getDate()}`;
 
-    const res = await fetch(`/api/archive/vendor?endDate=${endString}`, {
-      method: "GET",
-      credentials: "include",
-    });
+    const res = await fetch(
+      config.SERVER + `/api/archive/vendor?endDate=${endString}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
     let result = await res.json();
     if (res.ok) {
       setVendorRevenue(result.revenue);

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import config from "../../../config";
 
 export default function DeleteEntryModal({
   setShowDeleteEntryModal,
@@ -11,7 +12,7 @@ export default function DeleteEntryModal({
   const [errorMessage, setErrorMessage] = useState();
 
   async function doDeleteEntry() {
-    const res = await fetch("/api/vendor/menu/entry/image", {
+    const res = await fetch(config.SERVER + "/api/vendor/menu/entry/image", {
       method: "DELETE",
       credentials: "include",
       headers: {

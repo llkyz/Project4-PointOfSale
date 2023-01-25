@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import config from "../../../config";
 
 export default function NewUserModal({ setNewUserModal, getUsers }) {
   const [vendorList, setVendorList] = useState([]);
@@ -7,7 +8,7 @@ export default function NewUserModal({ setNewUserModal, getUsers }) {
 
   useEffect(() => {
     async function getAllVendors() {
-      const res = await fetch("/api/admin/vendorlist", {
+      const res = await fetch(config.SERVER + "/api/admin/vendorlist", {
         method: "GET",
         credentials: "include",
       });
@@ -41,7 +42,7 @@ export default function NewUserModal({ setNewUserModal, getUsers }) {
     if (formBody.accessLevel === "outlet") {
       formBody.vendor = event.target.form[4].value;
     }
-    const res = await fetch("/api/admin/", {
+    const res = await fetch(config.SERVER + "/api/admin/", {
       method: "POST",
       credentials: "include",
       headers: {

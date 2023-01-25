@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import NewUserModal from "./NewUserModal";
 import UserEntry from "./UserEntry";
 import admin from "../../Assets/admin.png";
+import config from "../../../config";
 
 export default function Admin({ accessLevel }) {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Admin({ accessLevel }) {
   }, []);
 
   async function getUsers() {
-    const res = await fetch("/api/admin/", {
+    const res = await fetch(config.SERVER + "/api/admin/", {
       method: "GET",
       credentials: "include",
     });

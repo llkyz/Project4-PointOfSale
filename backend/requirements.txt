@@ -1,0 +1,12 @@
+flask
+flask_cors
+flask_socketio
+pymongo
+pyjwt
+certifi
+google-cloud-storage
+uuid
+Jinja2
+bcrypt
+gevent
+eventlet

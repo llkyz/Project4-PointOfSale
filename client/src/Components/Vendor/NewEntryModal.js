@@ -1,4 +1,5 @@
 import { useState } from "react";
+import config from "../../../config";
 
 export default function NewEntryModal({
   setShowNewEntryModal,
@@ -27,7 +28,7 @@ export default function NewEntryModal({
     };
 
     // get category
-    const res = await fetch("/api/vendor/menu/entry", {
+    const res = await fetch(config.SERVER + "/api/vendor/menu/entry", {
       method: "POST",
       credentials: "include",
       headers: {

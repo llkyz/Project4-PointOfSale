@@ -5,6 +5,7 @@ import ClientMenu from "./ClientMenu";
 import ClientEntryDetails from "./ClientEntryDetails";
 import ClientCart from "./ClientCart";
 import ClientBill from "./ClientBill";
+import config from "../../../config";
 
 export default function Client({ setClientOverride, socket }) {
   const [menuData, setMenuData] = useState();
@@ -19,9 +20,12 @@ export default function Client({ setClientOverride, socket }) {
 
   useEffect(() => {
     async function getMenu() {
-      let res = await fetch(`/api/customer/menu/preview/${params.vendorid}`, {
-        method: "GET",
-      });
+      let res = await fetch(
+        config.SERVER + `/api/customer/menu/preview/${params.vendorid}`,
+        {
+          method: "GET",
+        }
+      );
       let result = await res.json();
       if (res.ok) {
         setMenuData(result.data);

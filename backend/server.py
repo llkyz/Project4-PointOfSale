@@ -2,6 +2,7 @@ from flask import Flask
 from flask_socketio import SocketIO, emit, send, join_room
 from flask_cors import CORS
 import datetime
+import os
 from routes.user import userRoutes
 from routes.admin import adminRoutes
 from routes.vendor import vendorRoutes
@@ -61,4 +62,4 @@ def enter_room(json):
     send(f'A user joined room ' + json['data'], to=json['data'])
 
 if __name__ == "__main__":
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

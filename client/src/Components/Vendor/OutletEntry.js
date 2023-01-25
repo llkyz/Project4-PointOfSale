@@ -11,6 +11,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import config from "../../../config";
 
 export default function OutletEntry({ data, getOutletList }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -40,7 +41,8 @@ export default function OutletEntry({ data, getOutletList }) {
     }-${endDate.getDate()}`;
 
     const res = await fetch(
-      `/api/archive/vendor/${data._id}?startDate=${startString}&endDate=${endString}`,
+      config.SERVER +
+        `/api/archive/vendor/${data._id}?startDate=${startString}&endDate=${endString}`,
       {
         method: "GET",
         credentials: "include",
@@ -96,7 +98,7 @@ export default function OutletEntry({ data, getOutletList }) {
   }
 
   async function deleteArchive(archiveId, archiveIndex) {
-    const res = await fetch(`/api/archive/vendor`, {
+    const res = await fetch(config.SERVER + `/api/archive/vendor`, {
       method: "DELETE",
       credentials: "include",
       headers: {

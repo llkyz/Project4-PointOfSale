@@ -1,4 +1,5 @@
 import { useState } from "react";
+import config from "../../../config";
 
 export default function DeleteOutletModal({
   setShowDeleteOutletModal,
@@ -8,10 +9,13 @@ export default function DeleteOutletModal({
   const [errorMessage, setErrorMessage] = useState();
 
   async function doDeleteOutlet() {
-    const res = await fetch(`/api/vendor/outlet/${userData._id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    const res = await fetch(
+      config.SERVER + `/api/vendor/outlet/${userData._id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
     let result = await res.json();
     if (res.ok) {
       console.log(result.data);

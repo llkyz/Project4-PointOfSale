@@ -1,4 +1,5 @@
 import { useState } from "react";
+import config from "../../../config";
 
 export default function DeleteUserModal({
   setShowDeleteUserModal,
@@ -8,7 +9,7 @@ export default function DeleteUserModal({
   const [errorMessage, setErrorMessage] = useState();
 
   async function doDeleteUser() {
-    const res = await fetch(`/api/user/${userData._id}`, {
+    const res = await fetch(config.SERVER + `/api/user/${userData._id}`, {
       method: "DELETE",
       credentials: "include",
       headers: {

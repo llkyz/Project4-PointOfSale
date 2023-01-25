@@ -4,6 +4,7 @@ import TableSettings from "./TableSettings";
 import settings from "../../Assets/settings.png";
 import table from "../../Assets/table.png";
 import receipt from "../../Assets/receipt.png";
+import config from "../../../config";
 
 export default function OutletSettings({ accessLevel }) {
   const [settingData, setSettingData] = useState();
@@ -12,7 +13,7 @@ export default function OutletSettings({ accessLevel }) {
 
   useEffect(() => {
     async function getSettingData() {
-      const res = await fetch("/api/outlet/setting", {
+      const res = await fetch(config.SERVER + "/api/outlet/setting", {
         method: "GET",
         credentials: "include",
       });
@@ -28,7 +29,7 @@ export default function OutletSettings({ accessLevel }) {
 
   useEffect(() => {
     async function updateSettingData() {
-      const res = await fetch(`/api/outlet/setting/`, {
+      const res = await fetch(config.SERVER + `/api/outlet/setting/`, {
         method: "PUT",
         credentials: "include",
         headers: {
