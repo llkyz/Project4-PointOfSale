@@ -1,10 +1,6 @@
 import BillEntry from "./BillEntry";
 
-export default function OutletRegularBill({
-  tableInfo,
-  refreshTables,
-  setShowConsolidatedBill,
-}) {
+export default function OutletRegularBill({ tableInfo, refreshTables }) {
   function doDeleteOrder(orderIndex) {
     let updatedList = JSON.parse(JSON.stringify(tableInfo));
     updatedList.orders.splice(orderIndex, 1);
@@ -30,23 +26,18 @@ export default function OutletRegularBill({
 
   return (
     <>
-      <button
-        onClick={() => {
-          setShowConsolidatedBill(true);
-        }}
-      >
-        Swap to Consolidated
-      </button>
       {tableInfo.orders.map((entry, orderIndex) => {
         return (
-          <div style={{ border: "1px solid black" }} key={orderIndex}>
-            <button
+          <div className="billOrder" key={orderIndex}>
+            <div
+              className="modalClose"
+              style={{ top: "-20px", right: "-35px" }}
               onClick={() => {
                 doDeleteOrder(orderIndex);
               }}
             >
-              Delete Order
-            </button>
+              x
+            </div>
             {entry.map((item, entryIndex) => (
               <BillEntry
                 key={entryIndex}

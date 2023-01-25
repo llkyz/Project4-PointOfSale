@@ -1,11 +1,6 @@
 import { useState, useEffect } from "react";
 
-export default function ClientBill({
-  menuData,
-  roomid,
-  setShowBill,
-  setEntryIndex,
-}) {
+export default function ClientBill({ menuData, roomid }) {
   const [billData, setBillData] = useState();
   const [calculations, setCalculations] = useState({
     subtotal: 0,
@@ -69,41 +64,63 @@ export default function ClientBill({
   }, [billData, menuData.service, menuData.tax]);
 
   return (
-    <>
-      <h1>Total Bill</h1>
-      <button
-        onClick={() => {
-          setShowBill(false);
-          setEntryIndex();
+    <div style={{ width: "90%", margin: "0 auto" }}>
+      <h2 style={{ marginBottom: "10px" }}>Total Bill</h2>
+      <div className="separator" style={{ marginBottom: "10px" }}></div>
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "15% auto 20%",
+          textAlign: "left",
+          marginBottom: "10px",
         }}
       >
-        Back
-      </button>
+        <div style={{ fontWeight: "bold" }}>Qty</div>
+        <div style={{ fontWeight: "bold" }}>Item</div>
+        <div style={{ fontWeight: "bold", textAlign: "right" }}>Total</div>
+      </div>
       {!consolidatedBill ? (
-        "Loading..."
+        <h3>Loading...</h3>
       ) : (
-        <div style={{ border: "1px solid black" }}>
+        <>
           {consolidatedBill.map((item, index) => {
             return (
-              <p key={index}>
-                {item.name} | ${(item.price / 100).toFixed(2)} | {item.quantity}{" "}
-                | ${(item.lineTotal / 100).toFixed(2)}
-              </p>
+              <div
+                key={index}
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "15% auto 20%",
+                  textAlign: "left",
+                }}
+              >
+                <div>{item.quantity}</div>
+                <div>{item.name}</div>
+                <div style={{ textAlign: "right" }}>
+                  ${(item.lineTotal / 100).toFixed(2)}
+                </div>
+              </div>
             );
           })}
-        </div>
+        </>
       )}
-      <div>
-        <p>Subtotal: ${(calculations.subtotal / 100).toFixed(2)}</p>
-        <p>
+      <div style={{ marginTop: "20px", textAlign: "right" }}>
+        <div style={{ marginBottom: "3px" }}>
+          Subtotal: ${(calculations.subtotal / 100).toFixed(2)}
+        </div>
+        <div style={{ marginBottom: "3px" }}>
           Tax ({menuData.tax}%): ${(calculations.tax / 100).toFixed(2)}
-        </p>
-        <p>
+        </div>
+        <div style={{ marginBottom: "15px" }}>
           Service Charge ({menuData.service}%): $
           {(calculations.service / 100).toFixed(2)}
-        </p>
-        <p>Total: ${(calculations.total / 100).toFixed(2)}</p>
+        </div>
+        <div>
+          Total:{" "}
+          <span style={{ fontWeight: "bold" }}>
+            ${(calculations.total / 100).toFixed(2)}
+          </span>
+        </div>
       </div>
-    </>
+    </div>
   );
 }

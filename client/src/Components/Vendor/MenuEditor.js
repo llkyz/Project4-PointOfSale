@@ -26,6 +26,7 @@ export default function MenuEditor() {
   useEffect(() => {
     getMenu();
     getVendorId();
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -49,6 +50,7 @@ export default function MenuEditor() {
     if (uploadedFile) {
       uploadLogo();
     }
+    //eslint-disable-next-line
   }, [uploadedFile]);
 
   useEffect(() => {
@@ -78,6 +80,7 @@ export default function MenuEditor() {
       updateMenu();
       setUpdateMenuTrigger(false);
     }
+    //eslint-disable-next-line
   }, [menuData]);
 
   async function getVendorId() {
@@ -154,6 +157,7 @@ export default function MenuEditor() {
               <h1 style={{ marginBottom: "10px" }}>Logo</h1>
               <img
                 src={menuData.logoUrl}
+                alt="menuLogo"
                 style={{
                   width: "200px",
                   padding: "20px",
@@ -168,11 +172,8 @@ export default function MenuEditor() {
                 ref={ref}
                 style={{ display: "none" }}
                 onChange={(event) => {
-                  console.log(processUploadLogo);
-                  if (!processUploadLogo) {
-                    setProcessUploadLogo(true);
-                    setUploadedFile(event.target.files[0]);
-                  }
+                  setProcessUploadLogo(true);
+                  setUploadedFile(event.target.files[0]);
                 }}
               />
               <div
@@ -184,7 +185,9 @@ export default function MenuEditor() {
                   cursor: processUploadLogo ? "default" : "",
                 }}
                 onClick={() => {
-                  ref.current.click();
+                  if (!processUploadLogo) {
+                    ref.current.click();
+                  }
                 }}
               >
                 {processUploadLogo ? (
@@ -303,7 +306,7 @@ export default function MenuEditor() {
               }}
             >
               <div className="container">
-                <img src={settings} />
+                <img src={settings} alt="settings" />
                 <h1>Settings</h1>
               </div>
               <div className="description">
@@ -317,7 +320,7 @@ export default function MenuEditor() {
               }}
             >
               <div className="container">
-                <img src={admin} />
+                <img src={admin} alt="categories" />
                 <h1>Categories</h1>
               </div>
               <div className="description">
@@ -330,7 +333,7 @@ export default function MenuEditor() {
           <Link to={`/client/preview/${vendorId}`}>
             <div className="homeLink">
               <div className="container">
-                <img src={menu} />
+                <img src={menu} alt="menuPreview" />
                 <h1>Menu Preview</h1>
               </div>
               <div className="description">

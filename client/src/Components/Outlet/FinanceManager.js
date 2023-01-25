@@ -9,44 +9,48 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import ArchiveEntry from "./ArchiveEntry";
+import finance from "../../Assets/finance.png";
 
 export default function FinanceManager() {
   const [archiveList, setArchiveList] = useState([]);
   const [stats, setStats] = useState([]);
   const [showChart, setShowChart] = useState("revenue");
+  const [fetchDate, setFetchDate] = useState(new Date());
 
   useEffect(() => {
-    async function getArchive() {
-      let endDate = new Date();
-      let startDate = new Date();
-      startDate.setDate(startDate.getDate() - 30);
-      let startString = `${startDate.getFullYear()}-${
-        startDate.getMonth() + 1
-      }-${startDate.getDate()}`;
-      let endString = `${endDate.getFullYear()}-${
-        endDate.getMonth() + 1
-      }-${endDate.getDate()}`;
-
-      const res = await fetch(
-        `/api/archive/outlet?startDate=${startString}&endDate=${endString}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      let result = await res.json();
-      if (res.ok) {
-        result.list.forEach((entry) => {
-          entry.time = new Date(entry.time);
-        });
-        setArchiveList(result.list);
-        setStats(result.stats);
-      } else {
-        console.log(result.data);
-      }
-    }
     getArchive();
-  }, []);
+    //eslint-disable-next-line
+  }, [fetchDate]);
+
+  async function getArchive() {
+    let endDate = new Date(fetchDate.getTime());
+    let startDate = new Date(fetchDate.getTime());
+    startDate.setDate(startDate.getDate() - 180);
+    let startString = `${startDate.getFullYear()}-${
+      startDate.getMonth() + 1
+    }-${startDate.getDate()}`;
+    let endString = `${endDate.getFullYear()}-${
+      endDate.getMonth() + 1
+    }-${endDate.getDate()}`;
+
+    const res = await fetch(
+      `/api/archive/outlet?startDate=${startString}&endDate=${endString}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+    let result = await res.json();
+    if (res.ok) {
+      result.list.forEach((entry) => {
+        entry.time = new Date(entry.time);
+      });
+      setArchiveList(result.list);
+      setStats(result.stats);
+    } else {
+      console.log(result.data);
+    }
+  }
 
   function toggleChart() {
     if (showChart === "orders") {
@@ -60,7 +64,7 @@ export default function FinanceManager() {
     if (active) {
       return (
         <div className="custom-tooltip" style={{ padding: "0px 20px" }}>
-          <p className="label">{`Revenue : $${
+          <p style={{ fontWeight: "bold" }}>{`Revenue : $${
             payload ? (payload[0].value / 100).toFixed(2) : 0
           }`}</p>
         </div>
@@ -73,7 +77,7 @@ export default function FinanceManager() {
     if (active) {
       return (
         <div className="custom-tooltip" style={{ padding: "0px 20px" }}>
-          <p className="label">{`Orders : ${payload[0].value}`}</p>
+          <p style={{ fontWeight: "bold" }}>{`Orders : ${payload[0].value}`}</p>
         </div>
       );
     }
@@ -98,33 +102,82 @@ export default function FinanceManager() {
     console.log(result.data);
   }
 
+  function chartBack() {
+    let newDate = new Date(fetchDate.getTime());
+    newDate.setDate(newDate.getDate() - 180);
+    setFetchDate(newDate);
+  }
+
+  function chartForward() {
+    let newDate = new Date(fetchDate.getTime());
+    newDate.setDate(newDate.getDate() + 180);
+    setFetchDate(newDate);
+  }
+
   return (
-    <>
-      <h1>Finance Manager</h1>
-      <button onClick={toggleChart}>
+    <div style={{ width: "70%", margin: "0 auto" }}>
+      <div className="pageHeader">
+        <img src={finance} className="pageImage" alt="overview" />
+        <div className="pageTitle">Finances</div>
+      </div>
+      <div className="header">
+        {showChart === "orders" ? "O R D E R S" : "R E V E N U E"}
+      </div>
+      <div className="separator" />
+      <div
+        className="function"
+        style={{ display: "block", marginTop: "20px", marginBottom: "20px" }}
+        onClick={toggleChart}
+      >
         Swap to {showChart === "orders" ? "Revenue" : "Orders"}
-      </button>
+      </div>
       {stats && archiveList ? (
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart width={500} height={300} data={stats}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip
-              content={
-                showChart === "orders" ? <OrderTooltip /> : <RevenueTooltip />
-              }
-            />
-            <Bar dataKey={showChart} fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
+        <div>
+          <div className="chartArrowContainer" onClick={chartBack}>
+            <div className="chartArrowLeft" />
+          </div>
+          <div className="chartContainer">
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart width={500} height={300} data={stats}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis
+                  tickFormatter={
+                    showChart === "revenue" ? (value) => value / 100 : ""
+                  }
+                />
+                <Tooltip
+                  content={
+                    showChart === "orders" ? (
+                      <OrderTooltip />
+                    ) : (
+                      <RevenueTooltip />
+                    )
+                  }
+                />
+                <Bar dataKey={showChart} fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="chartArrowContainer" onClick={chartForward}>
+            <div className="chartArrowRight" />
+          </div>
+        </div>
       ) : (
         ""
       )}
-      <h1>Orders</h1>
-      {archiveList.length === 0
-        ? "No archived orders"
-        : archiveList.map((entry, index) => (
+      <div className="header">A R C H I V E</div>
+      <div className="separator" />
+      {archiveList.length === 0 ? (
+        <h2>No archived orders</h2>
+      ) : (
+        <>
+          <div className="archiveGrid">
+            <div className="archiveGridHeader">Date</div>
+            <div className="archiveGridHeader">Table</div>
+            <div className="archiveGridHeader">Total</div>
+          </div>
+          {archiveList.map((entry, index) => (
             <ArchiveEntry
               key={index}
               entry={entry}
@@ -132,6 +185,8 @@ export default function FinanceManager() {
               deleteArchive={deleteArchive}
             />
           ))}
-    </>
+        </>
+      )}
+    </div>
   );
 }

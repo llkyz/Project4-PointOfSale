@@ -1,23 +1,15 @@
-export default function OutletConsolidatedBill(
-  {consolidatedBill,
-  setShowConsolidatedBill}
-) {
+export default function OutletConsolidatedBill({ consolidatedBill }) {
   return (
     <>
-      <button
-        onClick={() => {
-          setShowConsolidatedBill(false);
-        }}
-      >
-        Swap to Regular
-      </button>
-      <div style={{ border: "1px solid black" }}>
+      <div className="billConsolidated">
         {consolidatedBill.map((data, index) => {
           return (
-            <p key={index}>
-              {data.name} | {(data.price / 100).toFixed(2)} | {data.quantity} |{" "}
-              {(data.lineTotal / 100).toFixed(2)}
-            </p>
+            <div className="billConsolidatedEntry" key={index}>
+              <div>{data.quantity}</div>
+              <div key={index}>{data.name}</div>
+              <div>{(data.lineTotal / 100).toFixed(2)}</div>
+              <div></div>
+            </div>
           );
         })}
       </div>

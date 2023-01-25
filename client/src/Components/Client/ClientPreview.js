@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ClientContent from "./ClientContent";
-import ClientNavbar from "./ClientNavbar";
+import ClientMenu from "./ClientMenu";
 import ClientEntryDetails from "./ClientEntryDetails";
 import ClientCart from "./ClientCart";
 import ClientBill from "./ClientBill";
@@ -86,7 +86,7 @@ export default function Client({ setClientOverride, socket }) {
       </div>
       {menuData ? (
         <>
-          <ClientNavbar menuData={menuData} setContentIndex={setContentIndex} />
+          <ClientMenu menuData={menuData} setContentIndex={setContentIndex} />
           {showCart ? (
             <ClientCart
               currentOrder={currentOrder}

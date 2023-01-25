@@ -69,17 +69,26 @@ export default function MenuCategory({
           }}
         />
         <div className="modal">
+          <div
+            className="modalClose"
+            onClick={() => {
+              setShowCannotDeleteModal(false);
+            }}
+          >
+            x
+          </div>
           <h1>
             Unable to delete category. Please delete all entries in this
             category first
           </h1>
-          <button
+          <div
+            className="function"
             onClick={() => {
               setShowCannotDeleteModal(false);
             }}
           >
             Close
-          </button>
+          </div>
         </div>
       </>
     );
@@ -95,15 +104,30 @@ export default function MenuCategory({
           }}
         />
         <div className="modal">
+          <div
+            className="modalClose"
+            onClick={() => {
+              setShowDeleteCategoryModal(false);
+            }}
+          >
+            x
+          </div>
           <h1>Delete this category?</h1>
-          <button onClick={doDeleteCategory}>Confirm</button>
-          <button
+          <div
+            className="function"
+            style={{ marginRight: "20px" }}
+            onClick={doDeleteCategory}
+          >
+            Confirm
+          </div>
+          <div
+            className="function"
             onClick={() => {
               setShowDeleteCategoryModal(false);
             }}
           >
             Cancel
-          </button>
+          </div>
         </div>
       </>
     );
@@ -118,9 +142,6 @@ export default function MenuCategory({
           paddingTop: "5px",
           paddingBottom: "5px",
           position: "relative",
-        }}
-        onClick={() => {
-          console.log("hello");
         }}
       >
         <div className="sortContainer">
@@ -159,7 +180,13 @@ export default function MenuCategory({
         </div>
         {showEntries ? (
           <>
-            <button onClick={checkDeleteCategory}>Delete Category</button>
+            <div
+              className="functionTiny"
+              style={{ marginLeft: "20px" }}
+              onClick={checkDeleteCategory}
+            >
+              Delete Category
+            </div>
             <MenuEntryList
               menuData={menuData}
               categoryIndex={categoryIndex}

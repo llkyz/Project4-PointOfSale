@@ -8,6 +8,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(255, 245, 233);
+  overflow: auto;
 }
 
 code {
@@ -86,6 +87,48 @@ Site Styles
 }
 
 .functionSmall:active {
+  background-color: rgb(245, 199, 138);
+}
+
+.functionSmallMobile {
+  position: relative;
+  border: 3px solid rgb(128, 89, 79);
+  display: inline-block;
+  width: fit-content;
+  padding: 3px 7px;
+  font-weight: bold;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.functionSmallDisabled {
+  position: relative;
+  border: 3px solid rgb(128, 89, 79);
+  background-color: rgb(185, 185, 185);
+  display: inline-block;
+  width: fit-content;
+  padding: 3px 7px;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.functionTiny {
+  position: relative;
+  border: 3px solid rgb(128, 89, 79);
+  display: inline-block;
+  width: fit-content;
+  padding: 3px 7px;
+  font-weight: bold;
+  font-size: 0.9em;
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.functionTiny:hover {
+  background-color: rgb(250, 223, 187);
+}
+
+.functionTiny:active {
   background-color: rgb(245, 199, 138);
 }
 
@@ -526,11 +569,22 @@ Admin
   padding: 30px;
   margin: 0 auto;
   z-index: 9999;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
 @media print {
   .hidePrint {
     display: none;
+  }
+  .home {
+    display: none;
+  }
+  .navbarButton {
+    display: none;
+  }
+  .print {
+    border: none;
+    padding: 0;
   }
 }
 
@@ -754,6 +808,41 @@ Others
   border-right: 12px solid transparent;
 }
 
+.sortUpSmall {
+  margin: 0 auto;
+  width: 0px;
+  height: 0px;
+  border-bottom: 12px solid black;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  cursor: pointer;
+  margin-bottom: 5px;
+}
+
+.sortUpSmall:active {
+  border-bottom: 10px solid black;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+
+.sortDownSmall {
+  margin: 0 auto;
+  width: 0px;
+  height: 0px;
+  border-bottom: 12px solid black;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  transform: rotate(180deg);
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.sortDownSmall:active {
+  border-bottom: 10px solid black;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+}
+
 .categoryInput {
   width: 30%;
   font-size: 1.2em;
@@ -780,4 +869,235 @@ Others
 
 .categoryDetails:active {
   font-size: 25px;
+}
+
+.entryInput {
+  width: 90%;
+  font-size: 1.1em;
+  margin-top: 5px;
+}
+
+.tables {
+  margin-left: max(50px, 5%);
+  margin-right: max(350px, 25%);
+}
+
+.newOrders {
+  position: fixed;
+  width: 20%;
+  min-width: 300px;
+  height: 100%;
+  background-color: rgb(250, 223, 187);
+  border-left: 3px solid gray;
+  top: 0;
+  right: 0;
+  overflow: auto;
+}
+
+.newOrderEntry {
+  position: relative;
+  border: 2px solid black;
+  margin-bottom: 10px;
+  background-color: rgb(250, 246, 241);
+}
+
+/* ================================
+Scrollbar
+=================================== */
+
+.newOrders::-webkit-scrollbar {
+  width: 20px;
+  box-shadow: inset 0 0 14px 14px transparent;
+}
+
+/* Track */
+.newOrders::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* Handle */
+.newOrders::-webkit-scrollbar-thumb {
+  border: 6px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  border-radius: 9999px;
+  background-color: #aaaaaa;
+}
+
+/* Handle on hover */
+.newOrders::-webkit-scrollbar-thumb:hover {
+  border: 5px solid rgba(0, 0, 0, 0);
+  background-clip: padding-box;
+  border-radius: 9999px;
+  background-color: #6b6b6b;
+}
+
+/* ================================
+Outlet Bill
+=================================== */
+
+.billContainer {
+  position: relative;
+  margin: 0 auto;
+  max-width: 800px;
+  font-size: 1.3em;
+}
+
+.billHeader {
+  display: grid;
+  grid-template-columns: 15% auto 15% 25%;
+  text-align: left;
+  font-size: 1.3em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding-left: 30px;
+  padding-right: 30px;
+}
+
+.billOrder {
+  display: grid;
+  row-gap: 10px;
+  grid-template-columns: 15% auto 15% 170px;
+  text-align: left;
+  position: relative;
+  border: 2px solid black;
+  padding-left: 30px;
+  padding-right: 30px;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.billConsolidated {
+  text-align: left;
+  position: relative;
+  border: 2px solid black;
+  padding-left: 30px;
+  padding-right: 30px;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.billConsolidatedEntry {
+  display: grid;
+  grid-template-columns: 15% auto 15% 170px;
+}
+
+.billEdit {
+  width: 50%;
+  font-size: 1em;
+}
+
+.functionBill {
+  position: relative;
+  border: 3px solid rgb(128, 89, 79);
+  display: inline-block;
+  width: fit-content;
+  padding: 3px 7px;
+  font-weight: bold;
+  font-size: 0.8em;
+  cursor: pointer;
+}
+
+.functionBill:hover {
+  background-color: rgb(250, 223, 187);
+}
+
+.functionBill:active {
+  background-color: rgb(245, 199, 138);
+}
+
+/* ================================
+Client
+=================================== */
+
+.clientNavbar {
+  display: flex;
+  justify-content: space-between;
+  position: fixed;
+  height: 50px;
+  width: 100%;
+  background-color: rgb(245, 199, 138);
+  top: 0;
+  align-items: center;
+}
+
+.clientContent {
+  margin-top: 60px;
+}
+
+.clientNavbarIconContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.clientNavbarMenuContainer {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
+  width: 50px;
+  background-color: rgb(177, 156, 129);
+}
+
+.clientNavbarIcon {
+  height: 30px;
+  width: fit-content;
+  vertical-align: middle;
+}
+
+.clientNavbarCartCount {
+  top: 0;
+  right: 0;
+  position: absolute;
+  font-weight: bold;
+  background-color: red;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 50px;
+}
+
+.clientCategory {
+  display: grid;
+  grid-template-columns: 46.5% 46.5%;
+  margin-left: 5%;
+  margin-right: 5%;
+  column-gap: 6%;
+}
+
+.clientEntry {
+  width: 100%;
+  height: 190px;
+  padding-top: 10px;
+}
+
+.clientEntry img {
+  max-height: 100px;
+}
+
+.clientEntryDetails {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.clientEntryDetails img {
+  max-width: 80%;
+  max-height: 220px;
+}
+
+.clientArrowContainer {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 50px;
+  margin-right: 10px;
+}
+
+.recharts-tooltip-wrapper {
+  background-color: rgb(250, 223, 187);
+  border: 2px solid black;
+  border-radius: 20px;
 }

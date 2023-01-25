@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function ClientEntryDetails({
   entryData,
@@ -7,14 +7,15 @@ export default function ClientEntryDetails({
   setCurrentOrder,
 }) {
   const ref = useRef();
+  const [added, setAdded] = useState(false);
 
   function increaseQuantity() {
-    ref.current.value = parseInt(ref.current.value) + 1;
+    ref.current.innerHTML = parseInt(ref.current.innerHTML) + 1;
   }
 
   function decreaseQuantity() {
-    if (ref.current.value !== "1") {
-      ref.current.value = parseInt(ref.current.value) - 1;
+    if (ref.current.innerHTML !== "1") {
+      ref.current.innerHTML = parseInt(ref.current.innerHTML) - 1;
     }
   }
 
@@ -27,13 +28,17 @@ export default function ClientEntryDetails({
       updatedItemList.push({
         name: entryData.name,
         price: parseFloat(entryData.price),
-        quantity: parseInt(ref.current.value),
+        quantity: parseInt(ref.current.innerHTML),
         lineTotal: parseFloat(
-          (parseFloat(entryData.price) * parseInt(ref.current.value)).toFixed(2)
+          (
+            parseFloat(entryData.price) * parseInt(ref.current.innerHTML)
+          ).toFixed(2)
         ),
       });
     } else {
-      updatedItemList[duplicateCheck].quantity += parseInt(ref.current.value);
+      updatedItemList[duplicateCheck].quantity += parseInt(
+        ref.current.innerHTML
+      );
       updatedItemList[duplicateCheck].lineTotal = parseFloat(
         (
           updatedItemList[duplicateCheck].price *
@@ -42,28 +47,64 @@ export default function ClientEntryDetails({
       );
     }
     setCurrentOrder({ ...currentOrder, items: updatedItemList });
+    setAdded(true);
+
+    const myTimeout = setTimeout(() => {
+      setAdded(false);
+    }, 1000);
   }
 
   return (
-    <div style={{ border: "1px solid black" }}>
-      <button
+    <div className="clientEntryDetails">
+      <div
+        className="functionSmallMobile"
+        style={{ display: "block" }}
         onClick={() => {
           setEntryIndex();
         }}
       >
-        Back
-      </button>
-      <h1>Details</h1>
+        ← Back
+      </div>
+      <h2>{entryData.name}</h2>
       <img src={entryData.imageUrl} alt={"food_image"} />
-      <p>{entryData.name}</p>
-      <p>${(entryData.price / 100).toFixed(2)}</p>
       <p>{entryData.description}</p>
+      <h3>${(entryData.price / 100).toFixed(2)}</h3>
 
-      <button onClick={increaseQuantity}>Up</button>
-      <input ref={ref} type="number" disabled={true} defaultValue={1} />
-      <button onClick={decreaseQuantity}>Down</button>
-      <div>
-        <button onClick={addtoCart}>Add to cart</button>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "30px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div className="clientArrowContainer">
+            <div className="sortUp" onClick={increaseQuantity} />
+            <div style={{ height: "10px" }} />
+            <div className="sortDown" onClick={decreaseQuantity} />
+          </div>
+          <div
+            style={{
+              display: "inline-block",
+              fontSize: "1.2em",
+            }}
+          >
+            Qty:{" "}
+            <span ref={ref} style={{ fontWeight: "bold" }}>
+              1
+            </span>
+          </div>
+        </div>
+        <div>
+          {added ? (
+            <div className="functionSmallDisabled">Item Added</div>
+          ) : (
+            <div className="functionSmallMobile" onClick={addtoCart}>
+              Add to cart
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

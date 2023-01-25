@@ -66,12 +66,14 @@ export default function PrintItem({
     return (
       <>
         <h1>Table {tableList[printStatus.index].tableName}</h1>
-        <p>Time: {new Date().toLocaleString()}</p>
+        <p style={{ fontWeight: "bold" }}>
+          Time: {new Date().toLocaleString()}
+        </p>
         <QRCode
           value={`localhost:3000/client/${tableList[printStatus.index].room}`}
           size={200}
         />
-        <p>Scan the QR code to order</p>
+        <p style={{ fontWeight: "bold" }}>Scan the QR code to order</p>
       </>
     );
   }
@@ -79,33 +81,68 @@ export default function PrintItem({
   function PrintBill() {
     return (
       <>
-        <p>{outletData.name}</p>
-        <p>{outletData.address1}</p>
-        <p>{outletData.address2}</p>
-        <p>
+        <div>{outletData.name}</div>
+        <div>{outletData.address1}</div>
+        <div>{outletData.address2}</div>
+        <div>
           TEL: {outletData.telephone} FAX: {outletData.fax}
-        </p>
-        <p>GST No: {outletData.taxNum}</p>
-        {outletData.footer ? <p>{outletData.footer}</p> : ""}
-        <p>============================================================</p>
-        <p>
-          Table: {tableList[printStatus.index].tableName}{" "}
-          {new Date(tableList[printStatus.index].time).toLocaleString()}
-        </p>
-        <p>============================================================</p>
-        <p>Qty Item Total</p>
+        </div>
+        <div>GST No: {outletData.taxNum}</div>
+        {outletData.footer ? <div>{outletData.footer}</div> : ""}
+        <div>=======================================</div>
+        <div>
+          <span style={{ float: "left" }}>
+            Table: {tableList[printStatus.index].tableName}
+          </span>
+          <span style={{ float: "right" }}>
+            {new Date(tableList[printStatus.index].time).toLocaleString()}
+          </span>
+        </div>
+        <div>=======================================</div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "10% auto 15%",
+            textAlign: "left",
+            marginBottom: "10px",
+          }}
+        >
+          <div>Qty</div>
+          <div>Item</div>
+          <div style={{ textAlign: "right" }}>Total</div>
+        </div>
         {consolidatedBill.map((entry, index) => {
           return (
-            <p key={index}>
-              {entry.quantity} {entry.name} {(entry.lineTotal / 100).toFixed(2)}
-            </p>
+            <div
+              key={index}
+              style={{
+                display: "grid",
+                gridTemplateColumns: "10% auto 15%",
+                textAlign: "left",
+              }}
+            >
+              <div>{entry.quantity}</div>
+              <div>{entry.name}</div>
+              <div style={{ textAlign: "right" }}>
+                {(entry.lineTotal / 100).toFixed(2)}
+              </div>
+            </div>
           );
         })}
-        <p>Subtotal: {(calculations.subtotal / 100).toFixed(2)}</p>
-        <p>Tax: {(calculations.tax / 100).toFixed(2)}</p>
-        <p>Service Charge: {(calculations.service / 100).toFixed(2)}</p>
-        <p>Total: {(calculations.total / 100).toFixed(2)}</p>
-        <p>============================================================</p>
+        <div style={{ textAlign: "right", marginTop: "20px" }}>
+          <div>Subtotal: {(calculations.subtotal / 100).toFixed(2)}</div>
+          <div>
+            Tax ({menuData.tax}%): {(calculations.tax / 100).toFixed(2)}
+          </div>
+          <div>
+            Service Charge ({menuData.service}%):{" "}
+            {(calculations.service / 100).toFixed(2)}
+          </div>
+          <div style={{ marginTop: "20px" }}>
+            Total: {(calculations.total / 100).toFixed(2)}
+          </div>
+        </div>
+        <p>=======================================</p>
         <p> THANK YOU, PLEASE COME AGAIN!</p>
       </>
     );
@@ -132,13 +169,15 @@ export default function PrintItem({
     <>
       <div className="hidePrint">
         <h1>Use Ctrl + P to print</h1>
-        <button
+        <div
+          className="function"
+          style={{ marginBottom: "20px" }}
           onClick={() => {
             setPrintStatus();
           }}
         >
-          Back
-        </button>
+          Back To Table
+        </div>
       </div>
       <div
         className="print"

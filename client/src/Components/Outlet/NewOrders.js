@@ -12,25 +12,31 @@ export default function NewOrders({
   }
 
   return (
-    <>
-      <h2>New Orders</h2>
+    <div style={{ marginLeft: "5%", marginRight: "5%", paddingBottom: "50px" }}>
+      <h2 style={{ marginBottom: "10px" }}>New Orders</h2>
+      <div className="separator" style={{ marginBottom: "10px" }} />
+
       {newOrderList.map((newOrder, orderIndex) => (
-        <div key={orderIndex} style={{ border: "1px solid black" }}>
-          <button
+        <div key={orderIndex} className="newOrderEntry">
+          <div
+            className="functionSmall"
+            style={{ position: "absolute", left: "10px", top: "10px" }}
             onClick={() => {
               setPrintStatus({ type: "order", index: orderIndex });
             }}
           >
             Print
-          </button>
-          <button
+          </div>
+          <div
+            className="modalClose"
+            style={{ top: "0", right: "15px" }}
             onClick={() => {
               closeOrder(orderIndex);
             }}
           >
-            Close
-          </button>
-          <h2>Table {newOrder.tableName}</h2>
+            x
+          </div>
+          <h2 style={{ marginTop: "15px" }}>Table {newOrder.tableName}</h2>
           <p>Time: {new Date(newOrder.time).toLocaleTimeString()}</p>
           {newOrder.items.map((item, itemIndex) => (
             <p key={itemIndex}>
@@ -39,6 +45,6 @@ export default function NewOrders({
           ))}
         </div>
       ))}
-    </>
+    </div>
   );
 }

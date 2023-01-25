@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import ClientContent from "./ClientContent";
-import ClientNavbar from "./ClientNavbar";
+import ClientMenu from "./ClientMenu";
 import ClientEntryDetails from "./ClientEntryDetails";
 import ClientCart from "./ClientCart";
 import ClientBill from "./ClientBill";
+import receipt from "../../Assets/receipt.png";
+import cart from "../../Assets/cart.png";
 
 export default function Client({ setClientOverride, socket }) {
   const [menuData, setMenuData] = useState();
@@ -14,6 +16,7 @@ export default function Client({ setClientOverride, socket }) {
   const [currentOrder, setCurrentOrder] = useState({ roomid: "", items: [] });
   const [showCart, setShowCart] = useState(false);
   const [showBill, setShowBill] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
   const params = useParams();
 
   useEffect(() => {
@@ -63,65 +66,124 @@ export default function Client({ setClientOverride, socket }) {
     localStorage.setItem("currentOrder", JSON.stringify(currentOrder));
   }, [currentOrder]);
 
+  function toggleMenu() {
+    if (showMenu) {
+      setShowMenu(false);
+    } else {
+      setShowBill(false);
+      setShowCart(false);
+      setShowMenu(true);
+    }
+  }
+
+  function toggleCart() {
+    if (showCart) {
+      setEntryIndex();
+      setShowCart(false);
+    } else {
+      setShowBill(false);
+      setShowMenu(false);
+      setShowCart(true);
+    }
+  }
+
+  function toggleBill() {
+    if (showBill) {
+      setEntryIndex();
+      setShowBill(false);
+    } else {
+      setShowCart(false);
+      setShowMenu(false);
+      setShowBill(true);
+    }
+  }
+
   return (
     <>
-      <h1>Client</h1>
-      {errorMessage ? <h1>{errorMessage}</h1> : ""}
-      <div className="orderBar">
-        <div
-          onClick={() => {
-            setShowBill(false);
-            setShowCart(true);
-          }}
-        >
-          Cart: {currentOrder.items.length}
+      <div className="clientNavbar">
+        <div>
+          <div className="clientNavbarMenuContainer" onClick={toggleMenu}>
+            {menuData ? (
+              <img className="clientNavbarIcon" src={menuData.logoUrl} />
+            ) : (
+              ""
+            )}
+          </div>
         </div>
-        <div
-          onClick={() => {
-            setShowBill(true);
-            setShowCart(false);
-          }}
-        >
-          Bill
+        <div style={{ paddingRight: "5%" }}>
+          <div
+            className="clientNavbarIconContainer"
+            style={{ marginRight: "10px" }}
+            onClick={toggleCart}
+          >
+            <img className="clientNavbarIcon" src={cart} />
+            {currentOrder.items.length > 0 ? (
+              <div className="clientNavbarCartCount">
+                {currentOrder.items.length}
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+          <div className="clientNavbarIconContainer" onClick={toggleBill}>
+            <img className="clientNavbarIcon" src={receipt} />
+          </div>
         </div>
       </div>
-      {menuData ? (
-        <>
-          <ClientNavbar menuData={menuData} setContentIndex={setContentIndex} />
-          {showCart ? (
-            <ClientCart
-              currentOrder={currentOrder}
-              setCurrentOrder={setCurrentOrder}
-              menuData={menuData}
-              setShowCart={setShowCart}
-              setEntryIndex={setEntryIndex}
-              socket={socket}
-              roomid={params.roomid}
-            />
-          ) : showBill ? (
-            <ClientBill
-              menuData={menuData}
-              roomid={params.roomid}
-              setShowBill={setShowBill}
-              setEntryIndex={setEntryIndex}
-            />
-          ) : entryIndex === undefined ? (
-            <ClientContent
-              categoryData={menuData.categories[contentIndex]}
-              setEntryIndex={setEntryIndex}
-            />
-          ) : (
-            <ClientEntryDetails
-              entryData={menuData.categories[contentIndex].entries[entryIndex]}
-              setEntryIndex={setEntryIndex}
-              currentOrder={currentOrder}
-              setCurrentOrder={setCurrentOrder}
-            />
-          )}
-        </>
-      ) : (
-        ""
-      )}
+      <div className="clientContent">
+        {errorMessage ? <h1>{errorMessage}</h1> : ""}
+        {menuData ? (
+          <>
+            {showMenu ? (
+              <ClientMenu
+                menuData={menuData}
+                setContentIndex={setContentIndex}
+                setEntryIndex={setEntryIndex}
+                setShowMenu={setShowMenu}
+              />
+            ) : (
+              ""
+            )}
+            {showCart ? (
+              <ClientCart
+                currentOrder={currentOrder}
+                setCurrentOrder={setCurrentOrder}
+                menuData={menuData}
+                socket={socket}
+                roomid={params.roomid}
+              />
+            ) : (
+              ""
+            )}
+            {showBill ? (
+              <ClientBill menuData={menuData} roomid={params.roomid} />
+            ) : (
+              ""
+            )}
+            {!showMenu && !showCart && !showBill ? (
+              entryIndex === undefined ? (
+                <ClientContent
+                  categoryData={menuData.categories[contentIndex]}
+                  setEntryIndex={setEntryIndex}
+                />
+              ) : (
+                <ClientEntryDetails
+                  entryData={
+                    menuData.categories[contentIndex].entries[entryIndex]
+                  }
+                  setEntryIndex={setEntryIndex}
+                  currentOrder={currentOrder}
+                  setCurrentOrder={setCurrentOrder}
+                />
+              )
+            ) : (
+              ""
+            )}
+          </>
+        ) : (
+          ""
+        )}
+      </div>
     </>
   );
 }

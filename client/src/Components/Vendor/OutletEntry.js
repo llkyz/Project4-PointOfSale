@@ -19,39 +19,41 @@ export default function OutletEntry({ data, getOutletList }) {
   const [archiveList, setArchiveList] = useState();
   const [archiveStats, setArchiveStats] = useState();
   const [showChart, setShowChart] = useState("revenue");
+  const [fetchDate, setFetchDate] = useState(new Date());
 
   useEffect(() => {
-    async function getOutletStats() {
-      let endDate = new Date();
-      let startDate = new Date();
-      startDate.setDate(startDate.getDate() - 30);
-      let startString = `${startDate.getFullYear()}-${
-        startDate.getMonth() + 1
-      }-${startDate.getDate()}`;
-      let endString = `${endDate.getFullYear()}-${
-        endDate.getMonth() + 1
-      }-${endDate.getDate()}`;
-
-      const res = await fetch(
-        `/api/archive/vendor/${data._id}?startDate=${startString}&endDate=${endString}`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      let result = await res.json();
-      if (res.ok) {
-        setArchiveList(result.list);
-        setArchiveStats(result.stats);
-      } else {
-        console.log(result.data);
-      }
-    }
-
     if (showDetails) {
       getOutletStats();
     }
-  }, [showDetails, data._id]);
+    //eslint-disable-next-line
+  }, [showDetails, data._id, fetchDate]);
+
+  async function getOutletStats() {
+    let endDate = new Date(fetchDate.getTime());
+    let startDate = new Date(fetchDate.getTime());
+    startDate.setDate(startDate.getDate() - 180);
+    let startString = `${startDate.getFullYear()}-${
+      startDate.getMonth() + 1
+    }-${startDate.getDate()}`;
+    let endString = `${endDate.getFullYear()}-${
+      endDate.getMonth() + 1
+    }-${endDate.getDate()}`;
+
+    const res = await fetch(
+      `/api/archive/vendor/${data._id}?startDate=${startString}&endDate=${endString}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+    let result = await res.json();
+    if (res.ok) {
+      setArchiveList(result.list);
+      setArchiveStats(result.stats);
+    } else {
+      console.log(result.data);
+    }
+  }
 
   function toggleShowDetails() {
     if (showDetails) {
@@ -109,6 +111,18 @@ export default function OutletEntry({ data, getOutletList }) {
       setArchiveList(updatedArchive);
     }
     console.log(result.data);
+  }
+
+  function chartBack() {
+    let newDate = new Date(fetchDate.getTime());
+    newDate.setDate(newDate.getDate() - 180);
+    setFetchDate(newDate);
+  }
+
+  function chartForward() {
+    let newDate = new Date(fetchDate.getTime());
+    newDate.setDate(newDate.getDate() + 180);
+    setFetchDate(newDate);
   }
 
   return (
@@ -175,7 +189,7 @@ export default function OutletEntry({ data, getOutletList }) {
                 {showChart === "orders" ? "O R D E R S" : "R E V E N U E"}
               </div>
               <div className="separator" />
-              <div className="chartArrowContainer">
+              <div className="chartArrowContainer" onClick={chartBack}>
                 <div className="chartArrowLeft" />
               </div>
               <div className="chartContainer">
@@ -201,13 +215,13 @@ export default function OutletEntry({ data, getOutletList }) {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
-              <div className="chartArrowContainer">
+              <div className="chartArrowContainer" onClick={chartForward}>
                 <div className="chartArrowRight" />
               </div>
               <div className="header">A R C H I V E</div>
               <div className="separator" />
               {!archiveList || archiveList.length === 0 ? (
-                "No archived orders"
+                <h2>No archived orders</h2>
               ) : (
                 <>
                   <div className="archiveGrid">

@@ -1,7 +1,7 @@
 export default function ClientEntry({ entryData, index, setEntryIndex }) {
   return (
     <div
-      style={{ border: "1px solid black" }}
+      className="clientEntry"
       onClick={() => {
         setEntryIndex(index);
       }}

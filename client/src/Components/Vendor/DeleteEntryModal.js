@@ -42,17 +42,32 @@ export default function DeleteEntryModal({
           setShowDeleteEntryModal(false);
         }}
       />
-      <div className="modal">
+      <div className="modal" style={{ textAlign: "center" }}>
+        <div
+          className="modalClose"
+          onClick={() => {
+            setShowDeleteEntryModal(false);
+          }}
+        >
+          x
+        </div>
         <h1>Delete this entry?</h1>
         {errorMessage ? <h2>{errorMessage}</h2> : ""}
-        <button onClick={doDeleteEntry}>Confirm</button>
-        <button
+        <div
+          className="function"
+          style={{ marginRight: "20px" }}
+          onClick={doDeleteEntry}
+        >
+          Confirm
+        </div>
+        <div
+          className="function"
           onClick={() => {
             setShowDeleteEntryModal(false);
           }}
         >
           Cancel
-        </button>
+        </div>
       </div>
     </>
   );

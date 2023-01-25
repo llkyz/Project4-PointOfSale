@@ -32,10 +32,10 @@ export default function BillEntry({
 
   return (
     <>
-      <p key={entryIndex}>
-        {item.name} | {(item.price / 100).toFixed(2)} |{" "}
+      <div>
         {editEntry ? (
           <input
+            className="billEdit"
             type="number"
             ref={ref}
             defaultValue={item.quantity}
@@ -52,50 +52,70 @@ export default function BillEntry({
           />
         ) : (
           item.quantity
-        )}{" "}
-        | {(lineTotalState / 100).toFixed(2)}
-      </p>
-      {editEntry ? (
-        <>
-          <button onClick={doUpdateQuantity}>Done</button>
-          <button
-            onClick={() => {
-              setLineTotalState(item.quantity * item.price);
-              setEditEntry(false);
-            }}
-          >
-            Cancel
-          </button>
-        </>
-      ) : deleteEntry ? (
-        <>
-          <button onClick={doDeleteEntry}>Confirm</button>
-          <button
-            onClick={() => {
-              setDeleteEntry(false);
-            }}
-          >
-            Cancel
-          </button>
-        </>
-      ) : (
-        <>
-          <button
-            onClick={() => {
-              setEditEntry(true);
-            }}
-          >
-            Edit
-          </button>
-          <button
-            onClick={() => {
-              setDeleteEntry(true);
-            }}
-          >
-            Delete
-          </button>
-        </>
-      )}
+        )}
+      </div>
+      <div>{item.name}</div>
+      <div>{(lineTotalState / 100).toFixed(2)}</div>
+      <div style={{ textAlign: "center" }}>
+        {editEntry ? (
+          <>
+            <div
+              className="functionBill"
+              style={{ marginRight: "10px" }}
+              onClick={doUpdateQuantity}
+            >
+              Done
+            </div>
+            <div
+              className="functionBill"
+              onClick={() => {
+                setLineTotalState(item.quantity * item.price);
+                setEditEntry(false);
+              }}
+            >
+              Cancel
+            </div>
+          </>
+        ) : deleteEntry ? (
+          <>
+            <div
+              className="functionBill"
+              style={{ marginRight: "10px" }}
+              onClick={doDeleteEntry}
+            >
+              Confirm
+            </div>
+            <div
+              className="functionBill"
+              onClick={() => {
+                setDeleteEntry(false);
+              }}
+            >
+              Cancel
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              className="functionBill"
+              style={{ marginRight: "10px" }}
+              onClick={() => {
+                setEditEntry(true);
+              }}
+            >
+              Edit
+            </div>
+            <div
+              className="functionBill"
+              onClick={() => {
+                setDeleteEntry(true);
+              }}
+            >
+              Delete
+            </div>
+          </>
+        )}
+      </div>
     </>
   );
 }

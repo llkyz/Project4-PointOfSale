@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import ReceiptSettings from "./ReceiptSettings";
 import TableSettings from "./TableSettings";
+import settings from "../../Assets/settings.png";
+import table from "../../Assets/table.png";
+import receipt from "../../Assets/receipt.png";
 
 export default function OutletSettings({ accessLevel }) {
   const [settingData, setSettingData] = useState();
@@ -64,22 +67,42 @@ export default function OutletSettings({ accessLevel }) {
         />
       ) : (
         <>
-          <h1>Outlet Settings</h1>
-          <div
-            style={{ display: "inline-block", border: "1px solid black" }}
-            onClick={() => {
-              setView("receipt");
-            }}
-          >
-            Receipt Settings
+          <div className="pageHeader">
+            <img className="pageImage" src={settings} />
+            <div className="pageTitle">Outlet Settings</div>
           </div>
-          <div
-            style={{ display: "inline-block", border: "1px solid black" }}
-            onClick={() => {
-              setView("table");
-            }}
-          >
-            Table Settings
+          <div style={{ marginTop: "150px" }}>
+            <div
+              className="homeLink"
+              onClick={() => {
+                setView("receipt");
+              }}
+            >
+              <div className="container">
+                <img src={receipt} />
+                <h1>Receipt Settings</h1>
+              </div>
+              <div className="description">
+                <p>
+                  Configure information that will be displayed on customer
+                  receipts.
+                </p>
+              </div>
+            </div>
+            <div
+              className="homeLink"
+              onClick={() => {
+                setView("table");
+              }}
+            >
+              <div className="container">
+                <img src={table} />
+                <h1>Table Settings</h1>
+              </div>
+              <div className="description">
+                <p>Add, remove, and rename seating tables.</p>
+              </div>
+            </div>
           </div>
         </>
       )}

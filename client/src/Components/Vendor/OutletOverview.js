@@ -18,11 +18,15 @@ export default function OutletOverview() {
   const [vendorOrder, setVendorOrder] = useState();
   const [showChart, setShowChart] = useState("revenue");
   const [showNewOutletModal, setShowNewOutletModal] = useState(false);
+  const [fetchDate, setFetchDate] = useState(new Date());
 
   useEffect(() => {
     getOutletList();
-    getVendorStats();
   }, []);
+
+  useEffect(() => {
+    getVendorStats();
+  }, [fetchDate]);
 
   async function getOutletList() {
     const res = await fetch("/api/vendor/outlet", {
@@ -38,7 +42,7 @@ export default function OutletOverview() {
   }
 
   async function getVendorStats() {
-    let endDate = new Date();
+    let endDate = new Date(fetchDate.getTime());
     let endString = `${endDate.getFullYear()}-${
       endDate.getMonth() + 1
     }-${endDate.getDate()}`;
@@ -99,6 +103,18 @@ export default function OutletOverview() {
     return null;
   }
 
+  function chartBack() {
+    let newDate = new Date(fetchDate.getTime());
+    newDate.setDate(newDate.getDate() - 180);
+    setFetchDate(newDate);
+  }
+
+  function chartForward() {
+    let newDate = new Date(fetchDate.getTime());
+    newDate.setDate(newDate.getDate() + 180);
+    setFetchDate(newDate);
+  }
+
   return (
     <div style={{ width: "70%", margin: "0 auto" }}>
       <div className="pageHeader">
@@ -119,7 +135,7 @@ export default function OutletOverview() {
       </div>
       {vendorRevenue && vendorOrder ? (
         <div>
-          <div className="chartArrowContainer">
+          <div className="chartArrowContainer" onClick={chartBack}>
             <div className="chartArrowLeft" />
           </div>
           <div className="chartContainer">
@@ -153,7 +169,7 @@ export default function OutletOverview() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div className="chartArrowContainer">
+          <div className="chartArrowContainer" onClick={chartForward}>
             <div className="chartArrowRight" />
           </div>
         </div>
