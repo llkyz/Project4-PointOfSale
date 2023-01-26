@@ -2,7 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { DebounceInput } from "react-debounce-input";
 import DeleteEntryModal from "./DeleteEntryModal";
 import refresh from "../../Assets/refresh.png";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function MenuEntry({
   entryIndex,
@@ -25,7 +26,8 @@ export default function MenuEntry({
       formData.append("categoryIndex", categoryIndex);
       formData.append("entryIndex", entryIndex);
 
-      let res = await fetch(config.SERVER + "/api/vendor/menu/entry/image/", {
+      let res = await fetch(`${config.SERVER}/api/vendor/menu/entry/image/`, {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "POST",
         credentials: "include",
         body: formData,
@@ -45,10 +47,11 @@ export default function MenuEntry({
   }, [uploadedFile, categoryIndex, entryIndex]);
 
   async function removeImage() {
-    const res = await fetch(config.SERVER + "/api/vendor/menu/entry/image", {
+    const res = await fetch(`${config.SERVER}/api/vendor/menu/entry/image`, {
       method: "DELETE",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

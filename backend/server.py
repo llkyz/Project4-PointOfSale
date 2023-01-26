@@ -14,7 +14,7 @@ from pymongo import ReturnDocument
 
 x = datetime.datetime.now()
 app = Flask(__name__)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins='*')
 
 app.register_blueprint(userRoutes, url_prefix="/api/user")
 app.register_blueprint(adminRoutes, url_prefix="/api/admin")

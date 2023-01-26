@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import QRCode from "react-qr-code";
+import config from "../../config";
 
 export default function PrintItem({
   tableList,
@@ -18,9 +19,16 @@ export default function PrintItem({
   const [consolidatedBill, setConsolidatedBill] = useState([]);
 
   useEffect(() => {
+    let tableIndex = 0;
+    for (let x in tableList) {
+      if (tableList[x].tableNum === printStatus.index) {
+        tableIndex = x;
+      }
+    }
+
     if (printStatus.type === "bill") {
       let subtotal = 0;
-      for (const x of tableList[printStatus.index].orders) {
+      for (const x of tableList[tableIndex].orders) {
         for (const y of x) {
           subtotal += y.lineTotal;
         }
@@ -36,9 +44,7 @@ export default function PrintItem({
       });
 
       let consolidatedList = [];
-      let newList = JSON.parse(
-        JSON.stringify(tableList[printStatus.index].orders)
-      );
+      let newList = JSON.parse(JSON.stringify(tableList[tableIndex].orders));
       newList.forEach((order) => {
         order.forEach((entry) => {
           let foundIndex = consolidatedList
@@ -63,14 +69,21 @@ export default function PrintItem({
   ]);
 
   function PrintQR() {
+    let tableIndex = 0;
+    for (let x in tableList) {
+      if (tableList[x].tableNum === printStatus.index) {
+        tableIndex = x;
+      }
+    }
+
     return (
       <>
-        <h1>Table {tableList[printStatus.index].tableName}</h1>
+        <h1>Table {tableList[tableIndex].tableName}</h1>
         <p style={{ fontWeight: "bold" }}>
           Time: {new Date().toLocaleString()}
         </p>
         <QRCode
-          value={`localhost:3000/client/${tableList[printStatus.index].room}`}
+          value={`${config.CLIENT}/client/${tableList[tableIndex].room}`}
           size={200}
         />
         <p style={{ fontWeight: "bold" }}>Scan the QR code to order</p>
@@ -79,6 +92,13 @@ export default function PrintItem({
   }
 
   function PrintBill() {
+    let tableIndex = 0;
+    for (let x in tableList) {
+      if (tableList[x].tableNum === printStatus.index) {
+        tableIndex = x;
+      }
+    }
+
     return (
       <>
         <div>{outletData.name}</div>
@@ -92,10 +112,10 @@ export default function PrintItem({
         <div>=======================================</div>
         <div>
           <span style={{ float: "left" }}>
-            Table: {tableList[printStatus.index].tableName}
+            Table: {tableList[tableIndex].tableName}
           </span>
           <span style={{ float: "right" }}>
-            {new Date(tableList[printStatus.index].time).toLocaleString()}
+            {new Date(tableList[tableIndex].time).toLocaleString()}
           </span>
         </div>
         <div>=======================================</div>

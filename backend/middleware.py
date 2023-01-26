@@ -8,9 +8,9 @@ from initialize import users, JWT_ALGORITHM, JWT_SECRET
 def admin_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        jwt_token = request.cookies.get("token")
+        token = request.headers['Authorization'].split()[1]
         try:
-            payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+            payload = jwt.decode(token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
             result = users.find_one({'_id': ObjectId(payload["_id"])})
             if not result:
                 return {'message': 'Token is invalid'}, 400   
@@ -24,9 +24,9 @@ def admin_required(f):
 def vendor_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        jwt_token = request.cookies.get("token")
+        token = request.headers['Authorization'].split()[1]
         try:
-            payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
+            payload = jwt.decode(token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
             result = users.find_one({'_id': ObjectId(payload["_id"])})
             if not result:
                 return {'message': 'Token is invalid'}, 400   
@@ -40,9 +40,9 @@ def vendor_required(f):
 def outlet_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        jwt_token = request.cookies.get("token")
+        token = request.headers['Authorization'].split()[1]
         try:
-            payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
+            payload = jwt.decode(token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
             result = users.find_one({'_id': ObjectId(payload["_id"])})
             if not result:
                 return {'message': 'Token is invalid'}, 400

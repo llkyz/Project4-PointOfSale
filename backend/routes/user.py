@@ -12,18 +12,18 @@ userRoutes = Blueprint('user', __name__, template_folder='templates')
 @userRoutes.get("/id")
 def get_user_id():
     try:
-        jwt_token = request.cookies.get("token")
-        if not jwt_token:
+        token = request.headers.get('Authorization').split()[1]
+        if not token:
             return ({'data': 'Token not found'}), 400
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
         return ({'data': payload['_id']}), 200
     except:
         return ({'data': 'An error occurred'}), 400
 
 @userRoutes.get("profile")
 def profile():
-    jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
+    token = request.headers.get('Authorization').split()[1]
+    payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
     result = users.find_one({'_id': ObjectId(payload["_id"])},{'password': 0})
     result['_id'] = str(result['_id'])
     result['vendor'] = str(result['vendor'])
@@ -31,9 +31,9 @@ def profile():
 
 @userRoutes.get("/verify")
 def verify():
-    jwt_token = request.cookies.get("token")
     try:
-        payload = jwt.decode(jwt_token, os.getenv('JWT_SECRET'),algorithms=[os.getenv('JWT_ALGORITHM')])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
         result = users.find_one({'_id': ObjectId(payload["_id"])})
         if not result:
             return {'accessLevel': 'notLoggedIn'}, 200    
@@ -53,7 +53,7 @@ def admin_vendor_login():
         return {"data": "Invalid username/password"}, 400
     else:
         payload = {'_id': str(result['_id']), 'exp': datetime.datetime.utcnow() + timedelta(days=90)}
-        jwt_token = jwt.encode(payload, os.getenv('JWT_SECRET'), os.getenv('JWT_ALGORITHM'))
+        jwt_token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
         return {'token': jwt_token, 'accessLevel': result["accessLevel"]}, 200
 
 @userRoutes.post("/outletlogin")
@@ -69,13 +69,13 @@ def outlet_login():
         return {"data": "Invalid username/password"}, 400
     else:
         payload = {'_id': str(result['_id']), 'exp': datetime.datetime.utcnow() + timedelta(days=90)}
-        jwt_token = jwt.encode(payload, os.getenv('JWT_SECRET'), os.getenv('JWT_ALGORITHM'))
+        jwt_token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
         return {'token': jwt_token, 'accessLevel': "outlet"}, 200
 
 @userRoutes.put("/<userid>")
 def edit_user(userid):
-    jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+    token = request.headers.get('Authorization').split()[1]
+    payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
     result = users.find_one({'_id': ObjectId(payload["_id"])})
     if not result:
         return ({"data": "Invalid Token"}), 400
@@ -116,8 +116,8 @@ def edit_user(userid):
 
 @userRoutes.delete("/<userid>")
 def delete_user(userid):
-    jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+    token = request.headers.get('Authorization').split()[1]
+    payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
     result = users.find_one({'_id': ObjectId(payload["_id"])})
     if not result:
         return ({"data": "Invalid Token"}), 400

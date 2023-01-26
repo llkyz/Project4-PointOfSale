@@ -1,5 +1,6 @@
 import { useState } from "react";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function NewOutletModal({
   setShowNewOutletModal,
@@ -22,10 +23,11 @@ export default function NewOutletModal({
       username: event.target.form[0].value,
       password: event.target.form[1].value,
     };
-    const res = await fetch(config.SERVER + "/api/vendor/outlet", {
+    const res = await fetch(`${config.SERVER}/api/vendor/outlet`, {
       method: "POST",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formBody),

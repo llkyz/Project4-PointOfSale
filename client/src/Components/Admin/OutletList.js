@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import OutletEntry from "./OutletEntry";
 import refresh from "../../Assets/refresh.png";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function OutletList({ vendorId }) {
   const [outletList, setOutletList] = useState([]);
@@ -13,8 +14,9 @@ export default function OutletList({ vendorId }) {
 
   async function getOutletList() {
     const res = await fetch(
-      config.SERVER + `/api/admin/outletlist/${vendorId}`,
+      `${config.SERVER}/api/admin/outletlist/${vendorId}`,
       {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "GET",
         credentials: "include",
       }

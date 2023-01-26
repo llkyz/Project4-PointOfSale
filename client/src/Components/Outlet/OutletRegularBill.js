@@ -1,5 +1,6 @@
 import BillEntry from "./BillEntry";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function OutletRegularBill({ tableInfo, refreshTables }) {
   function doDeleteOrder(orderIndex) {
@@ -9,10 +10,11 @@ export default function OutletRegularBill({ tableInfo, refreshTables }) {
   }
 
   async function sendUpdate(updatedList) {
-    const res = await fetch(config.SERVER + "/api/outlet/order", {
+    const res = await fetch(`${config.SERVER}/api/outlet/order`, {
       method: "PUT",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(updatedList),

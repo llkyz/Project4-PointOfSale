@@ -40,18 +40,20 @@ export default function MenuCategoryList({
         >
           New Category
         </div>
-        {menuData.categories.length === 0
-          ? "No categories available"
-          : menuData.categories.map((e, index) => (
-              <MenuCategory
-                key={index}
-                menuData={menuData}
-                categoryIndex={index}
-                setMenuData={setMenuData}
-                setUpdateMenuTrigger={setUpdateMenuTrigger}
-                getMenu={getMenu}
-              />
-            ))}
+        {menuData.categories.length === 0 ? (
+          <h2>No categories available</h2>
+        ) : (
+          menuData.categories.map((e, index) => (
+            <MenuCategory
+              key={index}
+              menuData={menuData}
+              categoryIndex={index}
+              setMenuData={setMenuData}
+              setUpdateMenuTrigger={setUpdateMenuTrigger}
+              getMenu={getMenu}
+            />
+          ))
+        )}
       </div>
     </div>
   );

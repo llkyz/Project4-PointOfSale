@@ -10,7 +10,8 @@ import {
 } from "recharts";
 import ArchiveEntry from "./ArchiveEntry";
 import finance from "../../Assets/finance.png";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function FinanceManager() {
   const [archiveList, setArchiveList] = useState([]);
@@ -35,9 +36,9 @@ export default function FinanceManager() {
     }-${endDate.getDate()}`;
 
     const res = await fetch(
-      config.SERVER +
-        `/api/archive/outlet?startDate=${startString}&endDate=${endString}`,
+      `${config.SERVER}/api/archive/outlet?startDate=${startString}&endDate=${endString}`,
       {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "GET",
         credentials: "include",
       }
@@ -87,10 +88,11 @@ export default function FinanceManager() {
   }
 
   async function deleteArchive(archiveId, archiveIndex) {
-    const res = await fetch(config.SERVER + `/api/archive/outlet`, {
+    const res = await fetch(`${config.SERVER}/api/archive/outlet`, {
       method: "DELETE",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ archiveId: archiveId }),

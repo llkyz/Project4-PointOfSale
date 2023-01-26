@@ -11,7 +11,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function OutletEntry({ data, getOutletList }) {
   const [showDetails, setShowDetails] = useState(false);
@@ -41,9 +42,9 @@ export default function OutletEntry({ data, getOutletList }) {
     }-${endDate.getDate()}`;
 
     const res = await fetch(
-      config.SERVER +
-        `/api/archive/vendor/${data._id}?startDate=${startString}&endDate=${endString}`,
+      `${config.SERVER}/api/archive/vendor/${data._id}?startDate=${startString}&endDate=${endString}`,
       {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "GET",
         credentials: "include",
       }
@@ -98,10 +99,11 @@ export default function OutletEntry({ data, getOutletList }) {
   }
 
   async function deleteArchive(archiveId, archiveIndex) {
-    const res = await fetch(config.SERVER + `/api/archive/vendor`, {
+    const res = await fetch(`${config.SERVER}/api/archive/vendor`, {
       method: "DELETE",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ archiveId: archiveId }),

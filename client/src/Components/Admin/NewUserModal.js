@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function NewUserModal({ setNewUserModal, getUsers }) {
   const [vendorList, setVendorList] = useState([]);
@@ -8,7 +9,8 @@ export default function NewUserModal({ setNewUserModal, getUsers }) {
 
   useEffect(() => {
     async function getAllVendors() {
-      const res = await fetch(config.SERVER + "/api/admin/vendorlist", {
+      const res = await fetch(`${config.SERVER}/api/admin/vendorlist`, {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "GET",
         credentials: "include",
       });
@@ -42,10 +44,11 @@ export default function NewUserModal({ setNewUserModal, getUsers }) {
     if (formBody.accessLevel === "outlet") {
       formBody.vendor = event.target.form[4].value;
     }
-    const res = await fetch(config.SERVER + "/api/admin/", {
+    const res = await fetch(`${config.SERVER}/api/admin/`, {
       method: "POST",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formBody),

@@ -45,8 +45,8 @@ def get_file_url(blob_name):
 @vendorRoutes.get("/outlet")
 @middleware.vendor_required
 def get_outlet_list():
-    jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+    token = request.headers.get('Authorization').split()[1]
+    payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
     outletResult = list(users.find({'vendor': ObjectId(payload['_id'])}, {'password': 0, 'accessLevel': 0, 'vendor': 0}))
     for x in outletResult:
@@ -56,8 +56,8 @@ def get_outlet_list():
 @vendorRoutes.post("/outlet")
 @middleware.vendor_required
 def new_outlet():
-    jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+    token = request.headers.get('Authorization').split()[1]
+    payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
     result = users.find_one({'_id': ObjectId(payload['_id'])})
     
     if result["accessLevel"] != "vendor":
@@ -74,8 +74,8 @@ def new_outlet():
 @vendorRoutes.put("/outlet/<userid>")
 @middleware.vendor_required
 def edit_outlet(userid):
-    jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+    token = request.headers.get('Authorization').split()[1]
+    payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
     result = users.find_one({'_id': ObjectId(payload["_id"])})
 
     data = request.get_json()
@@ -100,8 +100,8 @@ def edit_outlet(userid):
 @vendorRoutes.delete("/outlet/<userid>")
 @middleware.vendor_required
 def delete_outlet(userid):
-    jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+    token = request.headers.get('Authorization').split()[1]
+    payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
     deleteTarget = users.find_one_and_delete({'_id': ObjectId(userid), 'vendor': ObjectId(payload["_id"])})
     if deleteTarget:
@@ -115,8 +115,8 @@ def delete_outlet(userid):
 @vendorRoutes.get('/menu')
 @middleware.vendor_required
 def get_menu():
-    jwt_token = request.cookies.get("token")
-    payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+    token = request.headers.get('Authorization').split()[1]
+    payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
     result = menus.find_one({'vendor': ObjectId(payload['_id'])})
     if result:
@@ -142,21 +142,24 @@ def get_menu():
 @middleware.vendor_required
 def create_menu():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
-        result = menus.insert_one({'title': '', 'logo': '', 'tax': 0, 'service': 0, 'vendor': ObjectId(payload['_id']), 'categories': []})
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
+        menus.insert_one({'title': '', 'logo': '', 'tax': 0, 'service': 0, 'vendor': ObjectId(payload['_id']), 'categories': []})
+        result = menus.find_one({'vendor': ObjectId(payload['_id'])})
         result['_id'] = str(result['_id'])
         result['vendor'] = str(result['vendor'])
+        result['logoUrl'] = get_file_url('placeholder.jpg')
         return ({'data': result}), 200
-    except:
+    except Exception as e:
+        print(e)
         return ({'data': 'An error occurred'}), 400
 
 @vendorRoutes.put('/menu')
 @middleware.vendor_required
 def update_menu():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
         data = request.get_json()
         data['tax'] = float(data['tax'])
         data['service'] = float(data['service'])
@@ -178,8 +181,8 @@ def update_menu():
 @middleware.vendor_required
 def delete_menu():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         result = menus.find_one_and_delete({'vendor': ObjectId(payload['_id'])})
         if result:
@@ -197,8 +200,8 @@ def delete_menu():
 @middleware.vendor_required
 def upload_logo():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         result = menus.find_one({'vendor': ObjectId(payload['_id'])})
         if result['logo']:
@@ -224,8 +227,8 @@ def upload_logo():
 @middleware.vendor_required
 def delete_logo():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         result = menus.find_one({'vendor': ObjectId(payload['_id'])})
         if result['logo']:
@@ -246,8 +249,8 @@ def delete_logo():
 @middleware.vendor_required
 def upload_entry_image():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         categoryIndex = int(request.form['categoryIndex'])
         entryIndex = int(request.form['entryIndex'])
@@ -279,8 +282,8 @@ def upload_entry_image():
 @middleware.vendor_required
 def delete_image():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         data = request.get_json()
         categoryIndex = data['categoryIndex']

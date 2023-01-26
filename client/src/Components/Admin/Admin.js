@@ -3,7 +3,8 @@ import { useNavigate } from "react-router";
 import NewUserModal from "./NewUserModal";
 import UserEntry from "./UserEntry";
 import admin from "../../Assets/admin.png";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function Admin({ accessLevel }) {
   const navigate = useNavigate();
@@ -22,7 +23,8 @@ export default function Admin({ accessLevel }) {
   }, []);
 
   async function getUsers() {
-    const res = await fetch(config.SERVER + "/api/admin/", {
+    const res = await fetch(`${config.SERVER}/api/admin/`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       method: "GET",
       credentials: "include",
     });

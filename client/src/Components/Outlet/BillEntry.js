@@ -17,6 +17,9 @@ export default function BillEntry({
     updatedList.orders[orderIndex][entryIndex].quantity = parseInt(
       ref.current.value
     );
+    updatedList.orders[orderIndex][entryIndex].lineTotal =
+      updatedList.orders[orderIndex][entryIndex].quantity *
+      updatedList.orders[orderIndex][entryIndex].price;
     sendUpdate(updatedList);
     setEditEntry(false);
   }

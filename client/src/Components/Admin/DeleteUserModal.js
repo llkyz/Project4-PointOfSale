@@ -1,5 +1,6 @@
 import { useState } from "react";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function DeleteUserModal({
   setShowDeleteUserModal,
@@ -9,10 +10,11 @@ export default function DeleteUserModal({
   const [errorMessage, setErrorMessage] = useState();
 
   async function doDeleteUser() {
-    const res = await fetch(config.SERVER + `/api/user/${userData._id}`, {
+    const res = await fetch(`${config.SERVER}/api/user/${userData._id}`, {
       method: "DELETE",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
     });

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function DeleteOutletModal({
   setShowDeleteOutletModal,
@@ -10,8 +11,9 @@ export default function DeleteOutletModal({
 
   async function doDeleteOutlet() {
     const res = await fetch(
-      config.SERVER + `/api/vendor/outlet/${userData._id}`,
+      `${config.SERVER}/api/vendor/outlet/${userData._id}`,
       {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "DELETE",
         credentials: "include",
       }

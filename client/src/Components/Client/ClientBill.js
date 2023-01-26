@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import config from "../../../config";
+import config from "../../config";
 
 export default function ClientBill({ menuData, roomid }) {
   const [billData, setBillData] = useState();
@@ -13,9 +13,8 @@ export default function ClientBill({ menuData, roomid }) {
 
   useEffect(() => {
     async function getBillData() {
-      const res = await fetch(config.SERVER + `/api/customer/bill/${roomid}`, {
+      const res = await fetch(`${config.SERVER}/api/customer/bill/${roomid}`, {
         method: "GET",
-        credentials: "include",
       });
       let result = await res.json();
       if (res.ok) {

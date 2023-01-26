@@ -3,7 +3,8 @@ import OutletTable from "./OutletTable";
 import NewOrders from "./NewOrders";
 import PrintItem from "./PrintItem";
 import overview from "../../Assets/overview.png";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function OutletManager({ accessLevel, socket }) {
   const [menuData, setMenuData] = useState({
@@ -39,7 +40,8 @@ export default function OutletManager({ accessLevel, socket }) {
     }
 
     async function getMenuData() {
-      const res = await fetch(config.SERVER + "/api/outlet/menudata", {
+      const res = await fetch(`${config.SERVER}/api/outlet/menudata`, {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "GET",
         credentials: "include",
       });
@@ -52,7 +54,8 @@ export default function OutletManager({ accessLevel, socket }) {
     }
 
     async function getOutletData() {
-      const res = await fetch(config.SERVER + "/api/outlet/setting", {
+      const res = await fetch(`${config.SERVER}/api/outlet/setting`, {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "GET",
         credentials: "include",
       });
@@ -95,7 +98,8 @@ export default function OutletManager({ accessLevel, socket }) {
   }, [socket]);
 
   async function refreshTables() {
-    const res = await fetch(config.SERVER + "/api/outlet/room", {
+    const res = await fetch(`${config.SERVER}/api/outlet/room`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       method: "GET",
       credentials: "include",
     });
@@ -111,10 +115,11 @@ export default function OutletManager({ accessLevel, socket }) {
   }
 
   async function createRoom(tableNum, tableName) {
-    const res = await fetch(config.SERVER + "/api/outlet/room", {
+    const res = await fetch(`${config.SERVER}/api/outlet/room`, {
       method: "POST",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ tableNum: tableNum, tableName: tableName }),
@@ -130,10 +135,11 @@ export default function OutletManager({ accessLevel, socket }) {
   }
 
   async function closeRoom(orderId, consolidatedBill) {
-    const res = await fetch(config.SERVER + "/api/outlet/room", {
+    const res = await fetch(`${config.SERVER}/api/outlet/room`, {
       method: "DELETE",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ orderId: orderId, orders: consolidatedBill }),

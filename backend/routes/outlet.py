@@ -17,8 +17,8 @@ outletRoutes = Blueprint('outlet', __name__, template_folder='templates')
 @middleware.outlet_required
 def get_menu_data():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         result = users.aggregate([
         {
@@ -49,13 +49,14 @@ def get_menu_data():
 @middleware.outlet_required
 def get_setting_data():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         result = outlets.find_one({'outlet': ObjectId(payload['_id'])},{'vendor': 0, 'outlet' : 0})
         if not result:
             getUser = users.find_one({'_id': ObjectId(payload['_id'])})
-            result = outlets.insert_one({'vendor': getUser['vendor'], 'outlet': ObjectId(payload['_id']), 'name': '', 'address1': '', 'address2': '', 'taxNum': '', 'telephone': '', 'fax': '', 'footer': '', 'tables': []})
+            outlets.insert_one({'vendor': getUser['vendor'], 'outlet': ObjectId(payload['_id']), 'name': '', 'address1': '', 'address2': '', 'taxNum': '', 'telephone': '', 'fax': '', 'footer': '', 'tables': []})
+            result = outlets.find_one({'outlet': ObjectId(payload['_id'])},{'vendor': 0, 'outlet' : 0})
         result['_id'] = str(result['_id'])
         return ({'data': result}), 200
     except:
@@ -83,8 +84,8 @@ def update_setting_data():
 @middleware.outlet_required
 def get_rooms():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
         result = list(orders.find({'outlet': ObjectId(payload['_id'])}))
         for x in result:
             x['_id'] = str(x['_id'])
@@ -98,8 +99,8 @@ def get_rooms():
 @middleware.outlet_required
 def create_room():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         result = users.find_one({'_id': ObjectId(payload['_id'])})
         vendorId = result['vendor']

@@ -120,13 +120,7 @@ export default function OutletTable({
             <img src={table} style={{ height: "20px", marginRight: "10px" }} />
             <h2 style={{ display: "inline-block" }}>Table {tableName}</h2>
             {detailsIndex === tableNum ? (
-              <div
-                className="modalClose"
-                style={{ top: "0", right: "15px" }}
-                onClick={() => {
-                  console.log("hello");
-                }}
-              >
+              <div className="modalClose" style={{ top: "0", right: "15px" }}>
                 x
               </div>
             ) : (

@@ -6,7 +6,8 @@ import menu from "../../Assets/menu.png";
 import settings from "../../Assets/settings.png";
 import admin from "../../Assets/admin.png";
 import refresh from "../../Assets/refresh.png";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function MenuEditor() {
   const [menuData, setMenuData] = useState({
@@ -35,7 +36,8 @@ export default function MenuEditor() {
       const formData = new FormData();
       formData.append("file", uploadedFile);
 
-      let res = await fetch(config.SERVER + "/api/vendor/menu/logo", {
+      let res = await fetch(`${config.SERVER}/api/vendor/menu/logo`, {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "POST",
         credentials: "include",
         body: formData,
@@ -63,10 +65,11 @@ export default function MenuEditor() {
         categories: menuData.categories,
       };
 
-      const res = await fetch(config.SERVER + "/api/vendor/menu", {
+      const res = await fetch(`${config.SERVER}/api/vendor/menu`, {
         method: "PUT",
         credentials: "include",
         headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formBody),
@@ -85,7 +88,8 @@ export default function MenuEditor() {
   }, [menuData]);
 
   async function getVendorId() {
-    const res = await fetch(config.SERVER + "/api/user/id", {
+    const res = await fetch(`${config.SERVER}/api/user/id`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       method: "GET",
       credentials: "include",
     });
@@ -98,7 +102,8 @@ export default function MenuEditor() {
   }
 
   async function removeLogo() {
-    let res = await fetch(config.SERVER + "/api/vendor/menu/logo", {
+    let res = await fetch(`${config.SERVER}/api/vendor/menu/logo`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       method: "DELETE",
       credentials: "include",
     });
@@ -111,7 +116,8 @@ export default function MenuEditor() {
   }
 
   async function getMenu() {
-    const res = await fetch(config.SERVER + "/api/vendor/menu", {
+    const res = await fetch(`${config.SERVER}/api/vendor/menu`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       method: "GET",
       credentials: "include",
     });
@@ -124,7 +130,8 @@ export default function MenuEditor() {
   }
 
   async function createMenu() {
-    const res = await fetch(config.SERVER + "/api/vendor/menu", {
+    const res = await fetch(`${config.SERVER}/api/vendor/menu`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       method: "POST",
       credentials: "include",
     });

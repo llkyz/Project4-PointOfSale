@@ -1,5 +1,6 @@
 import { useState } from "react";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function DeleteEntryModal({
   setShowDeleteEntryModal,
@@ -12,10 +13,11 @@ export default function DeleteEntryModal({
   const [errorMessage, setErrorMessage] = useState();
 
   async function doDeleteEntry() {
-    const res = await fetch(config.SERVER + "/api/vendor/menu/entry/image", {
+    const res = await fetch(`${config.SERVER}/api/vendor/menu/entry/image`, {
       method: "DELETE",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

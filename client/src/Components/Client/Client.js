@@ -7,7 +7,7 @@ import ClientCart from "./ClientCart";
 import ClientBill from "./ClientBill";
 import receipt from "../../Assets/receipt.png";
 import cart from "../../Assets/cart.png";
-import config from "../../../config";
+import config from "../../config";
 
 export default function Client({ setClientOverride, socket }) {
   const [menuData, setMenuData] = useState();
@@ -23,7 +23,7 @@ export default function Client({ setClientOverride, socket }) {
   useEffect(() => {
     async function getMenu() {
       let res = await fetch(
-        config.SERVER + `/api/customer/menu/${params.roomid}`,
+        `${config.SERVER}/api/customer/menu/${params.roomid}`,
         {
           method: "GET",
         }

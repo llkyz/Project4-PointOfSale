@@ -14,9 +14,10 @@ import ClientPreview from "./Components/Client/ClientPreview";
 import OutletManager from "./Components/Outlet/OutletManager";
 import OutletSettings from "./Components/Outlet/OutletSettings";
 import FinanceManager from "./Components/Outlet/FinanceManager";
-import config from "../config";
+import config from "./config";
+import Cookies from "js-cookie";
 
-const socket = io();
+const socket = io(config.SERVER, { withCredentials: true });
 
 function App() {
   const [accessLevel, setAccessLevel] = useState("loading");
@@ -24,7 +25,8 @@ function App() {
 
   useEffect(() => {
     async function verify() {
-      const res = await fetch(config.SERVER + "/api/user/verify", {
+      const res = await fetch(`${config.SERVER}/api/user/verify`, {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "GET",
         credentials: "include",
       });

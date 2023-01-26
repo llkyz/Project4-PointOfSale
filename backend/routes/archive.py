@@ -12,8 +12,8 @@ archiveRoutes = Blueprint('archive', __name__, template_folder='templates')
 @middleware.outlet_required
 def outlet_retrieve_archive():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         startDate = request.args.get('startDate').split('-')
         endDate = request.args.get('endDate').split('-')
@@ -69,8 +69,8 @@ def outlet_retrieve_archive():
 @middleware.outlet_required
 def outlet_delete_archive():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         data = request.get_json()
         getArchive = archives.find_one({'_id': ObjectId(data['archiveId'])})
@@ -91,8 +91,8 @@ def outlet_delete_archive():
 @middleware.vendor_required
 def vendor_retrieve_stats():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         endDate = request.args.get('endDate').split('-')
         endYear = int(endDate[0])
@@ -163,8 +163,8 @@ def vendor_retrieve_stats():
 @middleware.vendor_required
 def vendor_retrieve_archive(outletId):
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         getOutlet = users.find_one({'_id': ObjectId(outletId)})
         if getOutlet['vendor'] != ObjectId(payload['_id']):
@@ -224,8 +224,8 @@ def vendor_retrieve_archive(outletId):
 @middleware.vendor_required
 def vendor_delete_archive():
     try:
-        jwt_token = request.cookies.get("token")
-        payload = jwt.decode(jwt_token, JWT_SECRET,algorithms=[JWT_ALGORITHM])
+        token = request.headers.get('Authorization').split()[1]
+        payload = jwt.decode(token, JWT_SECRET,algorithms=JWT_ALGORITHM)
 
         data = request.get_json()
         getArchive = archives.find_one({'_id': ObjectId(data['archiveId'])})

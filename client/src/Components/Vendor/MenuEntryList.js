@@ -31,15 +31,6 @@ export default function MenuEntryList({
         E N T R I E S
       </div>
       <div className="separator" />
-      <div
-        className="functionSmall"
-        style={{ marginTop: "10px", marginBottom: "10px" }}
-        onClick={() => {
-          createNewEntry();
-        }}
-      >
-        Create New Entry
-      </div>
       {menuData.categories[categoryIndex].entries.length === 0 ? (
         <h2>No entries available</h2>
       ) : (
@@ -55,6 +46,15 @@ export default function MenuEntryList({
           />
         ))
       )}
+      <div
+        className="functionSmall"
+        style={{ marginTop: "10px", marginBottom: "10px" }}
+        onClick={() => {
+          createNewEntry();
+        }}
+      >
+        Create New Entry
+      </div>
     </div>
   );
 }

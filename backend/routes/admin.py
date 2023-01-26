@@ -28,7 +28,6 @@ def get_outlet_list(vendor):
 @middleware.admin_required
 def create_user():
     data = request.get_json()
-    print(data)
     if 'vendor' in data:
         data['vendor'] = ObjectId(data['vendor'])
     

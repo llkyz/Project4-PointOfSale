@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 import profile from "../Assets/profile.png";
-import config from "../../config";
+import config from "../config";
 
 export default function Profile({ accessLevel, setAccessLevel }) {
   const [profileData, setProfileData] = useState();
@@ -14,7 +14,8 @@ export default function Profile({ accessLevel, setAccessLevel }) {
   }, []);
 
   async function getProfileData() {
-    const res = await fetch(config.SERVER + "/api/user/profile", {
+    const res = await fetch(`${config.SERVER}/api/user/profile`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       method: "GET",
       credentials: "include",
     });
@@ -37,10 +38,11 @@ export default function Profile({ accessLevel, setAccessLevel }) {
       username: event.target.form[0].value,
       password: event.target.form[1].value,
     };
-    const res = await fetch(config.SERVER + `/api/user/${profileData._id}`, {
+    const res = await fetch(`${config.SERVER}/api/user/${profileData._id}`, {
       method: "PUT",
       credentials: "include",
       headers: {
+        Authorization: `Bearer ${Cookies.get("token")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formBody),

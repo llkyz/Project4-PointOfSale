@@ -11,7 +11,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import overview from "../../Assets/overview.png";
-import config from "../../../config";
+import config from "../../config";
+import Cookies from "js-cookie";
 
 export default function OutletOverview() {
   const [outletList, setOutletList] = useState([]);
@@ -30,7 +31,8 @@ export default function OutletOverview() {
   }, [fetchDate]);
 
   async function getOutletList() {
-    const res = await fetch(config.SERVER + "/api/vendor/outlet", {
+    const res = await fetch(`${config.SERVER}/api/vendor/outlet`, {
+      headers: { Authorization: `Bearer ${Cookies.get("token")}` },
       method: "GET",
       credentials: "include",
     });
@@ -49,8 +51,9 @@ export default function OutletOverview() {
     }-${endDate.getDate()}`;
 
     const res = await fetch(
-      config.SERVER + `/api/archive/vendor?endDate=${endString}`,
+      `${config.SERVER}/api/archive/vendor?endDate=${endString}`,
       {
+        headers: { Authorization: `Bearer ${Cookies.get("token")}` },
         method: "GET",
         credentials: "include",
       }
